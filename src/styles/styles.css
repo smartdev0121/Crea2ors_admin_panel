@@ -976,8 +976,8 @@ h6 {
 
 @-webkit-keyframes pulse-animation {
   0% {
-    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
-            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.5);
+            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.5);
   }
   100% {
     -webkit-box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
@@ -987,8 +987,8 @@ h6 {
 
 @keyframes pulse-animation {
   0% {
-    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
-            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.5);
+            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.5);
   }
   100% {
     -webkit-box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
