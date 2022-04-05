@@ -2,14 +2,14 @@ import Button, { ButtonProps } from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 
 const MColorButtonView = styled(Button)(({ theme }) => ({
-  color: "black",
+  color: "white",
   fontWeight: "800",
-  borderColor: "#ffd132",
-  backgroundColor: "#ffd132",
+  borderColor: "#da4bfd",
+  backgroundColor: "#da4bfd",
   padding: "10px 30px",
   "&:hover": {
-    backgroundColor: "#ffd132e1",
-    borderColor: "#ffd132",
+    backgroundColor: "#da4bfde1",
+    borderColor: "#da4bfd",
   },
 }));
 

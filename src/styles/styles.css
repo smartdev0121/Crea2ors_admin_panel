@@ -6,7 +6,7 @@
 /* stylelint-disable */
 /* stylelint-enable */
 header {
-  background-color: #490fb4 !important;
+  background-color: var(--primary-background-color) !important;
 }
 
 header .header-content {
@@ -969,8 +969,35 @@ h6 {
   background: rgba(255, 255, 255, 0.7);
 }
 
+.pulse {
+  -webkit-animation: pulse-animation 2s infinite;
+          animation: pulse-animation 2s infinite;
+}
+
+@-webkit-keyframes pulse-animation {
+  0% {
+    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
+            box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
+  }
+}
+
+@keyframes pulse-animation {
+  0% {
+    -webkit-box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+            box-shadow: 0 0 0 0px rgba(156, 156, 156, 0.2);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
+            box-shadow: 0 0 0 15px rgba(156, 156, 156, 0);
+  }
+}
+
 :root {
-  --primary-background-color: #490fb4;
+  --primary-background-color: #1a1a1a;
   --secondary-background-color: #2b2c35;
   --active-background-color: white;
   --main-button-color: #da4bfd;

@@ -15,7 +15,7 @@ const WelcomeSection = () => {
           </div>
         </div> */}
         <div className="welcome-image">
-          <div className="top-collection">
+          <div className="top-collection pulse">
             <img src="/images/home/visual.png" alt="Visual" />
             <MColorButtonView className="view-collection-btn">
               View Collection

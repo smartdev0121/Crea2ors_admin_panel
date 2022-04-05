@@ -18,8 +18,10 @@
 @import "components";
 @import "base";
 
+@import "animationEffect";
+
 :root {
-  --primary-background-color: #490fb4;
+  --primary-background-color: #1a1a1a;
   --secondary-background-color: #2b2c35;
   --active-background-color: white;
   --main-button-color: #da4bfd;

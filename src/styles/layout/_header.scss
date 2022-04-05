@@ -1,7 +1,7 @@
 @import "../mixin/media";
 
 header {
-  background-color: #490fb4 !important;
+  background-color: var(--primary-background-color) !important;
   .header-content {
     background: transparent;
 
