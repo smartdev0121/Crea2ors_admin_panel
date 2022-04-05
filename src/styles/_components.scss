@@ -1,0 +1,117 @@
+@import './mixin/media';
+
+#root {
+  background: var(--primary-background-color);
+  overflow: hidden;
+}
+
+.asset-list {
+  margin-top: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  @include media-lg {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include media-sm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include media-mc {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.collection-list {
+  margin-top: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  @include media-lg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include media-sm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include media-tn {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.trait-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  row-gap: 10px;
+  column-gap: 10px;
+}
+
+.container {
+  max-width: 1280px;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  margin: 0 auto 0 auto;
+}
+
+.react-multi-carousel-list {
+  padding-bottom: 30px;
+}
+
+.web3modal-modal-card {
+  background-color: rgb(25, 27, 31) !important;
+  border: 1px solid rgb(33, 36, 41);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 8px 0px;
+
+  max-width: 420px;
+  max-height: 90 vh;
+
+  .web3modal-provider-wrapper {
+    border: none !important;
+
+    .web3modal-provider-container {
+      background-color: rgb(44, 47, 54);
+      border: 1px solid rgb(64, 68, 79);
+      border-radius: 12px;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 1rem;
+
+      transition: 0.3s ease;
+      &:hover {
+        border: 1px solid var(--secondary-theme-color);
+      }
+
+      .web3modal-provider-description {
+        display: none;
+      }
+
+      .web3modal-provider-name {
+        display: flex;
+        flex-flow: row nowrap;
+        color: rgb(255, 255, 255);
+        font-size: 1rem;
+        font-weight: 500;
+
+        margin-top: 0;
+        order: 0;
+      }
+
+      .web3modal-provider-icon {
+        height: 24px;
+        width: 24px;
+
+        order: 1
+      }
+    }
+  }
+}

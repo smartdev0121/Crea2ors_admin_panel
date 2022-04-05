@@ -1,0 +1,42 @@
+button.btn {
+  color: white !important;
+
+  height: 44px;
+  padding-left: 25px;
+  padding-right: 25px;
+
+  border: none;
+  border-radius: 22px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden !important;
+
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background-color: var(--main-button-color) !important;
+}
+
+.btn-secondary {
+  background: var(--secondary-component-background-color);
+  border: 1px solid var(--secondary-component-background-color) !important;
+}
+
+button.outline {
+  background: none;
+  border: 1px solid var(--secondary-theme-color);
+
+  &:hover {
+    background: var(--secondary-theme-color);
+  }
+}
+
+button.outline.disabled {
+  border: 1px solid gray;
+
+  &:hover {
+    background: none;
+  }
+}

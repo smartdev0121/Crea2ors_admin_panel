@@ -1,0 +1,45 @@
+@import "./layout/header";
+@import "./layout/main";
+@import "./layout/footer";
+
+@import "./pages/accountinfo";
+@import "./pages/editaccount";
+@import "./pages/createcollection";
+@import "./pages/batchtransfer";
+@import "./pages/createasset";
+@import "./pages/sellasset";
+@import "./pages/editcollection";
+@import "./pages/editasset";
+@import "./pages/collectionassets";
+
+@import "./components/button";
+@import "./components/input";
+
+@import "components";
+@import "base";
+
+:root {
+  --primary-background-color: #490fb4;
+  --secondary-background-color: #2b2c35;
+  --active-background-color: white;
+  --main-button-color: #da4bfd;
+
+  --primary-start-color: #ef5f82;
+  --primary-end-color: #d83293;
+
+  --primary-component-background-color: rgba(255, 255, 255, 0.2);
+  --secondary-component-background-color: rgba(255, 255, 255, 0.1);
+
+  --primary-component-border-color: #3c3d45;
+
+  --primary-text-color: white;
+  --secondary-text-color: #ee5d83;
+  --support-text-color: #d4d4d6;
+
+  --main-card-background-color: rgb(35, 36, 43);
+  --main-border-color: #202020;
+
+  --secondary-theme-color: rgb(56, 75, 242);
+  --secondary-theme-hover-color: rgb(65, 115, 255);
+  --secondary-border-color: #505050;
+}

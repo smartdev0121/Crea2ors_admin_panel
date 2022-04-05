@@ -1,0 +1,21 @@
+.sell-asset-card {
+  .m-card-inner {
+    display: flex;
+    justify-content: center;
+
+    gap: 30px;
+
+    section.sell-info {
+      width: 50%;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    section.asset-info {
+      width: 400px;
+    }
+  }
+}

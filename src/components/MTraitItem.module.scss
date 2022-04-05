@@ -1,0 +1,35 @@
+.traitItem :global {
+  background-color: rgba(40, 70, 238, 0.09);
+  border-radius: 6px;
+  border: 1px solid var(--secondary-theme-color);
+  padding: 10px;
+  text-align: center;
+
+  span {
+    display: block;
+  }
+
+  .type {
+    color: var(--secondary-theme-color);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .value {
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rarity {
+    color: rgb(138, 147, 155);
+    font-size: 13px;
+    line-height: 16px;
+    min-height: 16px;
+  }
+}

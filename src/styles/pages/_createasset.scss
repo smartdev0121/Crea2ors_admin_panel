@@ -1,0 +1,40 @@
+@import '../mixin/media';
+
+.create-asset-card {
+  .m-card-inner {
+    display: flex;
+
+    gap: 50px;
+
+    h5 {
+      font-size: 16px;
+    }
+
+    span, label {
+      font-size: 13px;
+      color: white;
+    }
+
+    section.asset-info {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+
+      button {
+        height: 32px;
+      }
+    }
+
+    section.asset-preview {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    @include media-md {
+      flex-direction: column;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@import '../mixin/media';
+
+.create-collection-card {
+  .m-card-inner {
+    display: flex;
+    gap: 30px;
+
+    section {
+      display: flex;
+      flex-direction: column;
+
+      gap: 15px;
+
+      span, label {
+        color: white;
+      }
+    }
+
+    @include media-md {
+      display: block;
+      section {
+        &:last-of-type {
+          display: none;
+        }
+      }
+    }
+  }
+}

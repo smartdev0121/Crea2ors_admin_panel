@@ -1,0 +1,63 @@
+.m-modal-background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(50, 50, 50, 0.8);
+}
+
+.m-modal-wrapper {
+  --modal-width: 500px;
+  --modal-header-height: 35px;
+  --modal-footer-height: 50px;
+  position: fixed;
+  display: block;
+  left: calc(50vw - var(--modal-width) / 2);
+  width: var(--modal-width);
+  z-index: 12;
+  background: var(--primary-background-color);
+  border-radius: 10px;
+}
+
+.m-modal-wrapper .m-modal-header {
+  height: var(--modal-header-height);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-bottom: 1px solid rgba(50, 50, 50, 0.3);
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.m-modal-wrapper .m-modal-content {
+  padding: 10px;
+  height: calc(100% - var(--modal-header-height) - var(--modal-footer-height));
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #b4b4b4;
+}
+
+.m-modal-wrapper .m-modal-footer {
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: var(--modal-footer-height);
+  float: right;
+}
+
+.m-modal-wrapper .m-modal-footer button {
+  height: 100%;
+  margin-right: 10px;
+}
+/*# sourceMappingURL=MModal.css.map */

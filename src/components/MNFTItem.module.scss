@@ -1,0 +1,145 @@
+.nftItem :global {
+  transition: 0.3s ease-in-out;
+
+  position: relative;
+
+  .detailed-info {
+    text-align: start;
+  }
+
+  .launch-info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .buy-button-part {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    img {
+      width: 30px;
+      margin-right: 20px;
+    }
+    button {
+      flex: 1 1;
+    }
+  }
+
+  .price-info {
+    text-align: start;
+  }
+
+  .location-info {
+    text-align: end;
+  }
+
+  .nft-network {
+    display: block;
+    position: absolute;
+    padding: 5px 7px;
+
+    top: 25px;
+    right: 15px;
+
+    border-radius: 5px;
+
+    background: rgba(226, 58, 53, 0.8);
+    backdrop-filter: blur(5px);
+    color: white;
+
+    max-width: calc(100% - 40px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nft-item-wrapper {
+    border: 1px solid var(--primary-component-border-color);
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    transition: 0.2s ease-in-out;
+
+    .nft-item-image {
+      overflow: hidden;
+
+      img {
+        border-radius: 10px;
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+      }
+    }
+
+    .nft-item-content {
+      // background: #30304097;
+      padding: 22px 20px 22px 20px;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+
+      .date-info {
+        background-color: rgba(138, 138, 138, 0.8);
+        padding: 10px;
+        text-align: start;
+        border-radius: 10px;
+      }
+      span {
+        display: block;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .name {
+        margin-top: 10px;
+
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+      }
+
+      .creator {
+        font-weight: 700;
+        font-size: 11px;
+        line-height: 11px;
+        /* identical to box height */
+
+        color: #d4d4d6 !important;
+
+        text-transform: uppercase;
+      }
+
+      .nft-item-extra-info {
+        display: flex;
+        justify-content: space-between;
+
+        margin-top: 27px;
+
+        img {
+          width: 13px;
+        }
+
+        .order-info {
+          font-size: 13px;
+          font-weight: bold;
+          color: rgb(50, 192, 122);
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          gap: 5px;
+        }
+      }
+    }
+  }
+}

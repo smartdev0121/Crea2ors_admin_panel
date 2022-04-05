@@ -1,0 +1,118 @@
+@import '../../styles/mixin/media';
+
+.singleAssetPage :global {
+  .container {
+    padding-top: 80px;
+    padding-bottom: 120px;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+
+    column-gap: 50px;
+
+    .section-main {
+
+      grid-row-start: 1;
+      grid-row-end: 3;
+      grid-column-start: 2;
+      grid-column-end: 3;
+
+      .header {
+        padding: 0 0 30px 0;
+
+        label {
+          font-weight: 700;
+          font-size: 15px;
+          line-height: 20px;
+        }
+
+        h2 {
+          font-weight: 700;
+          font-size: 28px;
+          line-height: 27px;
+
+          color: var(--primary-text-color);
+        }
+      }
+
+      .description {
+        padding: 25px 0;
+
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+
+        color: var(--support-text-color);
+
+        border-top: 1px solid var(--primary-component-border-color);
+        border-bottom: 1px solid var(--primary-component-border-color);
+      }
+
+      .content {
+        padding: 30px 0;
+
+        .main-tab {
+          border-bottom: 1px solid var(--primary-component-border-color);
+
+          button {
+            color: var(--support-text-color);
+
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 22px;
+
+            text-transform: none;
+          }
+
+          button.Mui-selected {
+            color: var(--primary-text-color);
+          }
+
+          span.MuiTabs-indicator {
+            background-color: var(--active-background-color);
+          }
+        }
+      }
+
+      table {
+        max-width: 100%;
+        width: 100%;
+
+        border: 1px solid #333;
+
+        tr {
+          td,
+          th {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            max-width: 10px;
+
+            text-align: center;
+            padding: 5px;
+            border-bottom: 1px solid #333;
+          }
+        }
+
+        button {
+          height: 30px;
+        }
+      }
+    }
+  }
+
+  @include media-md {
+    .container {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+
+      .section-main {
+        grid-row-start: unset;
+        grid-row-end: unset;
+        grid-column-start: unset;
+        grid-column-end: unset;
+      }
+    }
+  }
+}

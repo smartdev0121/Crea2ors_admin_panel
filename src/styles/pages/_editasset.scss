@@ -1,0 +1,25 @@
+@import '../mixin/media';
+
+.edit-asset-card {
+  .m-card-inner {
+    display: flex;
+
+    gap: 30px;
+
+    section {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+
+      span,
+      label {
+        color: white;
+      }
+    }
+
+    @include media-md {
+      flex-direction: column;
+    }
+  }
+}

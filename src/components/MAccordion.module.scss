@@ -1,0 +1,7 @@
+.accordionItem :global {
+  background-color: var(--secondary-background-color) !important;
+
+  svg {
+    filter: brightness(0) invert(1);
+  }
+}

@@ -1,0 +1,57 @@
+.collection-assets-page {
+  width: 100%;
+  
+  .collection-info {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    // border: 1px solid var(--main-border-color);
+
+    .collection-image {
+      width: 150px;
+      height: 150px;
+
+      border-radius: 50%;
+
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .collection-details {
+      span {
+        border: 1px solid var(--main-border-color);
+        padding: 5px;
+
+        &:first-of-type {
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+        }
+
+        &:last-of-type {
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+      }
+    }
+
+    span {
+      color: rgb(180, 180, 180);
+
+      a {
+        color: var(--secondary-theme-color);
+        text-decoration: none;
+      }
+    }
+  }
+}
