@@ -4,6 +4,31 @@
   position: relative;
 }
 
+.nftItem :global .limit {
+  font-size: 12px;
+  padding-left: 12px;
+}
+
+.nftItem :global .name {
+  font-size: 25px;
+  padding-left: 12px;
+}
+
+.nftItem :global .creator {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.nftItem :global .creator img {
+  width: 17px;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+}
+
 .nftItem :global .detailed-info {
   text-align: start;
 }
@@ -43,10 +68,35 @@
 
 .nftItem :global .price-info {
   text-align: start;
+  padding-left: 12px;
+}
+
+.nftItem :global .price-info label {
+  display: block;
+}
+
+.nftItem :global .price-info .price-label {
+  font-size: 12px;
+}
+
+.nftItem :global .price-info .price {
+  font-weight: 700;
+}
+
+.nftItem :global .price-info .eth-price {
+  font-size: 15px;
 }
 
 .nftItem :global .location-info {
   text-align: end;
+}
+
+.nftItem :global .location-info label {
+  display: block;
+}
+
+.nftItem :global .location-info .edition {
+  font-size: 12px;
 }
 
 .nftItem :global .nft-network {
@@ -123,7 +173,6 @@
   line-height: 11px;
   /* identical to box height */
   color: #d4d4d6 !important;
-  text-transform: uppercase;
 }
 
 .nftItem :global .nft-item-wrapper .nft-item-content .nft-item-extra-info {

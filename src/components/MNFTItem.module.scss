@@ -3,6 +3,25 @@
 
   position: relative;
 
+  .limit {
+    font-size: 12px;
+    padding-left: 12px;
+  }
+
+  .name {
+    font-size: 25px;
+    padding-left: 12px;
+  }
+
+  .creator {
+    display: flex;
+    align-items: center;
+    img {
+      width: 17px;
+      object-fit: scale-down;
+    }
+  }
+
   .detailed-info {
     text-align: start;
   }
@@ -28,10 +47,29 @@
 
   .price-info {
     text-align: start;
+    padding-left: 12px;
+    label {
+      display: block;
+    }
+    .price-label {
+      font-size: 12px;
+    }
+    .price {
+      font-weight: 700;
+    }
+    .eth-price {
+      font-size: 15px;
+    }
   }
 
   .location-info {
     text-align: end;
+    label {
+      display: block;
+    }
+    .edition {
+      font-size: 12px;
+    }
   }
 
   .nft-network {
@@ -111,8 +149,6 @@
         /* identical to box height */
 
         color: #d4d4d6 !important;
-
-        text-transform: uppercase;
       }
 
       .nft-item-extra-info {

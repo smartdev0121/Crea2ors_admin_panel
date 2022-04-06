@@ -1,8 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import Switch from "@mui/material/Switch";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { FormLabel } from "@mui/material";
 
 const ButtonBar = () => {
   const [checked, setChecked] = React.useState(true);
@@ -13,18 +11,7 @@ const ButtonBar = () => {
 
   return (
     <div className="button-bar">
-      <FormGroup className="spinBox">
-        <FormControlLabel
-          control={
-            <Switch
-              checked={checked}
-              onChange={handleChange}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          }
-          label="On Sale"
-        />
-      </FormGroup>
+      <FormLabel className="category-label">CATEGORIES</FormLabel>
 
       <Button className="btn outline category-btn">
         <img src="/images/home/art.svg"></img>Art

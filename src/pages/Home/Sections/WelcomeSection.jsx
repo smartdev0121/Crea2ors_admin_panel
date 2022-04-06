@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MConnectButton from "src/components/MConnectButton";
-import styles from "./WelcomeSection.scss";
 import MViewCollection from "../../../components/MViewCollection";
 
 const WelcomeSection = () => {

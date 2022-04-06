@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { getNetworkName } from "src/utils/config";
 import styles from "./MNFTItem.module.scss";
 import MColorButton from "./MInput/MColorButton";
+import Avatar from "@mui/material/Avatar";
 
 const MNFTItem = ({ nft }) => {
   const history = useHistory();
@@ -24,23 +25,11 @@ const MNFTItem = ({ nft }) => {
           <div className="launch-info">
             <div className="detailed-info">
               <span className="limit">LIMITED EDITION</span>
-              <span>VIP ICON Ticket</span>
-              <span>Bundle: April 7th</span>
-              <span>@7pm</span>
-              <span className="creator">{"CreatorName"}</span>
               <span className="name">{nft.Name || "# Unnamed"}</span>
-            </div>
-            <div className="date-info">
-              <label>THURSDAY</label>
-              <br></br>
-              <label>Apr 7</label>
-              <hr className="divider"></hr>
-              <label>SECTIION</label>
-              <br></br>
-              <label>
-                VIP
-                <br /> MC
-              </label>
+              <div className="creator">
+                <Avatar alt="Remy Sharp" src="/images/avatar.png" />
+                {"@RommeroBritoxDJWhiteShadow"}
+              </div>
             </div>
           </div>
           <hr></hr>
@@ -52,18 +41,13 @@ const MNFTItem = ({ nft }) => {
               </span>
             )}
             <div className="price-info">
-              <label>PRICE</label>
-              <br></br>
-              <label>$321.10</label>
-              <br></br>
-              <label>(=0.0957)</label>
+              <label className="price-label">PRICE</label>
+              <label className="price">$321.10</label>
+              <label className="eth-price">(=0.0957)</label>
             </div>
             <div className="location-info">
-              <label>Location</label>
-              <br></br>
-              <label>MGM Grand</label>
-              <br></br>
-              <label>Las Vegas, NV</label>
+              <label className="edition">EDITION</label>
+              <label className="counter">1 of 1</label>
             </div>
           </div>
           <div className="buy-button-part">

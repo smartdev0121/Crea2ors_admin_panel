@@ -1,7 +1,7 @@
-@import '../mixin/media';
+@import "../mixin/media";
 
 footer {
-  background: linear-gradient(135deg, var(--primary-start-color) 0%, var(--primary-end-color) 100%);
+  background: var(--footer-background-color);
 
   .container {
     flex-direction: column;

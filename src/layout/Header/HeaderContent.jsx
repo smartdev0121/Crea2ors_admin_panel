@@ -127,7 +127,9 @@ const HeaderContent = () => {
 
         <div className="links">
           <Link className="header-item">MARKET</Link>
-          <Link className="header-item">REDEEM</Link>
+          <Link className="header-item" to="/create-collection">
+            REDEEM
+          </Link>
           <Link className="header-item">ABOUT</Link>
           <Link className="header-item">HELP</Link>
           <Link className="header-item">SIGN IN/SIGNUP</Link>

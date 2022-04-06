@@ -174,7 +174,7 @@ main {
 /* stylelint-disable */
 /* stylelint-enable */
 footer {
-  background: linear-gradient(135deg, var(--primary-start-color) 0%, var(--primary-end-color) 100%);
+  background: var(--footer-background-color);
 }
 
 footer .container {
@@ -1001,6 +1001,7 @@ h6 {
   --secondary-background-color: #2b2c35;
   --active-background-color: white;
   --main-button-color: #da4bfd;
+  --footer-background-color: #1818186b;
   --primary-start-color: #ef5f82;
   --primary-end-color: #d83293;
   --primary-component-background-color: rgba(255, 255, 255, 0.2);
