@@ -29,6 +29,9 @@ import EditCollectionPage from "./pages/EditCollection/EditCollectionPage";
 import AssetsPage from "./pages/Assets/AssetsPage";
 import AccountInfoPage from "./pages/AccountInfo/AccountInfoPage";
 import EditAccountPage from "./pages/EditAccount/EditAccountPage";
+import CollectionView from "./pages/CollectionView";
+import CreateNFTPage from "./pages/CreateNFTPage";
+import NFTView from "./pages/NFTView";
 
 const App = () => {
   const [whitelisted, setWhitelisted] = useState(false);
@@ -44,9 +47,14 @@ const App = () => {
     <MainLayout>
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route path="/create-collection" component={CreateCollectionPage} />
         <Route path="/explore-collections" component={AllCollectionsPage} />
         <Route path="/explore-assets" component={AllAssetsPage} />
+        {/* New pages */}
+        <Route path="/collection-view" component={CollectionView} />
+        <Route path="/create-collection" component={CreateCollectionPage} />
+        <Route path="/create-nft" component={CreateNFTPage} />
+        <Route path="/nft-view" component={NFTView} />
+        {/* End */}
 
         <Route path="/collections" component={MyCollectionsPage} />
         <Route

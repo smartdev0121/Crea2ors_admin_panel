@@ -33,7 +33,7 @@ const HeaderContent = () => {
 
   const [connectedStatus, setConnectedStatus] = useState(false);
   const [currentNetwork, setCurrentNetwork] = useState(1);
-  const [connectBtnTxt, setConnectBtnTxt] = useState("Connect Wallet");
+  const [connectBtnTxt, setConnectBtnTxt] = useState("Create");
   const [accountInfo, setAccountInfo] = useState(null);
   const [menuOpened, setMenuOpened] = useState(false);
   const [whitelisted, setWhitelisted] = useState(false);
@@ -98,7 +98,7 @@ const HeaderContent = () => {
         setConnectBtnTxt(btnTxt);
         setConnectedStatus(true);
       } else {
-        setConnectBtnTxt("Connect Wallet");
+        setConnectBtnTxt("Create");
       }
     };
     const getNetwork = async () => {

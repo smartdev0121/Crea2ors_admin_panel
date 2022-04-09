@@ -1,0 +1,84 @@
+.view-container {
+  margin-top: 100px !important;
+  margin-bottom: 20px;
+}
+
+.create-button-part {
+  text-align: center;
+  padding: 15px 0;
+}
+
+.image-section {
+  position: relative;
+  img {
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .image-info-part {
+    position: absolute;
+    left: 30px;
+    bottom: 45%;
+    label {
+      display: block;
+      &:first-of-type {
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+.info-section {
+  display: flex;
+  .description {
+    width: 35%;
+    color: white;
+  }
+  .info-tab {
+    flex: 1 1;
+    > div {
+      width: 100%;
+    }
+  }
+}
+.image-part {
+  position: relative;
+}
+.creator {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  top: 10px;
+  img {
+    width: 20px;
+    object-fit: scale-down;
+  }
+}
+
+.content-copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  label {
+    font-size: 14px;
+    color: white;
+  }
+}
+
+.watch-video {
+  position: absolute;
+  bottom: 10px;
+  background-color: #00000069;
+  color: white;
+  padding-left: 10px;
+  font-size: 14px;
+  button {
+    font-size: 14px !important;
+    color: white;
+  }
+}

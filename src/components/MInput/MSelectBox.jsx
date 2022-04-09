@@ -38,17 +38,17 @@ const StyledButton = styled("button")(
   box-sizing: border-box;
   min-height: calc(1.5em + 22px);
   min-width: 320px;
-  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+  background: ${theme.palette.mode === "dark" ? grey[900] : "transparent"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[800] : grey[300]};
   border-radius: 0.75em;
   margin: 0.5em;
   padding: 10px;
   text-align: left;
   line-height: 1.5;
-  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
+  color: ${theme.palette.mode === "dark" ? grey[300] : grey[100]};
 
   &:hover {
-    background: ${theme.palette.mode === "dark" ? "" : grey[100]};
+    background: ${theme.palette.mode === "dark" ? "" : "#44444475"};
     border-color: ${theme.palette.mode === "dark" ? grey[700] : grey[400]};
   }
 
@@ -92,7 +92,7 @@ const StyledOption = styled(OptionUnstyled)(
   padding: 8px;
   border-radius: 0.45em;
   cursor: default;
-
+  background-color: transparent;
   &:last-of-type {
     border-bottom: none;
   }
@@ -127,29 +127,6 @@ const StyledPopper = styled(PopperUnstyled)`
   z-index: 1;
 `;
 
-const Paragraph = styled("p")(
-  ({ theme }) => `
-  font-family: IBM Plex Sans, sans-serif;
-  font-size: 0.875rem;
-  margin: 10px 0;
-  color: ${theme.palette.mode === "dark" ? grey[400] : grey[700]};
-  `
-);
-
-const Pre = styled("pre")(
-  ({ theme }) => `
-  font-family: monospace;
-  font-size: 0.875rem;
-  margin: 0px;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background-color: ${
-    theme.palette.mode === "dark" ? "rgba(0, 30, 60, 0.5)" : grey[50]
-  };
-  color: ${theme.palette.mode === "dark" ? grey[400] : grey[700]};
-  `
-);
-
 function CustomSelect(props) {
   const components = {
     Root: StyledButton,
@@ -174,22 +151,13 @@ CustomSelect.propTypes = {
   }),
 };
 
-const characters = [
-  { name: "Frodo", race: "Hobbit" },
-  { name: "Sam", race: "Hobbit" },
-  { name: "Merry", race: "Hobbit" },
-  { name: "Gandalf", race: "Maia" },
-  { name: "Gimli", race: "Dwarf" },
-];
-
-export default function UnstyledSelectObjectValues() {
-  const [character, setCharacter] = React.useState(characters[0]);
+export default function UnstyledSelectObjectValues(props) {
+  const categories = props.values;
+  const [category, setCategory] = React.useState(0);
   return (
-    <CustomSelect value={character} onChange={setCharacter}>
-      {characters.map((c) => (
-        <StyledOption key={c.name} value={c}>
-          {c.name}
-        </StyledOption>
+    <CustomSelect value={category} onChange={setCategory}>
+      {categories.map((value, index) => (
+        <StyledOption value={index}>{value}</StyledOption>
       ))}
     </CustomSelect>
   );

@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 
 const MTextField = styled(TextField)({
   "& label.Mui-focused": {
-    color: "#fdfdfd",
+    color: "#999",
   },
   "& .MuiInput-underline:after": {
     borderBottomColor: "#95959561",
@@ -12,12 +12,13 @@ const MTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
       borderColor: "#9b9b9b61",
+      color: "#999",
     },
     "&:hover fieldset": {
       borderColor: "#ffffff61",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#a9a9a961",
+      borderColor: "#444",
     },
   },
 });

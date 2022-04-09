@@ -12,6 +12,25 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MTextField from "src/components/MInput/MTextField";
 import MSelectBox from "src/components/MInput/MSelectBox";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import FormControl from "@mui/material/FormControl";
+import { styled } from "@mui/system";
+import MColorButtonView from "src/components/MInput/MColorButtonView";
+import MColorButton from "src/components/MInput/MColorButton";
+import TextField from "@mui/material/TextField";
+
+const Paragraph = styled("p")(
+  ({ theme }) => `
+  font-family: IBM Plex Sans, sans-serif;
+  font-size: 0.875rem;
+  margin: 10px 0;
+  color: "white";
+  background: "transparent";
+  `
+);
 
 const CreateCollectionPage = () => {
   const dispatch = useDispatch();
@@ -124,35 +143,58 @@ const CreateCollectionPage = () => {
               <MTextField label="URL" />
             </Stack>
 
-            <MTextField
+            {/* <MTextField
               placeholder="External URL"
               onChange={(e) => handleInputChange(e, "ExternalUrl")}
-            />
+            /> */}
 
             <MTextField label="About the Authors" multiline />
             <MTextField label="Highlight Intro" multiline />
             <MSelectBox values={categories} />
-            <h5>{metadata.CollectionName}</h5>
-            <span>{metadata.CollectionTicker}</span>
-            <span>{metadata.Description}</span>
-            <button onClick={handleCreateCollection}>
+            <FormControl variant="standard">
+              <InputLabel htmlFor="input-with-icon-adornment">
+                Collections items NFTs quantity: min=1 max=25
+              </InputLabel>
+              <Input
+                id="input-with-icon-adornment"
+                sx={{ borderColor: "#bdbdbd" }}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <ProductionQuantityLimitsIcon sx={{ color: "#bdbdbd" }} />
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+            <Paragraph>
+              All our collections are Free or Lazy minted. This means the buyer
+              will pay for the minting of the collectable
+            </Paragraph>
+            <MColorButtonView onClick={handleCreateCollection}>
               Create a collection
-            </button>
+            </MColorButtonView>
           </Stack>
           <Stack spacing={1} flex="1 1">
             <label>Choose Image:</label>
             {/* <FileUploader multiple={true} handleChange={handleFileChange} name='file' types={fileTypes} /> */}
-            <input
-              type="file"
-              id="image-file"
-              accept=".jpg, .png, .jpeg, .bmp"
-              onChange={(e) => handleFileChange(e)}
-            />
+            <MColorButton>
+              <Input
+                type="file"
+                id="image-file"
+                accept=".jpg, .png, .jpeg, .bmp"
+                onChange={(e) => handleFileChange(e)}
+              />
+            </MColorButton>
+
             <img
               src={result || metadata.ImageUrl || "/images/img_error.png"}
               style={{ width: 300, height: "auto" }}
               alt="collection"
             />
+            <h2>{metadata.CollectionName}</h2>
+            <TextField>{metadata.CollectionTicker}</TextField>
+            <TextField value={metadata.Description} multiline>
+              {metadata.Description}
+            </TextField>
           </Stack>
         </Stack>
       </Box>
