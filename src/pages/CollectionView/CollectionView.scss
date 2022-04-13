@@ -15,12 +15,32 @@
     object-fit: cover;
   }
 
+  .shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0)
+    );
+  }
+
   .image-info-part {
     position: absolute;
     left: 30px;
     bottom: 45%;
+    h2 {
+      text-shadow: 2px 2px 4px #000000;
+      margin-bottom: 14px !important;
+      font-size: 28px;
+    }
     label {
+      text-shadow: 2px 2px 4px #000000;
       display: block;
+      font-size: 19px;
       &:first-of-type {
         font-size: 11px;
       }
@@ -30,9 +50,13 @@
 
 .info-section {
   display: flex;
+  margin-top: 15px;
+
   .description {
     width: 35%;
     color: white;
+    font-size: 17px;
+    margin-right: 15px;
   }
   .info-tab {
     flex: 1 1;
@@ -43,8 +67,9 @@
 }
 .image-part {
   position: relative;
+  margin-bottom: 10px;
 }
-.creator {
+.creator-detail {
   display: flex;
   align-items: center;
   color: white;

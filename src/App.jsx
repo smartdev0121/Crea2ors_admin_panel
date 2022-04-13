@@ -32,6 +32,9 @@ import EditAccountPage from "./pages/EditAccount/EditAccountPage";
 import CollectionView from "./pages/CollectionView";
 import CreateNFTPage from "./pages/CreateNFTPage";
 import NFTView from "./pages/NFTView";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import PasswordReset from "./pages/PasswordReset";
 
 const App = () => {
   const [whitelisted, setWhitelisted] = useState(false);
@@ -54,6 +57,9 @@ const App = () => {
         <Route path="/create-collection" component={CreateCollectionPage} />
         <Route path="/create-nft" component={CreateNFTPage} />
         <Route path="/nft-view" component={NFTView} />
+        <Route path="/sign-in" component={SignIn} />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/password-reset" component={PasswordReset} />
         {/* End */}
 
         <Route path="/collections" component={MyCollectionsPage} />

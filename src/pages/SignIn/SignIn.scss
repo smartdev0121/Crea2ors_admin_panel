@@ -1,0 +1,15 @@
+.input-part {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.link-part {
+  margin: 14px 0;
+  display: flex;
+  justify-content: space-between;
+}

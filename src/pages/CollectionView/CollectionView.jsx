@@ -6,7 +6,7 @@ import CollectionInfoTab from "./CollectionInfoTab1";
 
 const CollectionView = () => {
   return (
-    <Container class="view-container" maxWidth="lg" sx={{ marginTop: "100px" }}>
+    <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
       <Box
         sx={{
           p: 2,
@@ -14,6 +14,7 @@ const CollectionView = () => {
         }}
       >
         <section className="image-section">
+          <div className="shadow"></div>
           <img src="/images/home/visual.png" />
           <div className="image-info-part">
             <h2>Romero Britto X DJ White Shadow</h2>

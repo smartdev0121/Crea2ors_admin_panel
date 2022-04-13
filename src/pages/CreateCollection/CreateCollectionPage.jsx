@@ -19,8 +19,8 @@ import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantity
 import FormControl from "@mui/material/FormControl";
 import { styled } from "@mui/system";
 import MColorButtonView from "src/components/MInput/MColorButtonView";
-import MColorButton from "src/components/MInput/MColorButton";
 import TextField from "@mui/material/TextField";
+// import "./BackgroundAnimation.scss";
 
 const Paragraph = styled("p")(
   ({ theme }) => `
@@ -46,6 +46,7 @@ const CreateCollectionPage = () => {
   const [file, setFile] = useState();
   const [metadata, setMetadata] = useState({});
   const [vidStatus, setVidStatus] = useState(false);
+  const hiddenFileInput = React.useRef(null);
 
   const useDisplayImage = () => {
     const [result, setResult] = React.useState("");
@@ -73,6 +74,10 @@ const CreateCollectionPage = () => {
     setFile(e.target.files[0]);
   };
 
+  const handleImageClick = (e) => {
+    hiddenFileInput.current.click();
+  };
+
   const handleCreateCollection = async () => {
     dispatch(setLoading(true));
     try {
@@ -90,115 +95,126 @@ const CreateCollectionPage = () => {
   const { result, uploader } = useDisplayImage();
 
   return (
-    <Container maxWidth="md" className="collection-create-container">
-      <Box
-        sx={{
-          p: 2,
-          backgroundColor: "#36363666",
-        }}
+    <div className="whole-container">
+      <Container
+        maxWidth="md"
+        sx={{ paddingTop: "100px", paddingBottom: "20px" }}
       >
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={2}
-          justifyContent="space-around"
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: "#00000075",
+          }}
         >
-          <Stack className="create-collection-card" spacing={1} flex="1 1">
-            <h4 level={4}>Create a New NFT Collection</h4>
-            <MTextField
-              onChange={(e) => handleInputChange(e, "CollectionName")}
-              label="Title"
-            />
+          <h4 level={4} className="create-nft-title">
+            Create a New NFT Collection
+          </h4>
 
-            {/* <input
+          <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={2}
+            justifyContent="space-around"
+          >
+            <Stack className="create-collection-card" spacing={1} flex="1 1">
+              <MTextField
+                onChange={(e) => handleInputChange(e, "CollectionName")}
+                label="Title"
+              />
+
+              {/* <input
               placeholder="Collection Ticker"
               onChange={(e) => handleInputChange(e, "CollectionTicker")}
             /> */}
 
-            {/* <input
+              {/* <input
               placeholder="Royalty percentage"
               onChange={(e) => handleInputChange(e, "RoyaltyFee")}
             /> */}
 
-            {/* <input
+              {/* <input
               placeholder="Royalty wallet address"
               onChange={(e) => handleInputChange(e, "RoyaltyAddress")}
             /> */}
-            <MTextField
-              placeholder="Description"
-              onChange={(e) => handleInputChange(e, "Description")}
-              label="Collection details and information."
-              multiline
-            />
-            <Stack direction="row" alignItems="center">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={vidStatus}
-                    onChange={handleCheckboxChange}
-                  />
-                }
-                label="add vid"
+              <MTextField
+                placeholder="Description"
+                onChange={(e) => handleInputChange(e, "Description")}
+                label="Collection details and information."
+                multiline
               />
-              <MTextField label="URL" />
-            </Stack>
+              <Stack direction="row" alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={vidStatus}
+                      onChange={handleCheckboxChange}
+                    />
+                  }
+                  label="add vid"
+                />
+                <MTextField label="URL" />
+              </Stack>
 
-            {/* <MTextField
+              {/* <MTextField
               placeholder="External URL"
               onChange={(e) => handleInputChange(e, "ExternalUrl")}
             /> */}
 
-            <MTextField label="About the Authors" multiline />
-            <MTextField label="Highlight Intro" multiline />
-            <MSelectBox values={categories} />
-            <FormControl variant="standard">
-              <InputLabel htmlFor="input-with-icon-adornment">
-                Collections items NFTs quantity: min=1 max=25
-              </InputLabel>
-              <Input
-                id="input-with-icon-adornment"
-                sx={{ borderColor: "#bdbdbd" }}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <ProductionQuantityLimitsIcon sx={{ color: "#bdbdbd" }} />
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <Paragraph>
-              All our collections are Free or Lazy minted. This means the buyer
-              will pay for the minting of the collectable
-            </Paragraph>
-            <MColorButtonView onClick={handleCreateCollection}>
-              Create a collection
-            </MColorButtonView>
-          </Stack>
-          <Stack spacing={1} flex="1 1">
-            <label>Choose Image:</label>
-            {/* <FileUploader multiple={true} handleChange={handleFileChange} name='file' types={fileTypes} /> */}
-            <MColorButton>
-              <Input
+              <MTextField label="About the Authors" multiline />
+              <MTextField label="Highlight Intro" multiline />
+              <MSelectBox values={categories} />
+              <FormControl variant="standard">
+                <InputLabel htmlFor="input-with-icon-adornment">
+                  Collections items NFTs quantity: min=1 max=25
+                </InputLabel>
+                <Input
+                  id="input-with-icon-adornment"
+                  sx={{ borderColor: "#bdbdbd" }}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <ProductionQuantityLimitsIcon sx={{ color: "#bdbdbd" }} />
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+              <Paragraph>
+                All our collections are Free or Lazy minted. This means the
+                buyer will pay for the minting of the collectable
+              </Paragraph>
+              <MColorButtonView onClick={handleCreateCollection}>
+                Create a collection
+              </MColorButtonView>
+            </Stack>
+            <Stack spacing={1} flex="1 1">
+              <label className="choose-image-text">Choose Image:</label>
+              {/* <FileUploader multiple={true} handleChange={handleFileChange} name='file' types={fileTypes} /> */}
+              <input
+                ref={hiddenFileInput}
                 type="file"
                 id="image-file"
                 accept=".jpg, .png, .jpeg, .bmp"
-                onChange={(e) => handleFileChange(e)}
+                onChange={handleFileChange}
+                className="file-input"
               />
-            </MColorButton>
+              <div onClick={handleImageClick} className="img-click-part">
+                <img
+                  src={result || metadata.ImageUrl || "/images/img_empty.png"}
+                  style={{ width: 300, height: "auto" }}
+                  alt="collection"
+                />
+                <p>Upload file jpg, jpeg, png 900x400px max: 100MB</p>
+              </div>
 
-            <img
-              src={result || metadata.ImageUrl || "/images/img_error.png"}
-              style={{ width: 300, height: "auto" }}
-              alt="collection"
-            />
-            <h2>{metadata.CollectionName}</h2>
-            <TextField>{metadata.CollectionTicker}</TextField>
-            <TextField value={metadata.Description} multiline>
-              {metadata.Description}
-            </TextField>
+              <h2>{metadata.CollectionName}</h2>
+              <TextField>{metadata.CollectionTicker}</TextField>
+              <TextField value={metadata.Description} multiline>
+                {metadata.Description}
+              </TextField>
+            </Stack>
           </Stack>
-        </Stack>
-      </Box>
-    </Container>
+        </Box>
+      </Container>
+    </div>
   );
 };
 

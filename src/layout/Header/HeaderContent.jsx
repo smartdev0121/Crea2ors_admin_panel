@@ -132,7 +132,9 @@ const HeaderContent = () => {
           </Link>
           <Link className="header-item">ABOUT</Link>
           <Link className="header-item">HELP</Link>
-          <Link className="header-item">SIGN IN/SIGNUP</Link>
+          <Link className="header-item" to="/sign-in">
+            SIGN IN/SIGNUP
+          </Link>
         </div>
 
         <div className="wallet-connect">

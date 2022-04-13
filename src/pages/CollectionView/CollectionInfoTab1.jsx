@@ -32,8 +32,11 @@ export default function LabTabs() {
                 color: "#c5c5c5",
                 fontSize: "12px",
                 minHeight: "20px",
-                padding: "5px",
                 alignItems: "center",
+                backgroundColor: "#da4bfd",
+                borderRadius: "10px",
+                padding: "10px",
+                margin: "5px",
                 "&.Mui-selected": { color: "white" },
               }}
             />
@@ -44,17 +47,25 @@ export default function LabTabs() {
                 color: "#c5c5c5",
                 fontSize: "12px",
                 minHeight: "20px",
-                padding: "5px",
+                backgroundColor: "#da4bfd",
+                padding: "10px",
+                margin: "5px",
                 alignItems: "center",
+                borderRadius: "10px",
+
                 "&.Mui-selected": { color: "white" },
               }}
             />
           </TabList>
         </Box>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ paddingLeft: "0px" }}>
           <DetailInfo />
         </TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
+        <TabPanel value="2" sx={{ color: "white" }}>
+          The "Romero Britto" NFT visual album collection, available exclusively
+          on Yellowheart, includes ten digital music masterpieces produced by
+          the famous DJ White system.
+        </TabPanel>
       </TabContext>
     </Box>
   );

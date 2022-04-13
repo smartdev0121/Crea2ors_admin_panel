@@ -7,7 +7,7 @@ const DetailInfo = () => {
     <Box>
       <div class="image-part">
         <img src="/images/home/visual.png"></img>
-        <div className="creator">
+        <div className="creator-detail">
           <Avatar alt="Remy Sharp" src="/images/avatar.png" />
           ROMMERO_BRITOX_DJ_WHITE_SHADOW NET COLLECTION
         </div>
