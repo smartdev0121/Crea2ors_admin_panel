@@ -1,113 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
-
+import {
+  Switch,
+  Route,
+  Redirect,
+  withRouter,
+  BrowserRouter,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { NotificationContainer } from "react-notifications";
-
+import MainLayout from "./layout/MainLayout";
+import reduce from "lodash/reduce";
+import guestRoutes from "./routes/guests";
+import authRoutes from "./routes/auth";
+import MSpinner from "./components/MSpinner";
+import { getProfile as getProfileReducer } from "./store/profile/reducer";
+import { getSpinner } from "./store/app/reducer";
 import { getUserRole } from "src/utils/permission";
 
 import "./App.css";
 import "./styles/styles.css";
 
-import MainLayout from "./layout/MainLayout";
-
-import HomePage from "./pages/Home";
-import CreateCollectionPage from "./pages/CreateCollection/CreateCollectionPage";
-import CreateAssetPage from "./pages/CreateAsset/CreateAssetPage";
-
-import MyCollectionsPage from "./pages/MyCollections/MyCollectionsPage";
-
-import AllCollectionsPage from "./pages/AllCollections/AllCollectionsPage";
-import AllAssetsPage from "./pages/AllAssets/AllAssetsPage";
-
-import CollectionAssetsPage from "./pages/CollectionAssets/CollectionAssetsPage";
-import SingleAssetPage from "./pages/SingleAsset/SingleAssetPage";
-import BatchTransferPage from "./pages/BatchTransfer/BatchTransferPage";
-import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
-import SellAssetPage from "./pages/SellAsset/SellAssetPage";
-import EditAssetPage from "./pages/EditAsset/EditAssetPage";
-import EditCollectionPage from "./pages/EditCollection/EditCollectionPage";
-import AssetsPage from "./pages/Assets/AssetsPage";
-import AccountInfoPage from "./pages/AccountInfo/AccountInfoPage";
-import EditAccountPage from "./pages/EditAccount/EditAccountPage";
-import CollectionView from "./pages/CollectionView";
-import CreateNFTPage from "./pages/CreateNFTPage";
-import NFTView from "./pages/NFTView";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import PasswordReset from "./pages/PasswordReset";
-
 const App = () => {
   const [whitelisted, setWhitelisted] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => getProfileReducer(state));
+  const isLoading = useSelector((state) => getSpinner(state, "PROFILE_INFO"));
+  let routes;
 
-  useEffect(() => {
-    (async () => {
-      const role = await getUserRole();
-      setWhitelisted(role);
-    })();
-  }, []);
+  if (!user) {
+    routes = guestRoutes;
+  } else {
+    routes = authRoutes;
+  }
+  const spreadRoutes = reduce(
+    routes,
+    (result, value) => {
+      if (value.children) {
+        return [...result, ...value.children];
+      } else {
+        return [...result, value];
+      }
+    },
+    []
+  );
 
   return (
     <MainLayout>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/explore-collections" component={AllCollectionsPage} />
-        <Route path="/explore-assets" component={AllAssetsPage} />
-        {/* New pages */}
-        <Route path="/collection-view" component={CollectionView} />
-        <Route path="/create-collection" component={CreateCollectionPage} />
-        <Route path="/create-nft" component={CreateNFTPage} />
-        <Route path="/nft-view" component={NFTView} />
-        <Route path="/sign-in" component={SignIn} />
-        <Route path="/sign-up" component={SignUp} />
-        <Route path="/password-reset" component={PasswordReset} />
-        {/* End */}
-
-        <Route path="/collections" component={MyCollectionsPage} />
-        <Route
-          exact
-          path="/collection/:chainId/:address"
-          component={CollectionAssetsPage}
-        />
-        <Route
-          path="/collection/:chainId/:address/edit"
-          component={EditCollectionPage}
-        />
-        <Route
-          path="/add-asset/:chainId/:address"
-          component={CreateAssetPage}
-        />
-
-        <Route exact path="/assets" component={AssetsPage} />
-        <Route
-          exact
-          path="/asset/:chainId/:address/:tokenId"
-          component={SingleAssetPage}
-        />
-        <Route
-          path="/asset/:chainId/:address/:tokenId/edit"
-          component={EditAssetPage}
-        />
-        <Route
-          path="/asset/:chainId/:address/:tokenId/sell"
-          component={SellAssetPage}
-        />
-
-        <Route exact path="/account" component={AccountInfoPage} />
-        <Route path="/account/settings" component={EditAccountPage} />
-        <Route path="/account/:address" component={AccountInfoPage} />
-
-        {whitelisted && (
-          <>
-            <Route path="/create-collection" component={CreateCollectionPage} />
-            <Route path="/batch-transfer" component={BatchTransferPage} />
-          </>
-        )}
-        <Route path="/" component={NotFoundPage} />
-      </Switch>
-
-      <NotificationContainer />
+      {isLoading ? (
+        <MSpinner />
+      ) : (
+        <Switch>
+          {spreadRoutes.map((route, index) => {
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                component={route.component}
+                exact={route.exact}
+              />
+            );
+          })}
+          {user ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+        </Switch>
+      )}
     </MainLayout>
   );
 };
 
+// export default withRouter(App);
 export default App;

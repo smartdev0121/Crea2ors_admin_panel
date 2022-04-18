@@ -5,7 +5,7 @@ import { ContentCopy, PlayArrow } from "@mui/icons-material";
 const DetailInfo = () => {
   return (
     <Box>
-      <div class="image-part">
+      <div className="image-part">
         <img src="/images/home/visual.png"></img>
         <div className="creator-detail">
           <Avatar alt="Remy Sharp" src="/images/avatar.png" />

@@ -17,22 +17,18 @@ const TopCollection2 = () => {
   useEffect(() => {
     (async () => {
       try {
-        console.log("start===================");
         const res = await apiGetAssets();
-        console.log("================", res);
         res.splice(5);
         setSmallNFTs(res);
       } catch {
-        ((err) => {
-          console.log(err);
-        })();
+        ((err) => {})();
       }
     })();
   }, []);
   return (
     <Box className="medium-collection">
       <div className="welcome-image collection-1">
-        <div className="top-collection pulse">
+        <div className="top-collection pulse" key={1}>
           <img src="/images/home/visual.png" alt="Visual" />
           <MViewCollection />
         </div>
@@ -58,7 +54,7 @@ const TopCollection2 = () => {
           {smallNFTs.map((item, index) => {
             return (
               <SwiperSlide>
-                <MNFTItem key={`nft_${index}`} nft={item} />
+                <MNFTItem key={`nft2_${index}`} nft={item} />
               </SwiperSlide>
             );
           })}

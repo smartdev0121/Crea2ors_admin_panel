@@ -1,8 +1,10 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
+import "./MTextField.scss";
 
-const MTextField = styled(TextField)({
+const CustomInput = styled(TextField)({
+  width: "100%",
   "& label.Mui-focused": {
     color: "#999",
   },
@@ -22,5 +24,45 @@ const MTextField = styled(TextField)({
     },
   },
 });
+const MTextField = (props) => {
+  const {
+    disabled,
+    icon,
+    input,
+    label,
+    meta: { asyncValidating, touched, error },
+    required,
+    placeholder,
+  } = props;
 
+  let validClass = "";
+  if (touched && error) {
+    validClass = "is-invalid";
+  } else if (touched) {
+    validClass = "is-valid";
+  }
+
+  return (
+    <div>
+      <CustomInput
+        type={input.type}
+        icon={icon}
+        label={label}
+        className={validClass}
+        disabled={disabled}
+        placeholder={placeholder}
+        name={input.name}
+        required={required}
+        value={typeof input.value === "number" ? `${input.value}` : input.value}
+        onChange={input.onChange}
+      />
+      {asyncValidating && (
+        <div className="spinner-border spinner-border-sm" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      )}
+      <div className="invalid-feedback">{touched && error}</div>
+    </div>
+  );
+};
 export default MTextField;

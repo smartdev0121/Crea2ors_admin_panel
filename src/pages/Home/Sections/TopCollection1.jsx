@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { EffectCoverflow, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { apiGetAssets } from "src/utils/api";
-import MNFTItem from "src/components/MNFTItem";
+import MNFTItem from "../../../components/MNFTItem";
 import MViewCollection from "../../../components/MViewCollection";
 import Box from "@mui/material/Box";
 
@@ -17,22 +17,21 @@ const TopCollection1 = () => {
   useEffect(() => {
     (async () => {
       try {
-        console.log("start===================");
         const res = await apiGetAssets();
-        console.log("================", res);
         res.splice(5);
-        setSmallNFTs(res);
+        console.log(res);
+
+        await setSmallNFTs(res);
+        console.log("small", smallNFTs);
       } catch {
-        ((err) => {
-          console.log(err);
-        })();
+        ((err) => {})();
       }
     })();
   }, []);
   return (
     <Box className="medium-collection">
       <div className="welcome-image collection-1">
-        <div className="top-collection pulse">
+        <div className="top-collection pulse" key={2}>
           <img src="/images/home/visual.png" alt="Visual" />
           <MViewCollection />
         </div>
@@ -54,10 +53,11 @@ const TopCollection1 = () => {
           modules={[EffectCoverflow, Pagination]}
           className="mySwiper"
         >
+          {console.log("render", smallNFTs)}
           {smallNFTs.map((item, index) => {
             return (
               <SwiperSlide>
-                <MNFTItem key={`nft_${index}`} nft={item} />
+                <MNFTItem key={`nft1_${index}`} nft={item} />
               </SwiperSlide>
             );
           })}

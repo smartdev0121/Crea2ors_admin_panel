@@ -11,7 +11,7 @@ const ScrollToHide01 = (props) => {
   });
 
   return (
-    <Slide appear={true} direction="down" in={!trigger}>
+    <Slide appear={true} direction="down" in={!trigger} sx={{ zIndex: 0 }}>
       {props.children}
     </Slide>
   );

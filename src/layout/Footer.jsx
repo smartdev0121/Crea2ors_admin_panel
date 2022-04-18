@@ -140,8 +140,8 @@ const Footer = () => {
         <section className="copyright-section">
           <p>© Copyright xxxNifty Global Inc. 2022. All Rights Reserved</p>
           <div className="copyright-links">
-            <Link>Terms of Service</Link>
-            <Link>Privacy Policy</Link>
+            <Link to="/#">Terms of Service</Link>
+            <Link to="/#">Privacy Policy</Link>
           </div>
         </section>
       </div>

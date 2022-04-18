@@ -1,9 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { compose, createStore, applyMiddleware } from "redux";
+import { routerMiddleware } from "connected-react-router";
+import thunk from "redux-thunk";
+import createRootReducer from "./reducers";
 
-import loadingReducer from 'src/slices/loadingSlice'
+const identify = (v) => v;
 
-export default configureStore({
-  reducer: {
-    loading: loadingReducer
-  },
-})
+const getDevTools = () => {
+  if (process.env.NODE_ENV === "development") {
+    if (typeof window === "object" && !!window.devToolsExtension) {
+      return window.devToolsExtension();
+    }
+    return identify;
+  }
+  return identify;
+};
+
+export default (history, reduxState = undefined) => {
+  const router = routerMiddleware(history);
+
+  const store = createStore(
+    createRootReducer(history),
+    reduxState,
+    compose(applyMiddleware(router, thunk), getDevTools())
+  );
+
+  return store;
+};

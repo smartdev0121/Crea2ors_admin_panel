@@ -1,38 +1,43 @@
-import Web3 from 'web3'
-import BigNumber from 'bignumber.js'
+import Web3 from "web3";
+import BigNumber from "bignumber.js";
 
-import web3Modal, { getCurrentNetworkId, getCurrentWalletAddress, switchNetwork } from './wallet'
+import web3Modal, {
+  getCurrentNetworkId,
+  getCurrentWalletAddress,
+  switchNetwork,
+} from "./wallet";
 
-import showNotification from 'src/config/notification'
-import { marketplace_contract_address } from 'src/config/contracts'
-import { CONTRACT_TYPE, NULL_ADDRESS } from 'src/config/global'
+import showNotification from "src/config/notification";
+import { marketplace_contract_address } from "src/config/contracts";
+import { CONTRACT_TYPE, NULL_ADDRESS } from "src/config/global";
 
-import { setApprovalForAll, approve } from './contract'
+import { setApprovalForAll, approve } from "./contract";
 
-const order_manager_contract_url = '/contracts/compiled/OrderManagerContract.abi'
+const order_manager_contract_url =
+  "/contracts/compiled/OrderManagerContract.abi";
 
-let provider
+let provider;
 
 const getMarketplaceContractAddress = async () => {
-  const networkId = await getCurrentNetworkId()
-  return marketplace_contract_address[networkId]
-}
+  const networkId = await getCurrentNetworkId();
+  return marketplace_contract_address[networkId];
+};
 
 const readContractABI = (contract_url = order_manager_contract_url) =>
   new Promise(async (resolve, reject) => {
-    let ContractData
-    const contract_source = contract_url
+    let ContractData;
+    const contract_source = contract_url;
 
     fetch(contract_source)
       .then((response) => response.text())
       .then((data) => {
-        ContractData = JSON.parse(data)
-        return resolve(ContractData)
+        ContractData = JSON.parse(data);
+        return resolve(ContractData);
       })
       .catch((e) => {
-        return reject()
-      })
-  })
+        return reject();
+      });
+  });
 
 export const createOrder = (
   ContractType,
@@ -48,34 +53,39 @@ export const createOrder = (
 ) =>
   new Promise(async (resolve, reject) => {
     try {
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
       const tx = {
         from: WalletAddress,
         to: ContractAddress,
         value: 0,
-      }
+      };
 
-      await setApprovalForAll(ContractAddress, AssetAddress, ChainId, ContractType)
+      await setApprovalForAll(
+        ContractAddress,
+        AssetAddress,
+        ChainId,
+        ContractType
+      );
 
-      showNotification('Waiting', 'Listing ...', 'waiting')
+      showNotification("Waiting", "Listing ...", "waiting");
 
       await contract.methods
         .createOrder([
@@ -87,7 +97,11 @@ export const createOrder = (
           CurrencyTokenAddress === NULL_ADDRESS
             ? web3.utils.toWei(Price)
             : web3.utils
-                .toBN(BigNumber(Price).times(BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))))
+                .toBN(
+                  BigNumber(Price).times(
+                    BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
+                  )
+                )
                 .toString(),
           CurrencyTokenAddress,
           0,
@@ -96,41 +110,41 @@ export const createOrder = (
           WalletAddress,
           0,
         ])
-        .send(tx)
+        .send(tx);
 
-      showNotification('Success', 'Successfully', 'success', 3)
-      return resolve({ success: true })
+      showNotification("Success", "Successfully", "success", 3);
+      return resolve({ success: true });
     } catch (e) {
-      console.log(e)
-      showNotification('Failed', 'failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const buyAsset = (OrderState, ChainId) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
-      let value = 0
+      let value = 0;
 
       if (OrderState.CurrencyTokenAddress === NULL_ADDRESS) {
-        value = web3.utils.toWei(OrderState.Price.toString()) * OrderState.Amount
+        value =
+          web3.utils.toWei(OrderState.Price.toString()) * OrderState.Amount;
       } else {
         await approve(
           ContractAddress,
@@ -138,13 +152,15 @@ export const buyAsset = (OrderState, ChainId) =>
           web3.utils
             .toBN(
               BigNumber(OrderState.Price)
-                .times(BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals)))
+                .times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
                 .times(BigNumber(OrderState.Amount))
             )
             .toString(),
           ChainId,
           CONTRACT_TYPE.ERC20
-        )
+        );
       }
 
       const tx = {
@@ -183,39 +199,39 @@ export const buyAsset = (OrderState, ChainId) =>
                   .toString(),
           ])
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch {
-      return reject()
+      return reject();
     }
-  })
+  });
 
 export const placeBid = (OrderState, BidPrice, ChainId) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
-      let value = 0
+      let value = 0;
 
       if (OrderState.CurrencyTokenAddress === NULL_ADDRESS) {
-        value = web3.utils.toWei(BidPrice.toString()) * OrderState.Amount
+        value = web3.utils.toWei(BidPrice.toString()) * OrderState.Amount;
       } else {
         await approve(
           ContractAddress,
@@ -223,13 +239,15 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
           web3.utils
             .toBN(
               BigNumber(BidPrice)
-                .times(BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals)))
+                .times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
                 .times(BigNumber(OrderState.Amount))
             )
             .toString(),
           ChainId,
           CONTRACT_TYPE.ERC20
-        )
+        );
       }
 
       const tx = {
@@ -268,35 +286,34 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
                   .toString(),
           ])
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch (e) {
-      console.log(e)
-      return reject()
+      return reject();
     }
-  })
+  });
 
 export const cancelListing = (OrderState, ChainId) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
       const tx = {
         from: WalletAddress,
@@ -334,40 +351,46 @@ export const cancelListing = (OrderState, ChainId) =>
                   .toString(),
           ])
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch (e) {
-      console.log(e)
-      return reject()
+      return reject();
     }
-  })
+  });
 
-export const makeOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId) =>
+export const makeOffer = (
+  ContractType,
+  NftAddress,
+  TokenId,
+  OfferState,
+  ChainId
+) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
-      let value = 0
+      let value = 0;
 
       if (OfferState.currencyTokenAddress === NULL_ADDRESS) {
-        value = web3.utils.toWei(OfferState.price.toString()) * OfferState.amount
+        value =
+          web3.utils.toWei(OfferState.price.toString()) * OfferState.amount;
       } else {
         await approve(
           ContractAddress,
@@ -375,12 +398,14 @@ export const makeOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId
           web3.utils
             .toBN(
               BigNumber(OfferState.price)
-                .times(BigNumber(10).pow(BigNumber(OfferState.currencyTokenDecimals)))
+                .times(
+                  BigNumber(10).pow(BigNumber(OfferState.currencyTokenDecimals))
+                )
                 .times(BigNumber(OfferState.amount))
             )
             .toString(),
           CONTRACT_TYPE.ERC20
-        )
+        );
       }
 
       const tx = {
@@ -395,7 +420,9 @@ export const makeOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId
               : web3.utils
                   .toBN(
                     BigNumber(OfferState.price).times(
-                      BigNumber(10).pow(BigNumber(OfferState.currencyTokenDecimals))
+                      BigNumber(10).pow(
+                        BigNumber(OfferState.currencyTokenDecimals)
+                      )
                     )
                   )
                   .toString(),
@@ -403,35 +430,40 @@ export const makeOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId
             OfferState.currencyTokenAddress
           )
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch (e) {
-      console.log(e)
-      return reject()
+      return reject();
     }
-  })
+  });
 
-export const cancelOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId) =>
+export const cancelOffer = (
+  ContractType,
+  NftAddress,
+  TokenId,
+  OfferState,
+  ChainId
+) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
       const tx = {
         from: WalletAddress,
@@ -447,7 +479,9 @@ export const cancelOffer = (ContractType, NftAddress, TokenId, OfferState, Chain
                 : web3.utils
                     .toBN(
                       BigNumber(OfferState.OfferPrice).times(
-                        BigNumber(10).pow(BigNumber(OfferState.CurrencyDecimals))
+                        BigNumber(10).pow(
+                          BigNumber(OfferState.CurrencyDecimals)
+                        )
                       )
                     )
                     .toString(),
@@ -457,37 +491,47 @@ export const cancelOffer = (ContractType, NftAddress, TokenId, OfferState, Chain
             ]
           )
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch (e) {
-      console.log(e)
-      return reject()
+      return reject();
     }
-  })
+  });
 
-export const acceptOffer = (ContractType, NftAddress, TokenId, OfferState, ChainId) =>
+export const acceptOffer = (
+  ContractType,
+  NftAddress,
+  TokenId,
+  OfferState,
+  ChainId
+) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId)
+      await switchNetwork(ChainId);
 
-      const ContractAddress = await getMarketplaceContractAddress()
-      const ContractData = await readContractABI()
-      const WalletAddress = await getCurrentWalletAddress()
+      const ContractAddress = await getMarketplaceContractAddress();
+      const ContractData = await readContractABI();
+      const WalletAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(ContractData, ContractAddress)
+      const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
-      await setApprovalForAll(ContractAddress, NftAddress, ChainId, ContractType)
+      await setApprovalForAll(
+        ContractAddress,
+        NftAddress,
+        ChainId,
+        ContractType
+      );
 
       const tx = {
         from: WalletAddress,
@@ -503,7 +547,9 @@ export const acceptOffer = (ContractType, NftAddress, TokenId, OfferState, Chain
                 : web3.utils
                     .toBN(
                       BigNumber(OfferState.OfferPrice).times(
-                        BigNumber(10).pow(BigNumber(OfferState.CurrencyDecimals))
+                        BigNumber(10).pow(
+                          BigNumber(OfferState.CurrencyDecimals)
+                        )
                       )
                     )
                     .toString(),
@@ -513,12 +559,11 @@ export const acceptOffer = (ContractType, NftAddress, TokenId, OfferState, Chain
             ]
           )
           .encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      return resolve({})
+      await web3.eth.sendTransaction(tx);
+      return resolve({});
     } catch (e) {
-      console.log(e)
-      return reject()
+      return reject();
     }
-  })
+  });

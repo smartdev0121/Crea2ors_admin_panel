@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
@@ -29,8 +26,6 @@ import MSearch from "src/components/MSearch";
 import { apiGetAccountInfo } from "src/utils/api";
 
 const HeaderContent = () => {
-  const loading = useSelector((state) => state.loading.value);
-
   const [connectedStatus, setConnectedStatus] = useState(false);
   const [currentNetwork, setCurrentNetwork] = useState(1);
   const [connectBtnTxt, setConnectBtnTxt] = useState("Create");
@@ -110,7 +105,7 @@ const HeaderContent = () => {
 
     doWalletStuff();
     getNetwork();
-  }, [connectedStatus, loading]);
+  }, [connectedStatus, false]);
 
   return (
     <section className="header-content">
@@ -126,12 +121,18 @@ const HeaderContent = () => {
         </div>
 
         <div className="links">
-          <Link className="header-item">MARKET</Link>
+          <Link to="/#" className="header-item">
+            MARKET
+          </Link>
           <Link className="header-item" to="/create-collection">
             REDEEM
           </Link>
-          <Link className="header-item">ABOUT</Link>
-          <Link className="header-item">HELP</Link>
+          <Link to="/#" className="header-item">
+            ABOUT
+          </Link>
+          <Link to="/#" className="header-item">
+            HELP
+          </Link>
           <Link className="header-item" to="/sign-in">
             SIGN IN/SIGNUP
           </Link>

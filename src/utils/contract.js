@@ -1,77 +1,77 @@
-import Web3 from 'web3'
+import Web3 from "web3";
 
-import { CONTRACT_TYPE } from 'src/config/global'
-import { uploadContractMetadata, uploadAssetMetaData } from './pinata'
-import web3Modal, { getCurrentWalletAddress, switchNetwork } from './wallet'
-import showNotification from 'src/config/notification'
+import { CONTRACT_TYPE } from "src/config/global";
+import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
+import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
+import showNotification from "src/config/notification";
 
 const contract_source_arr = [
-  '/contracts/compiled/ERC721',
-  '/contracts/compiled/ERC1155',
-  '/contracts/compiled/ERC20_BASE'
-]
+  "/contracts/compiled/ERC721",
+  "/contracts/compiled/ERC1155",
+  "/contracts/compiled/ERC20_BASE",
+];
 
-let provider
+let provider;
 
 const readContractABI = async (contract_type) =>
   new Promise((resolve, reject) => {
-    let contract_data
-    let contract_source = contract_source_arr[contract_type]
+    let contract_data;
+    let contract_source = contract_source_arr[contract_type];
 
     fetch(`${contract_source}.abi`)
       .then((response) => response.text())
       .then((data) => {
-        contract_data = JSON.parse(data)
-        return resolve(contract_data)
+        contract_data = JSON.parse(data);
+        return resolve(contract_data);
       })
       .catch((e) => {
-        return reject()
-      })
-  })
+        return reject();
+      });
+  });
 
 const readContractByteCode = async (contract_type) =>
   new Promise((resolve, reject) => {
-    let bytecode
-    let contract_source = contract_source_arr[contract_type]
+    let bytecode;
+    let contract_source = contract_source_arr[contract_type];
 
     fetch(`${contract_source}.bin`)
       .then((response) => response.text())
       .then((data) => {
-        bytecode = data
-        return resolve(bytecode)
+        bytecode = data;
+        return resolve(bytecode);
       })
       .catch((e) => {
-        return reject()
-      })
-  })
+        return reject();
+      });
+  });
 
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
       const { CollectionName, CollectionTicker, RoyaltyAddress, RoyaltyFee } =
-        contract_metadata
+        contract_metadata;
 
-      const { contract_uri } = await uploadContractMetadata(contract_metadata)
+      const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
       showNotification(
-        'Waiting',
-        'Please wait while deploying smart contract',
-        'waiting'
-      )
+        "Waiting",
+        "Please wait while deploying smart contract",
+        "waiting"
+      );
 
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        return reject('Cannot connect to wallet')
+        return reject("Cannot connect to wallet");
       }
 
-      const web3 = new Web3(provider)
-      const accounts = await web3.eth.getAccounts()
+      const web3 = new Web3(provider);
+      const accounts = await web3.eth.getAccounts();
 
-      const bytecode = await readContractByteCode(contract_type)
-      const contract_data = await readContractABI(contract_type)
+      const bytecode = await readContractByteCode(contract_type);
+      const contract_data = await readContractABI(contract_type);
 
-      const contract = new web3.eth.Contract(contract_data)
+      const contract = new web3.eth.Contract(contract_data);
 
       contract
         .deploy({
@@ -80,7 +80,7 @@ export const deployContract = (contract_type, contract_metadata) =>
             CollectionName,
             CollectionTicker,
             contract_uri,
-            RoyaltyAddress || '0x0000000000000000000000000000000000000000',
+            RoyaltyAddress || "0x0000000000000000000000000000000000000000",
             Number(RoyaltyFee || 0) * Math.pow(10, 6),
             process.env.REACT_APP_WHITELABEL_ID,
           ],
@@ -88,22 +88,22 @@ export const deployContract = (contract_type, contract_metadata) =>
         .send({ from: accounts[0] })
         .then(async (deployment) => {
           showNotification(
-            'Success',
+            "Success",
             `Contract was deployed successfully at ${deployment.options.address}`,
-            'success',
+            "success",
             8
-          )
+          );
 
-          return resolve()
+          return resolve();
         })
         .catch((e) => {
-          return reject()
-        })
+          return reject();
+        });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject('Could not deploy smart contract')
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject("Could not deploy smart contract");
     }
-  })
+  });
 
 export const mintAsset = (
   contract_type,
@@ -116,46 +116,46 @@ export const mintAsset = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const { metadata_uri } = await uploadAssetMetaData(metadata)
-      const contract_data = await readContractABI(contract_type)
-      const wallet_address = await getCurrentWalletAddress()
+      const { metadata_uri } = await uploadAssetMetaData(metadata);
+      const contract_data = await readContractABI(contract_type);
+      const wallet_address = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(contract_data, contract_address)
+      const contract = new web3.eth.Contract(contract_data, contract_address);
 
       let tx = {
         from: wallet_address,
         to: contract_address,
         value: 0,
-      }
+      };
 
       if (contract_type === CONTRACT_TYPE.ERC721) {
-        await contract.methods.mint(metadata_uri).send(tx)
+        await contract.methods.mint(metadata_uri).send(tx);
       } else {
         await contract.methods
           .create(max_supply, initial_supply, metadata_uri, [])
-          .send(tx)
+          .send(tx);
       }
 
-      showNotification('Success', 'Successfully minted', 'success', 3)
+      showNotification("Success", "Successfully minted", "success", 3);
 
-      return resolve()
+      return resolve();
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const updateAsset = (
   contract_type,
@@ -167,45 +167,45 @@ export const updateAsset = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const { metadata_uri } = await uploadAssetMetaData(metadata)
-      const contractData = await readContractABI(contract_type)
-      const currentAddress = await getCurrentWalletAddress()
+      const { metadata_uri } = await uploadAssetMetaData(metadata);
+      const contractData = await readContractABI(contract_type);
+      const currentAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(contractData, contract_address)
+      const contract = new web3.eth.Contract(contractData, contract_address);
 
       const tx_data =
         contract_type === CONTRACT_TYPE.ERC721
           ? contract.methods.setTokenURI(token_id, metadata_uri).encodeABI()
-          : contract.methods.setURI(token_id, metadata_uri).encodeABI()
+          : contract.methods.setURI(token_id, metadata_uri).encodeABI();
 
       const tx = {
         from: currentAddress,
         to: contract_address,
         data: tx_data,
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
+      await web3.eth.sendTransaction(tx);
 
-      showNotification('Success', 'Successfully updated', 'success', 3)
+      showNotification("Success", "Successfully updated", "success", 3);
 
-      return resolve({ success: true })
+      return resolve({ success: true });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const updateCollection = (
   contract_type,
@@ -216,49 +216,48 @@ export const updateCollection = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const { RoyaltyFee, RoyaltyAddress } = contract_metadata
-      const { contract_uri } = await uploadContractMetadata(contract_metadata)
-      const contractData = await readContractABI(contract_type)
-      const currentAddress = await getCurrentWalletAddress()
+      const { RoyaltyFee, RoyaltyAddress } = contract_metadata;
+      const { contract_uri } = await uploadContractMetadata(contract_metadata);
+      const contractData = await readContractABI(contract_type);
+      const currentAddress = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(contractData, contract_address)
+      const contract = new web3.eth.Contract(contractData, contract_address);
       const tx_data = contract.methods
         .setContractURI(
           contract_uri,
-          RoyaltyAddress || '0x0000000000000000000000000000000000000000',
+          RoyaltyAddress || "0x0000000000000000000000000000000000000000",
           Number(RoyaltyFee || 0) * Math.pow(10, 6)
         )
-        .encodeABI()
+        .encodeABI();
 
       const tx = {
         from: currentAddress,
         to: contract_address,
         data: tx_data,
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
+      await web3.eth.sendTransaction(tx);
 
-      showNotification('Success', 'Successfully updated', 'success', 3)
+      showNotification("Success", "Successfully updated", "success", 3);
 
-      return resolve({ success: true })
+      return resolve({ success: true });
     } catch (e) {
-      console.log(e)
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const batchTransferAssets = (
   contract_type,
@@ -271,22 +270,22 @@ export const batchTransferAssets = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const contract_data = await readContractABI(contract_type)
-      const current_address = await getCurrentWalletAddress()
+      const contract_data = await readContractABI(contract_type);
+      const current_address = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(contract_data, contract_address)
+      const contract = new web3.eth.Contract(contract_data, contract_address);
 
       const tx_data =
         contract_type === CONTRACT_TYPE.ERC721
@@ -301,24 +300,24 @@ export const batchTransferAssets = (
                 amount,
                 []
               )
-              .encodeABI()
+              .encodeABI();
 
       const tx = {
         from: current_address,
         to: contract_address,
         value: 0,
         data: tx_data,
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      showNotification('Success', 'Successfully sent', 'success', 3)
+      await web3.eth.sendTransaction(tx);
+      showNotification("Success", "Successfully sent", "success", 3);
 
-      return resolve()
+      return resolve();
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const burnAsset = (
   contract_type,
@@ -330,22 +329,22 @@ export const burnAsset = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const contract_data = await readContractABI(contract_type)
-      const current_address = await getCurrentWalletAddress()
+      const contract_data = await readContractABI(contract_type);
+      const current_address = await getCurrentWalletAddress();
 
-      const contract = new web3.eth.Contract(contract_data, contract_address)
+      const contract = new web3.eth.Contract(contract_data, contract_address);
 
       const tx = {
         from: current_address,
@@ -354,52 +353,52 @@ export const burnAsset = (
           contract_type === CONTRACT_TYPE.ERC721
             ? contract.methods.burn(id).encodeABI()
             : contract.methods.burn(id, burn_amount).encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      showNotification('Success', 'Successfully burned', 'success', 3)
-      return resolve({ success: true })
+      await web3.eth.sendTransaction(tx);
+      showNotification("Success", "Successfully burned", "success", 3);
+      return resolve({ success: true });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const mintERC1155 = (address, chain_id, id, amount) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Waiting ...', 'waiting')
+      showNotification("Waiting", "Waiting ...", "waiting");
 
-      const contract_data = await readContractABI(CONTRACT_TYPE.ERC1155)
-      const current_address = await getCurrentWalletAddress()
+      const contract_data = await readContractABI(CONTRACT_TYPE.ERC1155);
+      const current_address = await getCurrentWalletAddress();
 
-      const mContract = new web3.eth.Contract(contract_data, address)
+      const mContract = new web3.eth.Contract(contract_data, address);
 
       const tx = {
         from: current_address,
         to: address,
         data: mContract.methods.mint(id, amount, []).encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
-      showNotification('Success', 'Successfully minted', 'success', 3)
-      return resolve({ success: true })
+      await web3.eth.sendTransaction(tx);
+      showNotification("Success", "Successfully minted", "success", 3);
+      return resolve({ success: true });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const setApprovalForAll = (
   contract_address,
@@ -410,26 +409,26 @@ export const setApprovalForAll = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Approving ...', 'waiting')
+      showNotification("Waiting", "Approving ...", "waiting");
 
-      const contract_data = await readContractABI(contract_type)
-      const current_address = await getCurrentWalletAddress()
+      const contract_data = await readContractABI(contract_type);
+      const current_address = await getCurrentWalletAddress();
 
-      const mContract = new web3.eth.Contract(contract_data, asset_address)
+      const mContract = new web3.eth.Contract(contract_data, asset_address);
 
       const isApproved = await mContract.methods
         .isApprovedForAll(current_address, contract_address)
-        .call()
+        .call();
 
       if (!isApproved) {
         const tx = {
@@ -438,18 +437,18 @@ export const setApprovalForAll = (
           data: mContract.methods
             .setApprovalForAll(contract_address, true)
             .encodeABI(),
-        }
+        };
 
-        await web3.eth.sendTransaction(tx)
+        await web3.eth.sendTransaction(tx);
       }
 
-      showNotification('Success', 'Approved successfully', 'success', 3)
-      return resolve({ success: true })
+      showNotification("Success", "Approved successfully", "success", 3);
+      return resolve({ success: true });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const approve = (
   contract_address,
@@ -461,77 +460,77 @@ export const approve = (
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect()
+        provider = await web3Modal.connect();
       } else {
-        provider = await web3Modal.connect()
-        window.location.reload()
+        provider = await web3Modal.connect();
+        window.location.reload();
       }
 
-      const web3 = new Web3(provider)
+      const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id)
+      await switchNetwork(chain_id);
 
-      showNotification('Waiting', 'Approving ...', 'waiting')
+      showNotification("Waiting", "Approving ...", "waiting");
 
-      const contract_data = await readContractABI(contract_type)
-      const current_address = await getCurrentWalletAddress()
+      const contract_data = await readContractABI(contract_type);
+      const current_address = await getCurrentWalletAddress();
 
-      const mContract = new web3.eth.Contract(contract_data, asset_address)
+      const mContract = new web3.eth.Contract(contract_data, asset_address);
 
       const tx = {
         from: current_address,
         to: asset_address,
         data: mContract.methods.approve(contract_address, amount).encodeABI(),
-      }
+      };
 
-      await web3.eth.sendTransaction(tx)
+      await web3.eth.sendTransaction(tx);
 
-      showNotification('Success', 'Approved successfully', 'success', 3)
-      return resolve({ success: true })
+      showNotification("Success", "Approved successfully", "success", 3);
+      return resolve({ success: true });
     } catch (e) {
-      showNotification('Failed', 'Failed', 'failed', 3)
-      return reject()
+      showNotification("Failed", "Failed", "failed", 3);
+      return reject();
     }
-  })
+  });
 
 export const getTokenInfo = async (address) => {
   try {
     if (web3Modal.cachedProvider) {
-      provider = await web3Modal.connect()
+      provider = await web3Modal.connect();
     } else {
-      return null
+      return null;
     }
     // Get a Web3 instance for the wallet
-    const web3 = new Web3(provider)
-    const contract_data = await readContractABI(CONTRACT_TYPE.ERC20)
-    const contract = new web3.eth.Contract(contract_data, address)
-    const symbol = await contract.methods.symbol().call()
-    const decimals = await contract.methods.decimals().call()
-    return { symbol, decimals }
+    const web3 = new Web3(provider);
+    const contract_data = await readContractABI(CONTRACT_TYPE.ERC20);
+    const contract = new web3.eth.Contract(contract_data, address);
+    const symbol = await contract.methods.symbol().call();
+    const decimals = await contract.methods.decimals().call();
+    return { symbol, decimals };
   } catch (e) {
-    console.error('sdfsdf', e)
-    return null
+    console.error("sdfsdf", e);
+    return null;
   }
-}
+};
 
 export const getTokenBalance = async (address) => {
   try {
     if (web3Modal.cachedProvider) {
-      provider = await web3Modal.connect()
+      provider = await web3Modal.connect();
     } else {
-      return null
+      return null;
     }
     // Get a Web3 instance for the wallet
-    const web3 = new Web3(provider)
-    const contract_data = await readContractABI(CONTRACT_TYPE.ERC20)
-    const wallet_address = await getCurrentWalletAddress()
+    const web3 = new Web3(provider);
+    const contract_data = await readContractABI(CONTRACT_TYPE.ERC20);
+    const wallet_address = await getCurrentWalletAddress();
 
-    const contract = new web3.eth.Contract(contract_data, address)
+    const contract = new web3.eth.Contract(contract_data, address);
 
-    const balance = await contract.methods.balanceOf(wallet_address).call()
-    return balance
+    const balance = await contract.methods.balanceOf(wallet_address).call();
+    return balance;
   } catch (e) {
-    console.error('sdfsdf', e)
-    return null
+    console.error("sdfsdf", e);
+    return null;
   }
-}
+};
