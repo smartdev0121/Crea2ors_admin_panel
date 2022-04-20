@@ -15,9 +15,8 @@ const SignUp = (props) => {
   // useEffect(() => {
   //   // dispatch(initializeForm("CreateUserForm", {}));
   // }, []);
-  const history = useHistory();
   const onSubmit = (values) => {
-    dispatch(createUser(values, history));
+    dispatch(createUser(values, props.history));
   };
 
   return (
@@ -45,11 +44,8 @@ const SignUp = (props) => {
           onSubmit={onSubmit}
           validate={(values) => {
             const errors = {};
-            if (!values.firstName) {
-              errors.firstName = "Firstname is required";
-            }
-            if (!values.lastName) {
-              errors.lastName = "Lastname is required";
+            if (!values.nickName) {
+              errors.firstName = "Nickname is required";
             }
             if (!values.email) {
               errors.email = "Email address is required";
@@ -62,20 +58,12 @@ const SignUp = (props) => {
           render={({ handleSubmit, submitting, form, values, pristine }) => (
             <form onSubmit={handleSubmit} noValidate>
               <Stack className="input-part" spacing={2}>
-                <Stack direction="row" spacing={2}>
-                  <Field
-                    type="text"
-                    label="Firstname"
-                    name="firstName"
-                    component={MTextField}
-                  />
-                  <Field
-                    type="text"
-                    label="Lastname"
-                    name="lastName"
-                    component={MTextField}
-                  />
-                </Stack>
+                <Field
+                  type="text"
+                  label="Nickname"
+                  name="nickName"
+                  component={MTextField}
+                />
                 <Field
                   type="email"
                   label="Email"
@@ -93,7 +81,9 @@ const SignUp = (props) => {
                   control={<Checkbox defaultChecked />}
                   label="I accept the terms of services"
                 />
-                <MColorButtonView type="submit">SIGN UP</MColorButtonView>
+                <MColorButtonView type="submit" disabled={submitting}>
+                  SIGN UP
+                </MColorButtonView>
               </Stack>
               <section className="link-up-part">
                 <Link to="/sign-in">Already have an account? Sign in</Link>

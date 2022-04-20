@@ -15,6 +15,7 @@ import AccountInfoPage from "../pages/AccountInfo/AccountInfoPage";
 import EditAccountPage from "../pages/EditAccount/EditAccountPage";
 import CollectionView from "../pages/CollectionView";
 import CreateNFTPage from "../pages/CreateNFTPage";
+import ConnectWallet from "../pages/ConnectWallet";
 import HomePage from "../pages/Home";
 import NFTView from "../pages/NFTView";
 
@@ -110,6 +111,11 @@ const routes = [
   {
     path: "/not-found",
     component: NotFoundPage,
+  },
+  {
+    path: "/connect-wallet",
+    component: ConnectWallet,
+    exact: true,
   },
 ];
 

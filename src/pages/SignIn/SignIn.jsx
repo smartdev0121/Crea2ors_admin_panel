@@ -5,18 +5,21 @@ import MColorButtonView from "../../components/MInput/MColorButtonView";
 import { LockOpen } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Form, Field } from "react-final-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../store/auth/actions";
+import { getSpinner } from "../../store/app/reducer";
+import MSpinner from "../../components/MSpinner";
 import "./SignIn.scss";
 
 const SignIn = () => {
   const dispatch = useDispatch();
-
+  const isSubmitting = useSelector((state) => getSpinner(state, "login"));
   const onSubmit = (values) => {
     dispatch(login(values));
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>
+      {isSubmitting && <MSpinner />}
       <Box
         sx={{
           p: 2,
@@ -65,7 +68,9 @@ const SignIn = () => {
                   component={MTextField}
                 />
 
-                <MColorButtonView type="submit">SIGN IN</MColorButtonView>
+                <MColorButtonView type="submit" disabled={submitting}>
+                  SIGN IN
+                </MColorButtonView>
               </Stack>
             </form>
           )}

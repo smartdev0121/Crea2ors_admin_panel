@@ -7,12 +7,10 @@ import MColorButton from "./MInput/MColorButton";
 import Avatar from "@mui/material/Avatar";
 
 const MNFTItem = ({ nft }) => {
-  const history = useHistory();
-
   const handleItemClick = () => {
-    history.push(
-      `/asset/${nft.Collection?.ChainId}/${nft.Collection?.ContractAddress}/${nft.TokenId}`
-    );
+    // history.push(
+    //   `/asset/${nft.Collection?.ChainId}/${nft.Collection?.ContractAddress}/${nft.TokenId}`
+    // );
   };
 
   return (

@@ -20,8 +20,8 @@ const HomePage = () => {
 
       <FeaturedArtist />
       {/* <MarketplaceStatusSection /> */}
-      <TopCollection1 />
-      <TopCollection2 />
+      <TopCollection1 key={111} />
+      <TopCollection2 key={112} />
       {/* <NotableDropSection /> */}
       {/* <LiveAuctionSection /> */}
       {/* <TrendingCollectionSection /> */}

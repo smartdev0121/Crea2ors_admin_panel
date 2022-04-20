@@ -14,6 +14,9 @@ import buildStore from "./store";
 import { getToken } from "./utils/storage";
 import { getProfile } from "./store/profile/actions";
 import { ToastContainer } from "react-toastify";
+import { Web3ReactProvider } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
+import MetamaskProvider from "./provider";
 import "react-toastify/dist/ReactToastify.css";
 
 const history = createBrowserHistory({});
@@ -23,14 +26,23 @@ if (getToken()) {
   store.dispatch(getProfile());
 }
 
+const getLibrary = (provider, connector) => {
+  const library = new Web3Provider(provider);
+  library.pollingInternal = 12000;
+  return library;
+};
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </Provider>
-    <ToastContainer />
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <MetamaskProvider>
+            <App />
+          </MetamaskProvider>
+        </ConnectedRouter>
+      </Provider>
+      <ToastContainer />
+    </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

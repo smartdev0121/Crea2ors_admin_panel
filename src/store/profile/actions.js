@@ -30,7 +30,7 @@ export const getProfile = () => (dispatch) => {
         payload: { ...res },
       });
 
-      return res.firstName;
+      return res.nickName;
     })
     .finally(() => {
       dispatch(appActions.hideSpinner("PROFILE_INFO"));

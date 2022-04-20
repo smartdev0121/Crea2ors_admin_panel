@@ -21,7 +21,7 @@ const TopCollection1 = () => {
         res.splice(5);
         console.log(res);
 
-        await setSmallNFTs(res);
+        setSmallNFTs(res);
         console.log("small", smallNFTs);
       } catch {
         ((err) => {})();

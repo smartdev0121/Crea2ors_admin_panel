@@ -21,9 +21,27 @@ export const login = (values) => (dispatch) => {
     })
     .then((firstName) => {
       showNotify(`Hi, ${firstName}. You are logged successfully`);
-      dispatch(replace("/"));
+      dispatch(replace("/connect-wallet"));
+    })
+    .catch((err) => {
+      if (err) showNotify("Connection Problem occured!", "error");
     })
     .finally(() => {
       dispatch(appActions.hideSpinner("login"));
     });
+};
+
+export const logout = () => {
+  clearInfo();
+  document.location.href = "/";
+};
+
+export const forgotPassword = (values) => (dispatch) => {
+  console.log(values);
+  return api.post("/auth/forgot_password", values);
+};
+
+export const resetPassword = (values) => (dispatch) => {
+  console.log(values);
+  return api.post("/auth/reset_password", values);
 };

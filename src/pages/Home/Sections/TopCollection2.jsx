@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { EffectCoverflow, Pagination } from "swiper";
+import { useHistory } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { apiGetAssets } from "src/utils/api";
 import MNFTItem from "src/components/MNFTItem";

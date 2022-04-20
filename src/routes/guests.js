@@ -2,6 +2,8 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import PasswordReset from "../pages/PasswordReset";
 import HomePage from "../pages/Home";
+import ResetComponent from "../pages/PasswordReset/ResetComponent";
+
 const routes = [
   {
     path: "/sign-in",
@@ -16,6 +18,11 @@ const routes = [
   {
     path: "/password-reset",
     component: PasswordReset,
+    exact: true,
+  },
+  {
+    path: "/reset-password/:token/:email",
+    component: ResetComponent,
     exact: true,
   },
   {

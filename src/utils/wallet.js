@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import Web3Modal from "web3modal";
+import Web3Modal, { injected } from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import networks from "src/config/network";
@@ -25,6 +25,10 @@ web3Modal = new Web3Modal({
   providerOptions, // required
 });
 
+export const getCachedProvider = () => {
+  return web3Modal.cachedProvider;
+};
+
 export const disconnectWallet = async () => {
   try {
     return await web3Modal.clearCachedProvider();
@@ -39,7 +43,7 @@ export const showWeb3WalletModal = async () => {
     provider = await web3Modal.connect();
   } catch (e) {
     console.log("Could not get a wallet connection", e);
-    return;
+    return null;
   }
 
   return provider;
