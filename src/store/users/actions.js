@@ -26,3 +26,21 @@ export const createUser = (values, history) => {
         );
       });
 };
+
+export const emailVerified = (email, history) => (dispatch) => {
+  console.log("email add", { email: email });
+  return api
+    .post("/email-verified", { email })
+    .then((res) => {
+      if (res.result === true) {
+        showNotify(`${email} is successfully verified!`);
+        setTimeout(() => {
+          history.push("/");
+        }, 3000);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      showNotify("Connection problem!", "error");
+    });
+};

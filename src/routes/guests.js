@@ -3,6 +3,7 @@ import SignUp from "../pages/SignUp";
 import PasswordReset from "../pages/PasswordReset";
 import HomePage from "../pages/Home";
 import ResetComponent from "../pages/PasswordReset/ResetComponent";
+import EmailConfirmed from "../pages/EmailConfirmed";
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
   {
     path: "/reset-password/:token/:email",
     component: ResetComponent,
+    exact: true,
+  },
+  {
+    path: "/email-confirm/:token/:email",
+    component: EmailConfirmed,
     exact: true,
   },
   {
