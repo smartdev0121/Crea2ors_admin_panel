@@ -18,6 +18,7 @@ import CreateNFTPage from "../pages/CreateNFTPage";
 import ConnectWallet from "../pages/ConnectWallet";
 import HomePage from "../pages/Home";
 import NFTView from "../pages/NFTView";
+import MyProfile from "../pages/MyProfile";
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
   {
     path: "/explore-collections",
     component: AllCollectionsPage,
+    exact: true,
+  },
+  {
+    path: "/my-profile",
+    component: MyProfile,
     exact: true,
   },
   {

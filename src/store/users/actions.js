@@ -1,6 +1,7 @@
 import * as api from "../../utils/magicApi";
 import { showSpinner, hideSpinner } from "../app/actions";
 import { showNotify } from "../../utils/notify";
+import { showModal } from "../modal/actions";
 
 export const types = {
   CREATE_USER: "CREATE_USER",
@@ -14,10 +15,12 @@ export const createUser = (values, history) => {
       .post("/users", values)
       .then((res) => {
         dispatch({ type: types.CREATE_USER, payload: res });
-        showNotify("Agent has been created successfully!");
+        showNotify("User has been created successfully!");
         history.push("/sign-in");
+        dispatch(showModal());
       })
       .catch((res) => {
+        console.log(res);
         showNotify(
           res.email
             ? "Sorry! email already exists"

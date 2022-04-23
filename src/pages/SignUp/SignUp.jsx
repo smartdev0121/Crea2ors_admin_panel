@@ -8,6 +8,7 @@ import { Form, Field } from "react-final-form";
 import { Stack, FormControlLabel, Checkbox } from "@mui/material";
 import MTextField from "../../components/MInput/MTextField";
 import { Link, useHistory } from "react-router-dom";
+import { passwordStrength } from "check-password-strength";
 import "./SignUp.scss";
 
 const SignUp = (props) => {
@@ -52,6 +53,14 @@ const SignUp = (props) => {
             }
             if (!values.password) {
               errors.password = "Password is required!";
+            }
+            console.log(
+              "password sre",
+              passwordStrength(values.password).value
+            );
+            if (passwordStrength(values.password).value !== "Strong") {
+              errors.password =
+                "Password must be over 10 characters including Uppercase, Lowercase, Number, Symbol!";
             }
             return errors;
           }}

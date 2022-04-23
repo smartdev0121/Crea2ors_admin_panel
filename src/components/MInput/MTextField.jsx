@@ -23,6 +23,9 @@ const CustomInput = styled(TextField)({
       borderColor: "#444",
     },
   },
+  "& .MuiInputLabel-root": {
+    zIndex: "unset",
+  },
 });
 const MTextField = (props) => {
   const {

@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import { reducer as form } from "redux-form";
 import profile from "./profile/reducer";
 import app from "./app/reducer";
+import modal from "./modal/reducer";
 
 const rootReducer = (history) => {
   return combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = (history) => {
     form,
     profile,
     app,
+    modal,
   });
 };
 

@@ -9,16 +9,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../store/auth/actions";
 import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
+import MRootModal from "../../components/MRootModal";
 import "./SignIn.scss";
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
+  const modal = useSelector((state) => state.modal);
+  console.log("modal", modal);
   const onSubmit = (values) => {
     dispatch(login(values));
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>
+      <MRootModal />
       {isSubmitting && <MSpinner />}
       <Box
         sx={{
