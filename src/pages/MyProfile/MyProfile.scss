@@ -9,5 +9,46 @@
 
 .profile-connect-btn {
   background-color: #33333388 !important;
-  border-radius: 10px !important;
+  border-radius: 20px !important;
+}
+
+.token-image {
+  background: #44444488;
+  border-radius: 50%;
+  margin-right: 5px;
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.wallet-address {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.following-bar {
+  text-align: center;
+  margin-top: 10px;
+  label {
+    span.count {
+      padding: 3px;
+      color: white;
+    }
+    span.static-string {
+      color: #888 !important;
+    }
+  }
+}
+
+.edit-profile {
+  text-align: center;
+  margin-top: 10px;
+  .edit-btn {
+    border-radius: 20px;
+    color: #999 !important;
+    border: 1px solid #555;
+    text-transform: none;
+  }
 }

@@ -5,6 +5,11 @@ import { useWeb3React } from "@web3-react/core";
 import "./MyProfile.scss";
 import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
+import { Settings } from "@mui/icons-material";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
 const MyProfile = () => {
   const { active, account, activate } = useWeb3React();
@@ -40,6 +45,9 @@ const MyProfile = () => {
                   className="profile-connect-btn"
                   onClick={() => copy(account)}
                 >
+                  <span className="token-image">
+                    <img src="/images/crypto-icons/brise.png" />
+                  </span>
                   <span className="indicator connected"></span>
                   {connectBtnTxt}
                 </Button>
@@ -52,8 +60,22 @@ const MyProfile = () => {
             }
           </MClipboard>
         </div>
-        <div className="following-bar"></div>
-        <div className="edit-profile"></div>
+        <div className="following-bar">
+          <label>
+            <span className="count">0</span>
+            <span className="static-string">followers</span>
+          </label>
+          <label>
+            <span className="count">0</span>
+            <span className="static-string">following</span>
+          </label>
+        </div>
+        <div className="edit-profile">
+          <Button className="edit-btn">
+            <Settings />
+            Edit Profile
+          </Button>
+        </div>
       </section>
       <section className="tab-bar"></section>
     </Container>
