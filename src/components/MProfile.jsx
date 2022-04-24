@@ -7,6 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import {
   ClosedCaptionDisabled,
@@ -80,10 +81,12 @@ const AccountMenu = (props) => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <ListItemIcon>
-            <ManageAccounts fontSize="small" />
-          </ListItemIcon>
-          My Profile
+          <Link to="/my-profile">
+            <ListItemIcon>
+              <ManageAccounts fontSize="small" />
+            </ListItemIcon>
+            My Profile
+          </Link>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>

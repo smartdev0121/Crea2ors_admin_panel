@@ -19,11 +19,17 @@ import ConnectWallet from "../pages/ConnectWallet";
 import HomePage from "../pages/Home";
 import NFTView from "../pages/NFTView";
 import MyProfile from "../pages/MyProfile";
+import EditProfile from "../pages/EditProfile";
 
 const routes = [
   {
     path: "/",
     component: HomePage,
+    exact: true,
+  },
+  {
+    path: "/edit-profile",
+    component: EditProfile,
     exact: true,
   },
   {

@@ -54,6 +54,9 @@ const MTextField = (props) => {
         className={validClass}
         disabled={disabled}
         placeholder={placeholder}
+        InputLabelProps={{ ...props.InputLabelProps }}
+        InputProps={{ ...props.InputProps }}
+        multiline={{ ...props.multiline }}
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}

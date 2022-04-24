@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Box } from "@mui/material";
 import MClipboard from "../../components/MClipboard";
 import { useWeb3React } from "@web3-react/core";
 import "./MyProfile.scss";
 import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
-import { Settings } from "@mui/icons-material";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+import { Settings, DownloadForOffline, MoreHoriz } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { Link } from "react-router-dom";
+import ProfileTab from "./ProfileTab";
 
-const MyProfile = () => {
+const MyProfile = (props) => {
   const { active, account, activate } = useWeb3React();
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
+  const [value, setValue] = React.useState("1");
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   useEffect(() => {
     const btnTxt = active
       ? `${String(account).substring(0, 6)}...${String(account).substring(38)}`
@@ -29,6 +32,10 @@ const MyProfile = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const onEditProfile = () => {
+    props.history.push("/edit-profile");
   };
 
   return (
@@ -71,13 +78,21 @@ const MyProfile = () => {
           </label>
         </div>
         <div className="edit-profile">
-          <Button className="edit-btn">
+          <Button className="edit-btn" onClick={onEditProfile}>
             <Settings />
             Edit Profile
           </Button>
+          <IconButton sx={{ color: "#888", marginLeft: "15px" }}>
+            <DownloadForOffline />
+          </IconButton>
+          <IconButton sx={{ color: "#888" }}>
+            <MoreHoriz />
+          </IconButton>
         </div>
       </section>
-      <section className="tab-bar"></section>
+      <section className="tab-bar">
+        <ProfileTab />
+      </section>
     </Container>
   );
 };

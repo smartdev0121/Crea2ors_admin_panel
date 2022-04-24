@@ -10,18 +10,16 @@ import { login } from "../../store/auth/actions";
 import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import MRootModal from "../../components/MRootModal";
-import "./SignIn.scss";
+import InputAdornment from "@mui/material/InputAdornment";
 
-const SignIn = () => {
+const EditProfile = () => {
   const dispatch = useDispatch();
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
-  const modal = useSelector((state) => state.modal);
   const onSubmit = (values) => {
     dispatch(login(values));
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>
-      <MRootModal />
       {isSubmitting && <MSpinner />}
       <Box
         sx={{
@@ -31,16 +29,11 @@ const SignIn = () => {
         }}
       >
         <section className="header">
-          <LockOpen
-            fontSize="large"
-            sx={{
-              backgroundColor: "#da4bfd",
-              borderRadius: "50%",
-              padding: "5px",
-              color: "white",
-            }}
-          />
-          <h2>Sign in to your accout</h2>
+          <h2>Edit Profile</h2>
+          <p className="grey-txt">
+            You can set preferred display name, create your branded profile URL
+            and manage other personal settings
+          </p>
         </section>
         <Form
           onSubmit={onSubmit}
@@ -57,17 +50,50 @@ const SignIn = () => {
             <form onSubmit={handleSubmit} noValidate>
               <Stack className="input-part" spacing={2}>
                 <Field
-                  type="email"
-                  name="email"
-                  label="Email"
-                  placeholder="Enter your email address"
+                  type="text"
+                  name="displayName"
+                  label="Display name"
+                  placeholder="Enter your display name"
+                  InputLabelProps={{ shrink: true }}
                   component={MTextField}
                 />
                 <Field
-                  type="password"
-                  name="password"
-                  label="Password"
-                  placeholder="Enter your password"
+                  type="text"
+                  name="customUrl"
+                  label="Custom URL"
+                  placeholder="Enter your custom url"
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        crea2ors.com/
+                      </InputAdornment>
+                    ),
+                  }}
+                  component={MTextField}
+                />
+                <Field
+                  type="text"
+                  name="bio"
+                  label="Bio"
+                  placeholder="Tell about yourself in a few words"
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  component={MTextField}
+                />
+                <Field
+                  type="text"
+                  name="twitterUsername"
+                  label="Twitter Username"
+                  placeholder="Enter your name in Twitter"
+                  helperText="Link Twitter account to gain more trust on the marketplace"
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">@</InputAdornment>
+                    ),
+                  }}
                   component={MTextField}
                 />
 
@@ -87,4 +113,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default EditProfile;
