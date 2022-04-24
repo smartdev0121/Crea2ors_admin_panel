@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Box, Stack, Button } from "@mui/material";
 import MTextField from "../../components/MInput/MTextField";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
@@ -13,12 +13,41 @@ import "./EditProfile.scss";
 
 const EditProfile = () => {
   const dispatch = useDispatch();
+  const [sidebarWidth, setSidebarWidth] = useState(undefined);
+  const [sidebarTop, setSidebarTop] = useState(undefined);
+  useEffect(() => {
+    console.log("sidebar", document.querySelector(".sidebar"));
+    const sidebarEl = document
+      .querySelector(".sidebar")
+      .getBoundingClientRect();
+    setSidebarWidth(sidebarEl.width);
+    setSidebarTop(sidebarEl.top);
+  }, []);
+
+  useEffect(() => {
+    if (!sidebarTop) return;
+
+    window.addEventListener("scroll", isSticky);
+    return () => {
+      window.removeEventListener("scroll", isSticky);
+    };
+  }, [sidebarTop]);
+
+  const isSticky = (e) => {
+    const sidebarEl = document.querySelector(".sidebar");
+    const scrollTop = window.scrollY;
+    if (scrollTop >= sidebarTop - 10) {
+      sidebarEl.classList.add("is-sticky");
+    } else {
+      sidebarEl.classList.remove("is-sticky");
+    }
+  };
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
   const onSubmit = (values) => {
     dispatch(login(values));
   };
   return (
-    <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>
+    <Container maxWidth="lg" sx={{ marginTop: "100px", marginBottom: "20px" }}>
       {isSubmitting && <MSpinner />}
       <Box
         sx={{
@@ -47,7 +76,7 @@ const EditProfile = () => {
           }}
           render={({ handleSubmit, submitting, form, values, pristine }) => (
             <form onSubmit={handleSubmit} noValidate>
-              <div className="edit-container">
+              <div className="whole-container">
                 <Stack className="input-part" spacing={2}>
                   <Field
                     type="text"
@@ -139,31 +168,18 @@ const EditProfile = () => {
                     Update Profile
                   </MColorButtonView>
                 </Stack>
-                <Stack>
-                  <StickContainer>
-                    <Sticky>
-                      {({
-                        style,
-                        isSticky,
-                        wasSticky,
-                        distanceFromTop,
-                        distanceFromBottom,
-                        calculatedHeight,
-                      }) => (
-                        <div>
-                          <div className="profile-image">
-                            <img src="/images/profile-images/profile-empty.png" />
-                          </div>
-                          <p>
-                            We recommend an image of at least 300X300. Gifs work
-                            too. Max 5mb
-                          </p>
-                          <Button>Choose File</Button>
-                        </div>
-                      )}
-                    </Sticky>
-                  </StickContainer>
-                </Stack>
+                <div className="sticky-container">
+                  <div className="sidebar" style={{ width: `${sidebarWidth}` }}>
+                    <div className="profile-image">
+                      <img src="/images/profile-images/profile-empty.png" />
+                    </div>
+                    <p>
+                      We recommend an image of at least 300X300. Gifs work too.
+                      Max 5mb
+                    </p>
+                    <Button>Choose File</Button>
+                  </div>
+                </div>
               </div>
             </form>
           )}

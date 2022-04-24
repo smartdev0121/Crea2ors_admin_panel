@@ -38,7 +38,6 @@ const MTextField = (props) => {
     placeholder,
     helperText,
   } = props;
-  console.log(props);
 
   let validClass = "";
   if (touched && error) {
