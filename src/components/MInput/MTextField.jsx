@@ -36,7 +36,9 @@ const MTextField = (props) => {
     meta: { asyncValidating, touched, error },
     required,
     placeholder,
+    helperText,
   } = props;
+  console.log(props);
 
   let validClass = "";
   if (touched && error) {
@@ -57,6 +59,7 @@ const MTextField = (props) => {
         InputLabelProps={{ ...props.InputLabelProps }}
         InputProps={{ ...props.InputProps }}
         multiline={{ ...props.multiline }}
+        helperText={helperText}
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}

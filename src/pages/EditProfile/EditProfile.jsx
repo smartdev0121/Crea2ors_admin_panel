@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Box, Stack } from "@mui/material";
+import { Container, Box, Stack, Button } from "@mui/material";
 import MTextField from "../../components/MInput/MTextField";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
 import { LockOpen } from "@mui/icons-material";
@@ -11,6 +11,7 @@ import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import MRootModal from "../../components/MRootModal";
 import InputAdornment from "@mui/material/InputAdornment";
+import "./EditProfile.scss";
 
 const EditProfile = () => {
   const dispatch = useDispatch();
@@ -96,18 +97,50 @@ const EditProfile = () => {
                   }}
                   component={MTextField}
                 />
+                <Field
+                  type="text"
+                  name="personalSite"
+                  label="Personal Site or Portfolio"
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">https://</InputAdornment>
+                    ),
+                  }}
+                  component={MTextField}
+                />
+                <Field
+                  type="email"
+                  name="email"
+                  label="Email"
+                  placeholder="Enter your email address"
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  component={MTextField}
+                />
+                <section className="veri-part">
+                  <div>
+                    <h2>Verification</h2>
+                    <p>
+                      Proceed with verification proceed to get more visibility
+                      and gain trust on our Marketplace. Please allow up to
+                      several weeks for the process
+                    </p>
+                  </div>
+
+                  <div>
+                    <Button>Get Verified</Button>
+                  </div>
+                </section>
 
                 <MColorButtonView type="submit" disabled={submitting}>
-                  SIGN IN
+                  Update Profile
                 </MColorButtonView>
               </Stack>
             </form>
           )}
         ></Form>
-        <section className="link-part">
-          <Link to="/password-reset">Forgot password?</Link>
-          <Link to="/sign-up">Don't have your account? Sign Up</Link>
-        </section>
       </Box>
     </Container>
   );
