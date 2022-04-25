@@ -1,6 +1,11 @@
 .veri-part {
   display: flex;
 }
+.blue-btn {
+  text-transform: none !important;
+  min-width: 100px !important;
+  background-color: #333 !important;
+}
 
 .edit-container {
   display: flex;
@@ -20,6 +25,7 @@
   padding-top: 0px;
   padding-bottom: 0px;
 }
+
 .whole-container {
   display: flex;
 }

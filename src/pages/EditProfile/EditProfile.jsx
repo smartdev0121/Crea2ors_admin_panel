@@ -15,13 +15,19 @@ const EditProfile = () => {
   const dispatch = useDispatch();
   const [sidebarWidth, setSidebarWidth] = useState(undefined);
   const [sidebarTop, setSidebarTop] = useState(undefined);
+  const [boxBottom, setBoxBottom] = useState(undefined);
   useEffect(() => {
-    console.log("sidebar", document.querySelector(".sidebar"));
     const sidebarEl = document
       .querySelector(".sidebar")
       .getBoundingClientRect();
     setSidebarWidth(sidebarEl.width);
     setSidebarTop(sidebarEl.top);
+
+    const boxEl = document
+      .querySelector(".MuiBox-root")
+      .getBoundingClientRect();
+    setBoxBottom(boxEl.bottom);
+    console.log(boxEl.bottom);
   }, []);
 
   useEffect(() => {
@@ -36,7 +42,7 @@ const EditProfile = () => {
   const isSticky = (e) => {
     const sidebarEl = document.querySelector(".sidebar");
     const scrollTop = window.scrollY;
-    if (scrollTop >= sidebarTop - 10) {
+    if (scrollTop >= sidebarTop - 10 && scrollTop < sidebarTop + 200) {
       sidebarEl.classList.add("is-sticky");
     } else {
       sidebarEl.classList.remove("is-sticky");
@@ -47,7 +53,7 @@ const EditProfile = () => {
     dispatch(login(values));
   };
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "100px", marginBottom: "20px" }}>
+    <Container maxWidth="md" sx={{ marginTop: "100px", marginBottom: "20px" }}>
       {isSubmitting && <MSpinner />}
       <Box
         sx={{
@@ -76,7 +82,7 @@ const EditProfile = () => {
           }}
           render={({ handleSubmit, submitting, form, values, pristine }) => (
             <form onSubmit={handleSubmit} noValidate>
-              <div className="whole-container">
+              <Stack direction="row" spacing={2}>
                 <Stack className="input-part" spacing={2}>
                   <Field
                     type="text"
@@ -85,6 +91,7 @@ const EditProfile = () => {
                     placeholder="Enter your display name"
                     InputLabelProps={{ shrink: true }}
                     component={MTextField}
+                    variant="standard"
                   />
                   <Field
                     type="text"
@@ -99,6 +106,7 @@ const EditProfile = () => {
                         </InputAdornment>
                       ),
                     }}
+                    variant="standard"
                     component={MTextField}
                   />
                   <Field
@@ -108,6 +116,7 @@ const EditProfile = () => {
                     placeholder="Tell about yourself in a few words"
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
+                    variant="standard"
                     component={MTextField}
                   />
                   <Field
@@ -118,6 +127,23 @@ const EditProfile = () => {
                     helperText="Link Twitter account to gain more trust on the marketplace"
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
+                    variant="standard"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">@</InputAdornment>
+                      ),
+                    }}
+                    component={MTextField}
+                  />
+                  <Field
+                    type="text"
+                    name="instagramName"
+                    label="Instagram Username"
+                    placeholder="Enter your name in Instagram"
+                    helperText="Link Instagram account to gain more trust on the marketplace"
+                    InputLabelProps={{ shrink: true }}
+                    multiline={true}
+                    variant="standard"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">@</InputAdornment>
@@ -131,6 +157,7 @@ const EditProfile = () => {
                     label="Personal Site or Portfolio"
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
+                    variant="standard"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -144,6 +171,7 @@ const EditProfile = () => {
                     type="email"
                     name="email"
                     label="Email"
+                    variant="standard"
                     placeholder="Enter your email address"
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
@@ -151,8 +179,8 @@ const EditProfile = () => {
                   />
                   <section className="veri-part">
                     <div>
-                      <h2>Verification</h2>
-                      <p>
+                      <h3>Verification</h3>
+                      <p className="grey-txt">
                         Proceed with verification proceed to get more visibility
                         and gain trust on our Marketplace. Please allow up to
                         several weeks for the process
@@ -160,7 +188,7 @@ const EditProfile = () => {
                     </div>
 
                     <div>
-                      <Button>Get Verified</Button>
+                      <Button className="blue-btn">Get verified</Button>
                     </div>
                   </section>
 
@@ -168,8 +196,11 @@ const EditProfile = () => {
                     Update Profile
                   </MColorButtonView>
                 </Stack>
-                <div className="sticky-container">
-                  <div className="sidebar" style={{ width: `${sidebarWidth}` }}>
+                <div
+                  className="sticky-container"
+                  style={{ minWidth: sidebarWidth }}
+                >
+                  <div className="sidebar" style={{ maxWidth: sidebarWidth }}>
                     <div className="profile-image">
                       <img src="/images/profile-images/profile-empty.png" />
                     </div>
@@ -177,10 +208,10 @@ const EditProfile = () => {
                       We recommend an image of at least 300X300. Gifs work too.
                       Max 5mb
                     </p>
-                    <Button>Choose File</Button>
+                    <Button className="blue-btn">Choose File</Button>
                   </div>
                 </div>
-              </div>
+              </Stack>
             </form>
           )}
         ></Form>

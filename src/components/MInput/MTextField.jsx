@@ -8,8 +8,27 @@ const CustomInput = styled(TextField)({
   "& label.Mui-focused": {
     color: "#999",
   },
+  "& .MuiInput-root:before": {
+    borderBottom: "1px solid rgb(70 70 70)",
+  },
+  "& .MuiInput-root:after": {
+    borderBottom: "2px solid rgb(118 118 118)",
+  },
   "& .MuiInput-underline:after": {
     borderBottomColor: "#95959561",
+  },
+  "& .MuiFormHelperText-root": {
+    color: "rgb(237 237 237 / 49%) !important",
+  },
+
+  "& .MuiInput-root": {
+    "& .MuiInput-input": {
+      fontSize: "0.8rem",
+      padding: "5px",
+    },
+    "& .MuiTypography-root": {
+      fontSize: "0.8rem",
+    },
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
@@ -25,6 +44,7 @@ const CustomInput = styled(TextField)({
   },
   "& .MuiInputLabel-root": {
     zIndex: "unset",
+    fontSize: "1.2rem",
   },
 });
 const MTextField = (props) => {
@@ -36,7 +56,9 @@ const MTextField = (props) => {
     meta: { asyncValidating, touched, error },
     required,
     placeholder,
+    multiline,
     helperText,
+    variant,
   } = props;
 
   let validClass = "";
@@ -57,12 +79,13 @@ const MTextField = (props) => {
         placeholder={placeholder}
         InputLabelProps={{ ...props.InputLabelProps }}
         InputProps={{ ...props.InputProps }}
-        multiline={{ ...props.multiline }}
+        multiline={multiline}
         helperText={helperText}
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}
         onChange={input.onChange}
+        variant={variant}
       />
       {asyncValidating && (
         <div className="spinner-border spinner-border-sm" role="status">
