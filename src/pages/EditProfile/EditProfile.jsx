@@ -16,6 +16,23 @@ const EditProfile = () => {
   const [sidebarWidth, setSidebarWidth] = useState(undefined);
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
+  const useDisplayImage = () => {
+    const [result, setResult] = useState("");
+
+    const uploader = (e) => {
+      const imageFile = e.target.files[0];
+
+      const reader = new FileReader();
+      reader.addEventListener("load", (e) => {
+        setResult(e.target.result);
+      });
+
+      reader.readAsDataURL(imageFile);
+    };
+
+    return { result, uploader };
+  };
+
   useEffect(() => {
     const sidebarEl = document
       .querySelector(".sidebar")
