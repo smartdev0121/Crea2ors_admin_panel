@@ -11,11 +11,6 @@ import { getFileInfo } from "./utils";
 import "cropperjs/dist/cropper.css";
 import "rc-slider/assets/index.css";
 
-/**
- * CropperModel `props` type
- * @type {Object}
- */
-
 /** CropperModel functional component */
 function CropperModel(props) {
   const { labels, file } = props;
@@ -26,11 +21,13 @@ function CropperModel(props) {
 
   React.useEffect(() => {
     if (file !== null) {
+      console.log(props);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImage(reader.result);
         cropper &&
           cropper.zoomTo(props.initialZoom).rotateTo(props.initialRotate);
+        console.log(cropper);
       });
       reader.readAsDataURL(file);
     } else {
@@ -50,10 +47,10 @@ function CropperModel(props) {
     }
 
     const croppedCanvas = {
-      minWidth: 854,
-      maxWidth: 1200,
-      minHeight: 480,
-      maxHeight: 600,
+      minWidth: 400,
+      maxWidth: 800,
+      minHeight: 300,
+      maxHeight: 400,
       imageSmoothingQuality: "medium",
       ...props.croppedCanvasProps,
     };
@@ -90,7 +87,7 @@ function CropperModel(props) {
       show={!!file && !!image}
       onHide={handleClose}
       animation={false}
-      size="xl"
+      size="md"
       {...props.modalProps}
     >
       <Modal.Header closeButton>
@@ -138,6 +135,7 @@ function CropperModel(props) {
                 value={zoom}
                 onChange={(value) => {
                   setZoom(value);
+                  console.log(value);
                   cropper.zoomTo(value);
                 }}
               />
@@ -166,13 +164,23 @@ function CropperModel(props) {
             style={{
               display: "flex",
               alignSelf: "center",
-              justifyContent: "flex-end",
+              flexDirection: "column",
+              justifyContent: "space-around",
             }}
           >
-            <Button variant="primary" className="mr-1" onClick={onConfirm}>
+            <Button
+              variant="primary"
+              style={{ margin: "5px" }}
+              className="mr-1"
+              onClick={onConfirm}
+            >
               {labels.confirm}
             </Button>{" "}
-            <Button variant="secondary" onClick={handleClose}>
+            <Button
+              variant="secondary"
+              onClick={handleClose}
+              style={{ margin: "5px" }}
+            >
               {labels.discard}
             </Button>
           </Col>

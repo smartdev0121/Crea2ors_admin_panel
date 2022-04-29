@@ -15,10 +15,10 @@ import "./EditProfile.scss";
 const EditProfile = () => {
   const dispatch = useDispatch();
   const [sidebarWidth, setSidebarWidth] = useState(undefined);
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
-  const [resizedImage, setResizedImage] = React.useState < string > null;
+  const [resizedImage, setResizedImage] = React.useState(null);
   const hiddenFileInput = React.useRef(null);
 
   const handleFileChange = (e) => {
@@ -59,6 +59,8 @@ const EditProfile = () => {
       .getBoundingClientRect();
     setBoxBottom(boxEl.bottom);
     console.log(boxEl.bottom);
+
+    dispatch(getUserInfo());
   }, []);
 
   useEffect(() => {
@@ -256,7 +258,8 @@ const EditProfile = () => {
                     <div className="profile-image" onClick={handleImageClick}>
                       <img
                         src={
-                          result || "/images/profile-images/profile-empty.png"
+                          resizedImage ||
+                          "/images/profile-images/profile-empty.png"
                         }
                       />
                     </div>
