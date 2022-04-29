@@ -9,6 +9,7 @@ import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import InputAdornment from "@mui/material/InputAdornment";
 import { getUserInfo } from "../../store/users/actions";
+import MImageCropper from "src/components/MImageCropper";
 import "./EditProfile.scss";
 
 const EditProfile = () => {
@@ -17,6 +18,7 @@ const EditProfile = () => {
   const [file, setFile] = useState();
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
+  const [resizedImage, setResizedImage] = React.useState < string > null;
   const hiddenFileInput = React.useRef(null);
 
   const handleFileChange = (e) => {
@@ -241,6 +243,15 @@ const EditProfile = () => {
                       accept=".jpg, .png, .jpeg, .bmp"
                       onChange={handleFileChange}
                       className="file-input"
+                    />
+                    <MImageCropper
+                      file={file}
+                      onConfirm={(croppedFile) => {
+                        setResizedImage(
+                          window.URL.createObjectURL(croppedFile)
+                        );
+                      }}
+                      onCompleted={() => setFile(null)}
                     />
                     <div className="profile-image" onClick={handleImageClick}>
                       <img
