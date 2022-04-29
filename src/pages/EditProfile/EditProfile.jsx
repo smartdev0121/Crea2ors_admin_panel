@@ -8,14 +8,26 @@ import { login } from "../../store/auth/actions";
 import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import InputAdornment from "@mui/material/InputAdornment";
-import { StickContainer, Sticky } from "react-sticky";
+import { getUserInfo } from "../../store/users/actions";
 import "./EditProfile.scss";
 
 const EditProfile = () => {
   const dispatch = useDispatch();
   const [sidebarWidth, setSidebarWidth] = useState(undefined);
+  const [file, setFile] = useState();
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
+  const hiddenFileInput = React.useRef(null);
+
+  const handleFileChange = (e) => {
+    uploader(e);
+    setFile(e.target.files[0]);
+  };
+
+  const handleImageClick = () => {
+    hiddenFileInput.current.click();
+  };
+
   const useDisplayImage = () => {
     const [result, setResult] = useState("");
 
@@ -65,10 +77,14 @@ const EditProfile = () => {
       sidebarEl.classList.remove("is-sticky");
     }
   };
+
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
+
   const onSubmit = (values) => {
     dispatch(login(values));
   };
+
+  const { result, uploader } = useDisplayImage();
   return (
     <Container maxWidth="md" sx={{ marginTop: "100px", marginBottom: "20px" }}>
       {isSubmitting && <MSpinner />}
@@ -136,7 +152,7 @@ const EditProfile = () => {
                     variant="standard"
                     component={MTextField}
                   />
-                  <Field
+                  {/* <Field
                     type="text"
                     name="twitterUsername"
                     label="Twitter Username"
@@ -167,7 +183,7 @@ const EditProfile = () => {
                       ),
                     }}
                     component={MTextField}
-                  />
+                  /> */}
                   <Field
                     type="text"
                     name="personalSite"
@@ -218,14 +234,28 @@ const EditProfile = () => {
                   style={{ minWidth: sidebarWidth }}
                 >
                   <div className="sidebar" style={{ maxWidth: sidebarWidth }}>
-                    <div className="profile-image">
-                      <img src="/images/profile-images/profile-empty.png" />
+                    <input
+                      ref={hiddenFileInput}
+                      type="file"
+                      id="image-file"
+                      accept=".jpg, .png, .jpeg, .bmp"
+                      onChange={handleFileChange}
+                      className="file-input"
+                    />
+                    <div className="profile-image" onClick={handleImageClick}>
+                      <img
+                        src={
+                          result || "/images/profile-images/profile-empty.png"
+                        }
+                      />
                     </div>
                     <p>
                       We recommend an image of at least 300X300. Gifs work too.
                       Max 5mb
                     </p>
-                    <Button className="blue-btn">Choose File</Button>
+                    <Button className="blue-btn" onClick={handleImageClick}>
+                      Choose File
+                    </Button>
                   </div>
                 </div>
               </Stack>

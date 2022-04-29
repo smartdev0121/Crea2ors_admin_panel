@@ -102,16 +102,16 @@ const HeaderContent = () => {
     //     setWalletAddress(acct);
     //   }
     // };
-    const getNetwork = async () => {
-      const id = await getCurrentNetworkId();
-      if (id) {
-        setCurrentNetwork(id);
-      }
-    };
-    if (connectedStatus) {
-      // doWalletStuff();
-      getNetwork();
-    }
+    // const getNetwork = async () => {
+    //   const id = await getCurrentNetworkId();
+    //   if (id) {
+    //     setCurrentNetwork(id);
+    //   }
+    // };
+    // if (connectedStatus) {
+    //   // doWalletStuff();
+    //   getNetwork();
+    // }
   }, [connectedStatus, false, active]);
 
   const onLogout = () => {

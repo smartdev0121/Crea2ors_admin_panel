@@ -9,6 +9,17 @@ export const types = {
   DELETE_USER: "DELETE_USER",
 };
 
+export const getUserInfo = () => {
+  return (dispatch) => {
+    api
+      .get("/get-user-info")
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
 export const createUser = (values, history) => {
   return (dispatch) =>
     api
