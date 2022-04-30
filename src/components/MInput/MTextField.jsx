@@ -60,7 +60,6 @@ const MTextField = (props) => {
     helperText,
     variant,
   } = props;
-
   let validClass = "";
   if (touched && error) {
     validClass = "is-invalid";

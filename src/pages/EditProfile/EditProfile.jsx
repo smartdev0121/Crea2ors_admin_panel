@@ -18,7 +18,9 @@ const EditProfile = () => {
   const [file, setFile] = useState(null);
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
-  const [resizedImage, setResizedImage] = React.useState(null);
+  const [resizedImage, setResizedImage] = useState(null);
+  const [userInfoS, setUserInfo] = useState();
+  const userInfo = useSelector((state) => state.users.userInfo);
   const hiddenFileInput = React.useRef(null);
 
   const handleFileChange = (e) => {
@@ -51,6 +53,7 @@ const EditProfile = () => {
     const sidebarEl = document
       .querySelector(".sidebar")
       .getBoundingClientRect();
+
     setSidebarWidth(sidebarEl.width);
     setSidebarTop(sidebarEl.top);
 
@@ -58,7 +61,6 @@ const EditProfile = () => {
       .querySelector(".MuiBox-root")
       .getBoundingClientRect();
     setBoxBottom(boxEl.bottom);
-    console.log(boxEl.bottom);
 
     dispatch(getUserInfo());
   }, []);
@@ -67,6 +69,7 @@ const EditProfile = () => {
     if (!sidebarTop) return;
 
     window.addEventListener("scroll", isSticky);
+
     return () => {
       window.removeEventListener("scroll", isSticky);
     };
@@ -85,6 +88,7 @@ const EditProfile = () => {
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
 
   const onSubmit = (values) => {
+    console.log(values);
     dispatch(login(values));
   };
 
@@ -124,10 +128,12 @@ const EditProfile = () => {
                   <Field
                     type="text"
                     name="displayName"
+                    val={"sdf"}
                     label="Display name"
                     placeholder="Enter your display name"
                     InputLabelProps={{ shrink: true }}
-                    component={MTextField}
+                    initialValue={userInfo?.nickName || ""}
+                    component={(props) => <MTextField {...props} />}
                     variant="standard"
                   />
                   <Field
@@ -213,8 +219,9 @@ const EditProfile = () => {
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
                     component={MTextField}
+                    initialValue={userInfo?.email || ""}
                   />
-                  <section className="veri-part">
+                  {/* <section className="veri-part">
                     <div>
                       <h3>Verification</h3>
                       <p className="grey-txt">
@@ -227,16 +234,13 @@ const EditProfile = () => {
                     <div>
                       <Button className="blue-btn">Get verified</Button>
                     </div>
-                  </section>
+                  </section> */}
 
                   <MColorButtonView type="submit" disabled={submitting}>
                     Update Profile
                   </MColorButtonView>
                 </Stack>
-                <div
-                  className="sticky-container"
-                  style={{ minWidth: sidebarWidth }}
-                >
+                <div className="sticky-container">
                   <div className="sidebar" style={{ maxWidth: sidebarWidth }}>
                     <input
                       ref={hiddenFileInput}

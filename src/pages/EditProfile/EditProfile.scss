@@ -10,10 +10,21 @@
   background-color: #333 !important;
 }
 
+.input-part {
+  flex: 7 8;
+}
+
 .edit-container {
   display: flex;
 }
+
+.profile-image {
+  img {
+    border: 4px solid #555;
+  }
+}
 .sticky-container {
+  flex: 3 2;
   position: relative;
 }
 .sticky {

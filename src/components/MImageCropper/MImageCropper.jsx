@@ -10,6 +10,7 @@ import { getFileInfo } from "./utils";
 // Styles
 import "cropperjs/dist/cropper.css";
 import "rc-slider/assets/index.css";
+import "./MImageCropper.scss";
 
 /** CropperModel functional component */
 function CropperModel(props) {
@@ -98,17 +99,17 @@ function CropperModel(props) {
           <ReactCropper
             src={image}
             style={{ height: 500, width: "100%" }}
-            initialAspectRatio={16 / 9}
-            viewMode={1}
+            initialAspectRatio={1}
+            viewMode={2}
             dragMode="move"
-            cropBoxResizable={false}
-            cropBoxMovable={false}
+            cropBoxResizable={true}
+            cropBoxMovable={true}
             center={true}
             toggleDragModeOnDblclick={false}
             checkOrientation={true}
             onInitialized={(instance) => setCropper(instance)}
-            minCropBoxWidth={854}
-            minCropBoxHeight={480}
+            minCropBoxHeight={10}
+            minCropBoxWidth={10}
             {...props.cropperProps}
           />
         )}

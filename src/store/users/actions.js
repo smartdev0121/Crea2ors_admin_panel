@@ -7,13 +7,17 @@ export const types = {
   CREATE_USER: "CREATE_USER",
   UPDATE_USER: "UPDATE_USER",
   DELETE_USER: "DELETE_USER",
+  GET_USER_INFO: "GET_USER_INFO",
+  SET_USER_INFO: "SET_USER_INFO",
 };
 
 export const getUserInfo = () => {
   return (dispatch) => {
     api
       .get("/get-user-info")
-      .then((res) => {})
+      .then((res) => {
+        dispatch({ type: types.GET_USER_INFO, payload: res });
+      })
       .catch((err) => {
         console.log(err);
       });
