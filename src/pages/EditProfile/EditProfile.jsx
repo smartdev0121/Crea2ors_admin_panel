@@ -4,13 +4,26 @@ import MTextField from "../../components/MInput/MTextField";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
 import { Form, Field } from "react-final-form";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../store/auth/actions";
 import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import InputAdornment from "@mui/material/InputAdornment";
-import { getUserInfo } from "../../store/users/actions";
+import { getUserInfo, setUserInfo } from "../../store/users/actions";
 import MImageCropper from "src/components/MImageCropper";
+import "dotenv/config";
 import "./EditProfile.scss";
+
+const FileField = ({ name, ...props }) => (
+  <Field name={name}>
+    {({ input: { value, onChange, ...input } }) => (
+      <input
+        {...input}
+        type="file"
+        onChange={({ target }) => onChange(target.files)} // instead of the default target.value
+        {...props}
+      />
+    )}
+  </Field>
+);
 
 const EditProfile = () => {
   const dispatch = useDispatch();
@@ -19,10 +32,9 @@ const EditProfile = () => {
   const [sidebarTop, setSidebarTop] = useState(undefined);
   const [boxBottom, setBoxBottom] = useState(undefined);
   const [resizedImage, setResizedImage] = useState(null);
-  const [userInfoS, setUserInfo] = useState();
   const userInfo = useSelector((state) => state.users.userInfo);
   const hiddenFileInput = React.useRef(null);
-
+  const [confirmedFile, setConfirmedFile] = useState(undefined);
   const handleFileChange = (e) => {
     uploader(e);
     setFile(e.target.files[0]);
@@ -50,6 +62,7 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
+    console.log("env", process.env.REACT_APP_BACKEND_URL);
     const sidebarEl = document
       .querySelector(".sidebar")
       .getBoundingClientRect();
@@ -62,7 +75,7 @@ const EditProfile = () => {
       .getBoundingClientRect();
     setBoxBottom(boxEl.bottom);
 
-    dispatch(getUserInfo());
+    dispatch(getUserInfo(dispatch));
   }, []);
 
   useEffect(() => {
@@ -85,11 +98,18 @@ const EditProfile = () => {
     }
   };
 
-  const isSubmitting = useSelector((state) => getSpinner(state, "login"));
+  const isSubmitting = useSelector((state) =>
+    getSpinner(state, "get_user_info")
+  );
 
   const onSubmit = (values) => {
-    console.log(values);
-    dispatch(login(values));
+    const data = new FormData();
+    data.append("name", "Image Upload");
+    data.append("file_attachment", confirmedFile);
+    data.append("email", values.email);
+    console.log(values.email);
+    console.log(data.get("name"));
+    dispatch(setUserInfo(data));
   };
 
   const { result, uploader } = useDisplayImage();
@@ -142,6 +162,7 @@ const EditProfile = () => {
                     label="Custom URL"
                     placeholder="Enter your custom url"
                     InputLabelProps={{ shrink: true }}
+                    initialValue={userInfo?.customUrl || ""}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -159,6 +180,7 @@ const EditProfile = () => {
                     placeholder="Tell about yourself in a few words"
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
+                    initialValue={userInfo?.bio || ""}
                     variant="standard"
                     component={MTextField}
                   />
@@ -201,6 +223,7 @@ const EditProfile = () => {
                     InputLabelProps={{ shrink: true }}
                     multiline={true}
                     variant="standard"
+                    initialValue={userInfo?.personalSite || ""}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -243,8 +266,9 @@ const EditProfile = () => {
                 <div className="sticky-container">
                   <div className="sidebar" style={{ maxWidth: sidebarWidth }}>
                     <input
-                      ref={hiddenFileInput}
                       type="file"
+                      ref={hiddenFileInput}
+                      name="avatar"
                       id="image-file"
                       accept=".jpg, .png, .jpeg, .bmp"
                       onChange={handleFileChange}
@@ -256,6 +280,7 @@ const EditProfile = () => {
                         setResizedImage(
                           window.URL.createObjectURL(croppedFile)
                         );
+                        setConfirmedFile(croppedFile);
                       }}
                       onCompleted={() => setFile(null)}
                     />
@@ -263,6 +288,8 @@ const EditProfile = () => {
                       <img
                         src={
                           resizedImage ||
+                          process.env.REACT_APP_BACKEND_URL +
+                            userInfo.avatar_url ||
                           "/images/profile-images/profile-empty.png"
                         }
                       />

@@ -15,22 +15,15 @@ export const getProfile = () => (dispatch) => {
   return api
     .get("/profile/info")
     .then((res) => {
-      // const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
-      //   auth: {
-      //     headers: {
-      //       "X-CSRF-TOKEN": getToken(),
-      //     },
-      //   },
-      //   authEndpoint: "/pusher/auth",
-      //   cluster: process.env.REACT_APP_PUSHER_CLUSTER,
-      // });
-
       dispatch({
         type: types.PROFILE_INFO,
         payload: { ...res },
       });
-
-      return res.nickName;
+      dispatch(appActions.hideSpinner("PROFILE_INFO"));
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch(appActions.hideSpinner("PROFILE_INFO"));
     })
     .finally(() => {
       dispatch(appActions.hideSpinner("PROFILE_INFO"));

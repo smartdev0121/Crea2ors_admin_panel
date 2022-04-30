@@ -9,17 +9,48 @@ export const types = {
   DELETE_USER: "DELETE_USER",
   GET_USER_INFO: "GET_USER_INFO",
   SET_USER_INFO: "SET_USER_INFO",
+  GET_AVATAR_URL: "GET_AVATAR_URL",
 };
 
-export const getUserInfo = () => {
+export const setUserInfo = (data) => {
+  const config = {
+    headers: {
+      "content-type": `multipart/form-data; boundary=${data._boundary}`,
+      // "content-type": `application/x-www-form-urlencoded`,
+    },
+  };
+  console.log("data", data.get("name"));
+  return (dispatch) => {
+    api
+      .post("/set-user-info", data, config)
+      .then((res) => {
+        dispatch({ type: types.SET_USER_INFO, payload: res });
+        showNotify("Profile information is successfully updated");
+      })
+      .catch((res) => {
+        if (res.email)
+          showNotify(
+            "Email address you have entered newly is already used!",
+            "error"
+          );
+      });
+  };
+};
+
+export const getUserInfo = (dispatch) => {
+  dispatch(showSpinner("get_user_info"));
   return (dispatch) => {
     api
       .get("/get-user-info")
       .then((res) => {
+        console.log(res);
         dispatch({ type: types.GET_USER_INFO, payload: res });
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        dispatch(hideSpinner("get_user_info"));
       });
   };
 };
@@ -61,4 +92,10 @@ export const emailVerified = (email, history) => (dispatch) => {
       console.log(err);
       showNotify("Connection problem!", "error");
     });
+};
+
+export const getAvatarUrl = () => (dispatch) => {
+  return api.get("get-avatar-url").then((res) => {
+    dispatch({ type: types.GET_AVATAR_URL, payload: res.avatar_url });
+  });
 };

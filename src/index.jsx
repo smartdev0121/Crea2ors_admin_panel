@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-
+import "bootstrap/dist/css/bootstrap.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserHistory } from "history";
@@ -19,7 +19,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import MetamaskProvider from "./provider";
 import "react-toastify/dist/ReactToastify.css";
-import "bootstrap/dist/css/bootstrap.css";
 
 const history = createBrowserHistory({});
 const store = buildStore(history, {});

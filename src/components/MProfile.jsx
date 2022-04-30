@@ -8,7 +8,10 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "@mui/material/Tooltip";
+import { getAvatarUrl } from "../store/users/actions";
+
 import {
   ClosedCaptionDisabled,
   Logout,
@@ -19,13 +22,22 @@ import {
   Extension,
   NoteAdd,
 } from "@mui/icons-material";
+import "dotenv/config";
 
 const AccountMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const avatarUrl = useSelector((state) => state.users.userInfo.avatar_url);
+  console.log("avatar_url", avatarUrl);
+  React.useEffect(() => {
+    dispatch(getAvatarUrl());
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -41,7 +53,10 @@ const AccountMenu = (props) => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }} />
+            <Avatar
+              src={process.env.REACT_APP_BACKEND_URL + avatarUrl || ""}
+              sx={{ width: 32, height: 32 }}
+            />
           </IconButton>
         </Tooltip>
       </Box>

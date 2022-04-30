@@ -6,8 +6,7 @@ import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { emailVerified } from "../../store/users/actions";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
+import "dotenv/config";
 const EmailConfirmed = (props) => {
   const dispatch = useDispatch();
   const { token, email } = props.match.params;

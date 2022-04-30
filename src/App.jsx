@@ -25,6 +25,7 @@ const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => getProfileReducer(state));
   const isLoading = useSelector((state) => getSpinner(state, "PROFILE_INFO"));
+  console.log("spi", isLoading);
   let routes;
 
   if (!user) {
