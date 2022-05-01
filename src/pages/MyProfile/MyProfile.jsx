@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Container, Button, Box } from "@mui/material";
 import MClipboard from "../../components/MClipboard";
 import { useWeb3React } from "@web3-react/core";
-import "./MyProfile.scss";
 import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
 import { Settings, DownloadForOffline, MoreHoriz } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import ProfileTab from "./ProfileTab";
+import MBorderButton from "src/components/MButtons/MBorderButton";
+
+import "./MyProfile.scss";
 import "dotenv/config";
 
 const MyProfile = (props) => {
@@ -97,10 +98,10 @@ const MyProfile = (props) => {
           </label>
         </div>
         <div className="edit-profile">
-          <Button className="edit-btn" onClick={onEditProfile}>
-            <Settings />
-            Edit Profile
-          </Button>
+          <MBorderButton onClick={onEditProfile}>
+            <Settings sx={{ fontSize: "16px" }} />
+            &nbsp;Edit Profile
+          </MBorderButton>
           <IconButton sx={{ color: "#888", marginLeft: "15px" }}>
             <DownloadForOffline />
           </IconButton>

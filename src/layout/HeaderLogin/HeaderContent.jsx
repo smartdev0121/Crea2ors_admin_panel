@@ -71,7 +71,7 @@ const HeaderContent = () => {
       return;
     }
 
-    setMenuOpened(false);
+    setMenuOpened(true);
   };
 
   useEffect(() => {

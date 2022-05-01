@@ -14,7 +14,7 @@ import {
   MobiledataOff,
 } from "@mui/icons-material";
 
-const OnSale = () => {
+const Created = () => {
   const [age, setAge] = React.useState(10);
 
   const handleChange = (event) => {
@@ -106,4 +106,4 @@ const BarButton = styled(Button)(({ theme }) => ({
   margin: "5px",
 }));
 
-export default OnSale;
+export default Created;

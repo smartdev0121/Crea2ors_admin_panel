@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
+import MBorderButton from "src/components/MButtons/MBorderButton";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileTab from "./ProfileTab";
 import "dotenv/config";
@@ -90,14 +91,14 @@ const OtherProfile = (props) => {
               </label>
             </div>
             <div className="edit-profile">
-              <Button className="edit-btn" onClick={onEditProfile}>
-                <InsertEmoticon />
+              <MBorderButton className="edit-btn" onClick={onEditProfile}>
+                <InsertEmoticon sx={{fontSize: "16px"}}/>
                 &nbsp;Follow
-              </Button>
-              <Button className="edit-btn" onClick={onEditProfile}>
-                <MailOutline />
+              </MBorderButton>
+              <MBorderButton className="edit-btn" onClick={onEditProfile}>
+                <MailOutline sx={{fontSize: "16px"}}/>
                 &nbsp;Send Message
-              </Button>
+              </MBorderButton>
               <IconButton sx={{ color: "#888", marginLeft: "15px" }}>
                 <DownloadForOffline />
               </IconButton>

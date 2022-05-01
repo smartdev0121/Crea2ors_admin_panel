@@ -14,7 +14,7 @@ import {
   MobiledataOff,
 } from "@mui/icons-material";
 
-const OnSale = () => {
+const Collections = () => {
   const [age, setAge] = React.useState(10);
 
   const handleChange = (event) => {
@@ -62,4 +62,4 @@ const ImportButton = styled(Button)(({ theme }) => ({
   flex: "1 1",
 }));
 
-export default OnSale;
+export default Collections;
