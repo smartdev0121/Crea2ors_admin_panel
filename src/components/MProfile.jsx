@@ -10,8 +10,7 @@ import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "@mui/material/Tooltip";
-import { getAvatarUrl } from "../store/users/actions";
-
+import MProfileLink from "src/components/MLink/MProfileLink";
 import {
   ClosedCaptionDisabled,
   Logout,
@@ -28,11 +27,7 @@ const AccountMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
-  const avatarUrl = useSelector((state) => state.users.userInfo.avatar_url);
-  console.log("avatar_url", avatarUrl);
-  React.useEffect(() => {
-    dispatch(getAvatarUrl());
-  }, []);
+  const avatarUrl = useSelector((state) => state.profile.avatar_url);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -95,14 +90,15 @@ const AccountMenu = (props) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
-          <Link to="/my-profile">
+        <MProfileLink to="/my-profile">
+          <MenuItem>
             <ListItemIcon>
               <ManageAccounts fontSize="small" />
             </ListItemIcon>
             My Profile
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </MProfileLink>
+
         <MenuItem>
           <ListItemIcon>
             <Collections fontSize="small" />

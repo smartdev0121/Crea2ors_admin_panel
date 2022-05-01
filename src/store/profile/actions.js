@@ -1,7 +1,5 @@
 import * as api from "../../utils/magicApi";
-import { getToken } from "../../utils/storage";
 import * as appActions from "../app/actions";
-import Pusher from "pusher-js";
 
 export const types = {
   PROFILE_INFO: "PROFILE_INFO",
@@ -9,9 +7,14 @@ export const types = {
   PROFILE_MESSAGE_COUNT: "PROFILE_MESSAGE_COUNT",
 };
 
+export const updateProfile = (newProfile) => ({
+  type: types.PROFILE_INFO_UPDATE,
+  payload: newProfile,
+});
+
 export const getProfile = () => (dispatch) => {
   dispatch(appActions.showSpinner("PROFILE_INFO"));
-
+  console.log("profile actions");
   return api
     .get("/profile/info")
     .then((res) => {

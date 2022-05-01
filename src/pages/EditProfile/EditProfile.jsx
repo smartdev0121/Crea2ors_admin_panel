@@ -165,12 +165,11 @@ const EditProfile = () => {
                   <Field
                     type="text"
                     name="displayName"
-                    val={"sdf"}
                     label="Display name"
                     placeholder="Enter your display name"
                     InputLabelProps={{ shrink: true }}
                     initialValue={userInfo?.nickName || ""}
-                    component={(props) => <MTextField {...props} />}
+                    component={MTextField}
                     variant="standard"
                   />
                   <Field

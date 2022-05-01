@@ -2,7 +2,8 @@ import * as api from "../../utils/magicApi";
 import { showSpinner, hideSpinner } from "../app/actions";
 import { showNotify } from "../../utils/notify";
 import { showModal } from "../modal/actions";
-
+import * as appActions from "../app/actions";
+import { updateProfile } from "../profile/actions";
 export const types = {
   CREATE_USER: "CREATE_USER",
   UPDATE_USER: "UPDATE_USER",
@@ -18,15 +19,14 @@ export const setUserInfo = (data) => {
   const config = {
     headers: {
       "content-type": `multipart/form-data; boundary=${data._boundary}`,
-      // "content-type": `application/x-www-form-urlencoded`,
     },
   };
-  console.log("data", data.get("name"));
   return (dispatch) => {
     api
       .post("/set-user-info", data, config)
       .then((res) => {
         dispatch({ type: types.SET_USER_INFO, payload: res });
+        dispatch(updateProfile(res));
         showNotify("Profile information is successfully updated");
       })
       .catch((res) => {
