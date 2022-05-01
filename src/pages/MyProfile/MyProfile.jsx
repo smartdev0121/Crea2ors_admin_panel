@@ -7,14 +7,16 @@ import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
 import { Settings, DownloadForOffline, MoreHoriz } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ProfileTab from "./ProfileTab";
+import "dotenv/config";
 
 const MyProfile = (props) => {
   const { active, account, activate } = useWeb3React();
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
   const [value, setValue] = React.useState("1");
-
+  const userInfo = useSelector((state) => state.profile);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -42,7 +44,12 @@ const MyProfile = (props) => {
     <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
       <section className="profile-info-bar">
         <div className="profile-image">
-          <img src="/images/profile-images/profile-empty.png" />
+          <img
+            src={
+              process.env.REACT_APP_BACKEND_URL + userInfo.avatar_url ||
+              "/images/profile-images/profile-empty.png"
+            }
+          />
         </div>
         <div className="wallet-address">
           <MClipboard>
@@ -66,6 +73,18 @@ const MyProfile = (props) => {
               )
             }
           </MClipboard>
+        </div>
+        <div className="bio-text">
+          <p>{userInfo.bio || ""}</p>
+        </div>
+        <div className="personal">
+          <a
+            href={`https://${userInfo.personalSite}`}
+            target="_blank"
+            style={{ color: "#999" }}
+          >
+            <b>@{userInfo.personalSite || ""}</b>
+          </a>
         </div>
         <div className="following-bar">
           <label>

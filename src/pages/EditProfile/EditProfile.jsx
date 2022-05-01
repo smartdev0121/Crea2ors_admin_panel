@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSpinner } from "../../store/app/reducer";
 import MSpinner from "../../components/MSpinner";
 import InputAdornment from "@mui/material/InputAdornment";
+import { Edit } from "@mui/icons-material";
 import { getUserInfo, setUserInfo } from "../../store/users/actions";
 import MImageCropper from "src/components/MImageCropper";
 import "dotenv/config";
@@ -35,9 +36,13 @@ const EditProfile = () => {
   const userInfo = useSelector((state) => state.users.userInfo);
   const hiddenFileInput = React.useRef(null);
   const [confirmedFile, setConfirmedFile] = useState(undefined);
+  const [handled, setHandled] = useState(false);
+  const [verified, setVerified] = useState("unverified");
+
   const handleFileChange = (e) => {
     uploader(e);
     setFile(e.target.files[0]);
+    !!e.target.files[0] ? setHandled(true) : setHandled(false);
   };
 
   const handleImageClick = () => {
@@ -80,13 +85,13 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (!sidebarTop) return;
-
+    userInfo.verified ? setVerified("verified") : setVerified("unverified");
     window.addEventListener("scroll", isSticky);
 
     return () => {
       window.removeEventListener("scroll", isSticky);
     };
-  }, [sidebarTop]);
+  }, [sidebarTop, userInfo]);
 
   const isSticky = (e) => {
     const sidebarEl = document.querySelector(".sidebar");
@@ -107,8 +112,11 @@ const EditProfile = () => {
     data.append("name", "Image Upload");
     data.append("file_attachment", confirmedFile);
     data.append("email", values.email);
-    console.log(values.email);
-    console.log(data.get("name"));
+    data.append("handled", handled);
+    data.append("bio", values.bio);
+    data.append("customUrl", values.customUrl);
+    data.append("personalSite", values.personalSite);
+
     dispatch(setUserInfo(data));
   };
 
@@ -124,6 +132,15 @@ const EditProfile = () => {
         }}
       >
         <section className="header">
+          <Edit
+            fontSize="large"
+            sx={{
+              backgroundColor: "#da4bfd",
+              borderRadius: "50%",
+              padding: "5px",
+              color: "white",
+            }}
+          />
           <h2>Edit Profile</h2>
           <p className="grey-txt">
             You can set preferred display name, create your branded profile URL
@@ -166,7 +183,7 @@ const EditProfile = () => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          crea2ors.com/
+                          crea2ors.com/custom/
                         </InputAdornment>
                       ),
                     }}
@@ -221,7 +238,6 @@ const EditProfile = () => {
                     name="personalSite"
                     label="Personal Site or Portfolio"
                     InputLabelProps={{ shrink: true }}
-                    multiline={true}
                     variant="standard"
                     initialValue={userInfo?.personalSite || ""}
                     InputProps={{
@@ -240,8 +256,14 @@ const EditProfile = () => {
                     variant="standard"
                     placeholder="Enter your email address"
                     InputLabelProps={{ shrink: true }}
-                    multiline={true}
                     component={MTextField}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {verified}
+                        </InputAdornment>
+                      ),
+                    }}
                     initialValue={userInfo?.email || ""}
                   />
                   {/* <section className="veri-part">

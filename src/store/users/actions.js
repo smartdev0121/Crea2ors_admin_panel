@@ -10,6 +10,8 @@ export const types = {
   GET_USER_INFO: "GET_USER_INFO",
   SET_USER_INFO: "SET_USER_INFO",
   GET_AVATAR_URL: "GET_AVATAR_URL",
+  NOT_PROFILE_FOUND: "NOT_PROFILE_FOUND",
+  PROFILE_FOUND: "PROFILE_FOUND",
 };
 
 export const setUserInfo = (data) => {
@@ -98,4 +100,20 @@ export const getAvatarUrl = () => (dispatch) => {
   return api.get("get-avatar-url").then((res) => {
     dispatch({ type: types.GET_AVATAR_URL, payload: res.avatar_url });
   });
+};
+
+export const getOtherProfile = (url) => {
+  console.log("UUU", url);
+  return (dispatch) => {
+    api
+      .get(`/custom/${url}`)
+      .then((res) => {
+        console.log("success", res);
+        dispatch({ type: types.PROFILE_FOUND, payload: res });
+      })
+      .catch((err) => {
+        console.log("Error", err);
+        dispatch({ type: types.NOT_PROFILE_FOUND, payload: "" });
+      });
+  };
 };

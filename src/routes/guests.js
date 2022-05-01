@@ -4,6 +4,7 @@ import PasswordReset from "../pages/PasswordReset";
 import HomePage from "../pages/Home";
 import ResetComponent from "../pages/PasswordReset/ResetComponent";
 import EmailConfirmed from "../pages/EmailConfirmed";
+import OtherProfile from "../pages/OtherProfile";
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
   {
     path: "/",
     component: HomePage,
+    exact: true,
+  },
+  {
+    path: "/custom/:customUrl",
+    component: OtherProfile,
     exact: true,
   },
 ];

@@ -20,6 +20,7 @@ import HomePage from "../pages/Home";
 import NFTView from "../pages/NFTView";
 import MyProfile from "../pages/MyProfile";
 import EditProfile from "../pages/EditProfile";
+import OtherProfile from "../pages/OtherProfile";
 
 const routes = [
   {
@@ -127,6 +128,11 @@ const routes = [
   {
     path: "/connect-wallet",
     component: ConnectWallet,
+    exact: true,
+  },
+  {
+    path: "/custom/:customUrl",
+    component: OtherProfile,
     exact: true,
   },
 ];

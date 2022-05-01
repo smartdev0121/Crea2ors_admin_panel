@@ -16,6 +16,7 @@ export const login = (values) => (dispatch) => {
   return api
     .post("/auth/login", values)
     .then((res) => {
+      console.log(res);
       setToken(res.token);
       return getProfile()(dispatch);
     })

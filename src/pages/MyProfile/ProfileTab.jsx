@@ -55,16 +55,16 @@ export default function LabTabs() {
         <TabPanel value="0" sx={{ paddingLeft: "0px", color: "white" }}>
           <OnSale />
         </TabPanel>
-        <TabPanel value="1" sx={{ color: "white" }}>
+        <TabPanel value="1" sx={{ paddingLeft: "0px", color: "white" }}>
           <Owned />
         </TabPanel>
-        <TabPanel value="2" sx={{ color: "white" }}>
+        <TabPanel value="2" sx={{ paddingLeft: "0px", color: "white" }}>
           <Created />
         </TabPanel>
-        <TabPanel value="3" sx={{ color: "white" }}>
+        <TabPanel value="3" sx={{ paddingLeft: "0px", color: "white" }}>
           <Collections />
         </TabPanel>
-        <TabPanel value="4" sx={{ color: "white" }}>
+        <TabPanel value="4" sx={{ paddingLeft: "0px", color: "white" }}>
           <Activity />
         </TabPanel>
       </TabContext>

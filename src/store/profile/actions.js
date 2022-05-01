@@ -20,6 +20,7 @@ export const getProfile = () => (dispatch) => {
         payload: { ...res },
       });
       dispatch(appActions.hideSpinner("PROFILE_INFO"));
+      return res.nickName;
     })
     .catch((err) => {
       console.log(err);
