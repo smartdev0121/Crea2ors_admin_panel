@@ -13,7 +13,6 @@ import {
   MonetizationOn,
   MobiledataOff,
 } from "@mui/icons-material";
-import styled from "styled-components";
 
 const OnSale = () => {
   const [age, setAge] = React.useState(10);
@@ -29,10 +28,10 @@ const OnSale = () => {
           We couldn't find any of your collections. Looks like you don't have
           any
         </p>
-        <ButtonContainer>
+        <div className="button-container">
           <BrowseButton>Create a collection</BrowseButton>
           <ImportButton>Import an existing</ImportButton>
-        </ButtonContainer>
+        </div>
       </section>
     </div>
   );
@@ -53,21 +52,14 @@ const BrowseButton = styled(Button)(({ theme }) => ({
 
 const ImportButton = styled(Button)(({ theme }) => ({
   display: "block",
-  flex: "1 1",
   color: "#aaa",
-  fontSize: "12px",
-  lineHeight: "1",
-  padding: "7px 15px !important",
-
-  border: "1px solid #555",
   textTransform: "none",
+  border: "1px solid #777",
+  marginTop: "5px",
+  padding: "7px 13px !important",
   borderRadius: "30px",
-  margin: "5px",
+  display: "block",
+  flex: "1 1",
 }));
-
-const ButtonContainer = styled.div`
-  text-align: center;
-  display: flex;
-`;
 
 export default OnSale;
