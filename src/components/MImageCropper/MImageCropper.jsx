@@ -3,7 +3,6 @@ import * as PropTypes from "prop-types";
 import ReactCropper from "react-cropper";
 import { Button, Modal, Row, Col } from "react-bootstrap";
 import Slider from "rc-slider";
-
 // Utils
 import { getFileInfo } from "./utils";
 

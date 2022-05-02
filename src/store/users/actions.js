@@ -13,6 +13,18 @@ export const types = {
   GET_AVATAR_URL: "GET_AVATAR_URL",
   NOT_PROFILE_FOUND: "NOT_PROFILE_FOUND",
   PROFILE_FOUND: "PROFILE_FOUND",
+  PROFILE_BACKGROUND_UPDATE: "PROFILE_BACKGROUND_UPDATE",
+};
+
+export const profileBackgroundUpdate = (imageFile) => {
+  return (dispatch) => {
+    api
+      .post("/background-update", imageFile)
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 };
 
 export const setUserInfo = (data) => {

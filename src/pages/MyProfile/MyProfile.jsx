@@ -4,12 +4,20 @@ import MClipboard from "../../components/MClipboard";
 import { useWeb3React } from "@web3-react/core";
 import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
-import { Settings, DownloadForOffline, MoreHoriz } from "@mui/icons-material";
-import { IconButton, Popover } from "@mui/material";
+import {
+  Settings,
+  DownloadForOffline,
+  MoreHoriz,
+  Edit,
+} from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import ProfileTab from "./ProfileTab";
 import MBorderButton from "src/components/MButtons/MBorderButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import MImageCropper from "src/components/MImageCropper";
+import { profileBackgroundUpdate } from "src/store/users/actions";
 import "./MyProfile.scss";
 import "dotenv/config";
 
@@ -18,10 +26,15 @@ const MyProfile = (props) => {
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
   const [value, setValue] = React.useState("1");
   const userInfo = useSelector((state) => state.profile);
-  const [popSetting, setPopSetting] = useState(null);
+  const hiddenBackImageFile = React.useRef(null);
+  const [resizedImage, setResizedImage] = useState(null);
+  const dispatch = useDispatch();
+  const [confirmedFile, setConfirmedFile] = useState(undefined);
+  const [file, setFile] = useState(null);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   useEffect(() => {
     const btnTxt = active
       ? `${String(account).substring(0, 6)}...${String(account).substring(38)}`
@@ -46,15 +59,13 @@ const MyProfile = (props) => {
     props.history.push("/edit-profile");
   };
 
-  const onBackgroundClicked = (event) => {
-    setPopSetting(event.currentTarget);
+  const onBackgroundEdit = () => {
+    hiddenBackImageFile.current.click();
   };
 
-  const handleClose = () => {
-    setPopSetting(null);
+  const onInputBackImageChanged = (event) => {
+    setFile(event.target.files[0]);
   };
-
-  const id = !!popSetting ? "back-setting" : undefined;
   return (
     <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
       <section className="profile-info-bar">
@@ -67,21 +78,43 @@ const MyProfile = (props) => {
             backgroundImage: `url(${process.env.REACT_APP_DEVELOPMENT_URL}images/profile-images/back.jpg)`,
             backgroundSize: "cover",
           }}
-          onClick={onBackgroundClicked}
         >
-          <Popover
-            id={id}
-            open={!!popSetting}
-            anchorEl={popSetting}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <Button>Edit</Button>
-          </Popover>
+          <div className="edit-part">
+            <Tooltip title="Edit Background">
+              <IconButton onClick={onBackgroundEdit}>
+                <Edit
+                  fontSize="large"
+                  sx={{
+                    backgroundColor: "#da4bfd",
+                    borderRadius: "50%",
+                    padding: "5px",
+                    color: "white",
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+
+            <input
+              type="file"
+              ref={hiddenBackImageFile}
+              name="profile-back"
+              id="profile-back"
+              accept=".jpg, .png, .jpeg, .bmp"
+              onChange={onInputBackImageChanged}
+              className="file-input"
+            />
+            <MImageCropper
+              file={file}
+              onConfirm={(croppedFile) => {
+                setResizedImage(window.URL.createObjectURL(croppedFile));
+                setConfirmedFile(croppedFile);
+                dispatch(profileBackgroundUpdate(croppedFile));
+              }}
+              onCompleted={() => setFile(null)}
+            />
+          </div>
         </div>
+
         <Tooltip title="Edit Profile">
           <Button className="profile-image" onClick={onImageClicked}>
             <img
