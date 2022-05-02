@@ -18,6 +18,8 @@ export default (appState = initialState, { type, payload }) => {
       return { ...appState, status: true, otherUserInfo: { ...payload } };
     case types.PROFILE_BACKGROUND_UPDATE:
       return { ...appState, userInfo: { ...payload } };
+    case types.FOLLOW_UPDATED:
+      return { ...appState, otherUserInfo: { ...payload } };
     default:
       return appState;
   }

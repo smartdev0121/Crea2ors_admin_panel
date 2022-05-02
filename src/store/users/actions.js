@@ -14,6 +14,19 @@ export const types = {
   NOT_PROFILE_FOUND: "NOT_PROFILE_FOUND",
   PROFILE_FOUND: "PROFILE_FOUND",
   PROFILE_BACKGROUND_UPDATE: "PROFILE_BACKGROUND_UPDATE",
+  FOLLOW_UPDATED: "FOLLOW_UPDATED",
+};
+
+export const follow = (email) => async (dispatch) => {
+  return api
+    .post("/follow", { email: email })
+    .then((res) => {
+      dispatch({ type: types.FOLLOW_UPDATED, payload: res });
+      dispatch(updateProfile(res));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 export const profileBackgroundUpdate = (imageFileData) => {

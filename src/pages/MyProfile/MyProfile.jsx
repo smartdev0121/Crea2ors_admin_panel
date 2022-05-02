@@ -26,7 +26,6 @@ const MyProfile = (props) => {
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
   const [value, setValue] = React.useState("1");
   const userInfo = useSelector((state) => state.profile);
-  console.log("hey", userInfo);
   const hiddenBackImageFile = React.useRef(null);
   const [resizedImage, setResizedImage] = useState(null);
   const dispatch = useDispatch();
@@ -166,11 +165,11 @@ const MyProfile = (props) => {
         </div>
         <div className="following-bar">
           <label>
-            <span className="count">0</span>
+            <span className="count">{userInfo.followers_num}</span>
             <span className="static-string">followers</span>
           </label>
           <label>
-            <span className="count">0</span>
+            <span className="count">{userInfo.followings_num}</span>
             <span className="static-string">following</span>
           </label>
         </div>

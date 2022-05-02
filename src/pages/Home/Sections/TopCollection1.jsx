@@ -17,12 +17,11 @@ const TopCollection1 = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiGetAssets();
-        res.splice(5);
-        console.log(res);
-
-        setSmallNFTs(res);
-        console.log("small", smallNFTs);
+        // const res = await apiGetAssets();
+        // res.splice(5);
+        // console.log(res);
+        // setSmallNFTs(res);
+        // console.log("small", smallNFTs);
       } catch {
         ((err) => {})();
       }
