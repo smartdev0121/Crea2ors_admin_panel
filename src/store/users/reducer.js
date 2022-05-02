@@ -16,6 +16,8 @@ export default (appState = initialState, { type, payload }) => {
       return { ...appState, status: false };
     case types.PROFILE_FOUND:
       return { ...appState, status: true, otherUserInfo: { ...payload } };
+    case types.PROFILE_BACKGROUND_UPDATE:
+      return { ...appState, userInfo: { ...payload } };
     default:
       return appState;
   }

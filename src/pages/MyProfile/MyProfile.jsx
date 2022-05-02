@@ -26,6 +26,7 @@ const MyProfile = (props) => {
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
   const [value, setValue] = React.useState("1");
   const userInfo = useSelector((state) => state.profile);
+  console.log("hey", userInfo);
   const hiddenBackImageFile = React.useRef(null);
   const [resizedImage, setResizedImage] = useState(null);
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const MyProfile = (props) => {
             top: "-75%",
             position: "absolute",
             height: "300px",
-            backgroundImage: `url(${process.env.REACT_APP_DEVELOPMENT_URL}images/profile-images/back.jpg)`,
+            backgroundImage: `url(${process.env.REACT_APP_BACKEND_URL}${userInfo.backgroundImageUrl})`,
             backgroundSize: "cover",
           }}
         >
@@ -108,7 +109,9 @@ const MyProfile = (props) => {
               onConfirm={(croppedFile) => {
                 setResizedImage(window.URL.createObjectURL(croppedFile));
                 setConfirmedFile(croppedFile);
-                dispatch(profileBackgroundUpdate(croppedFile));
+                let data = new FormData();
+                data.append("file_back", croppedFile);
+                dispatch(profileBackgroundUpdate(data));
               }}
               onCompleted={() => setFile(null)}
             />

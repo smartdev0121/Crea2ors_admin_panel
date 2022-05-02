@@ -16,11 +16,22 @@ export const types = {
   PROFILE_BACKGROUND_UPDATE: "PROFILE_BACKGROUND_UPDATE",
 };
 
-export const profileBackgroundUpdate = (imageFile) => {
+export const profileBackgroundUpdate = (imageFileData) => {
+  const config = {
+    headers: {
+      "content-type": `multipart/form-data; boundary=${imageFileData._boundary}`,
+    },
+  };
   return (dispatch) => {
     api
-      .post("/background-update", imageFile)
-      .then((res) => {})
+      .post("/background-update", imageFileData, config)
+      .then((res) => {
+        dispatch({
+          type: types.PROFILE_BACKGROUND_UPDATE,
+          payload: res,
+        });
+        dispatch(updateProfile(res));
+      })
       .catch((err) => {
         console.log(err);
       });
