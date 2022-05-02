@@ -5,11 +5,11 @@ import { useWeb3React } from "@web3-react/core";
 import { setItem, deleteItem } from "../../utils/storage";
 import { injected } from "../../wallet/connector";
 import { Settings, DownloadForOffline, MoreHoriz } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, Popover } from "@mui/material";
 import { useSelector } from "react-redux";
 import ProfileTab from "./ProfileTab";
 import MBorderButton from "src/components/MButtons/MBorderButton";
-
+import Tooltip from "@material-ui/core/Tooltip";
 import "./MyProfile.scss";
 import "dotenv/config";
 
@@ -18,6 +18,7 @@ const MyProfile = (props) => {
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
   const [value, setValue] = React.useState("1");
   const userInfo = useSelector((state) => state.profile);
+  const [popSetting, setPopSetting] = useState(null);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -37,21 +38,61 @@ const MyProfile = (props) => {
     }
   };
 
+  const onImageClicked = () => {
+    console.log("lll");
+  };
+
   const onEditProfile = () => {
     props.history.push("/edit-profile");
   };
 
+  const onBackgroundClicked = (event) => {
+    setPopSetting(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setPopSetting(null);
+  };
+
+  const id = !!popSetting ? "back-setting" : undefined;
   return (
     <Container maxWidth="xl" sx={{ marginTop: "100px" }}>
       <section className="profile-info-bar">
-        <div className="profile-image">
-          <img
-            src={
-              process.env.REACT_APP_BACKEND_URL + userInfo.avatar_url ||
-              "/images/profile-images/profile-empty.png"
-            }
-          />
+        <div
+          style={{
+            width: "100%",
+            top: "-75%",
+            position: "absolute",
+            height: "300px",
+            backgroundImage: `url(${process.env.REACT_APP_DEVELOPMENT_URL}images/profile-images/back.jpg)`,
+            backgroundSize: "cover",
+          }}
+          onClick={onBackgroundClicked}
+        >
+          <Popover
+            id={id}
+            open={!!popSetting}
+            anchorEl={popSetting}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+          >
+            <Button>Edit</Button>
+          </Popover>
         </div>
+        <Tooltip title="Edit Profile">
+          <Button className="profile-image" onClick={onImageClicked}>
+            <img
+              src={
+                process.env.REACT_APP_BACKEND_URL + userInfo.avatar_url ||
+                "/images/profile-images/profile-empty.png"
+              }
+            />
+          </Button>
+        </Tooltip>
+
         <div className="wallet-address">
           <MClipboard>
             {({ copy }) =>
