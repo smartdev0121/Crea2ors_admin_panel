@@ -61,6 +61,7 @@ const MTextField = (props) => {
     helperText,
     variant,
   } = props;
+  console.log(props);
   let validClass = "";
   if (touched && error) {
     validClass = "is-invalid";

@@ -119,136 +119,132 @@ const CreateCollectionPage = () => {
               const errors = {};
             }}
             render={({ handleSubmit, submitting, form, values, pristine }) => {
-              <form onSubmit={handleSubmit} noValidate>
-                {" "}
-                <Stack
-                  direction="row"
-                  divider={<Divider orientation="vertical" flexItem />}
-                  spacing={2}
-                  justifyContent="space-around"
-                >
+              return (
+                <form onSubmit={handleSubmit} noValidate>
                   <Stack
-                    className="create-collection-card"
-                    spacing={1}
-                    flex="1 1"
+                    direction="row"
+                    divider={<Divider orientation="vertical" flexItem />}
+                    spacing={2}
+                    justifyContent="space-around"
                   >
-                    <Field
-                      type="text"
-                      name="collectionName"
-                      label="Title"
-                      onChange={(e) => handleInputChange(e, "CollectionName")}
-                      component={MTextField}
-                      variant="standard"
-                    />
-
-                    {/* <input
-                placeholder="Collection Ticker"
-                onChange={(e) => handleInputChange(e, "CollectionTicker")}
-              /> */}
-
-                    {/* <input
-                placeholder="Royalty percentage"
-                onChange={(e) => handleInputChange(e, "RoyaltyFee")}
-              /> */}
-
-                    {/* <input
-                placeholder="Royalty wallet address"
-                onChange={(e) => handleInputChange(e, "RoyaltyAddress")}
-              /> */}
-                    <Field
-                      type="text"
-                      placeholder="Description"
-                      onChange={(e) => handleInputChange(e, "Description")}
-                      label="Collection details and information"
-                      name="description"
-                      component={MTextField}
-                      multiline
-                    />
-                    <Stack direction="row" alignItems="center">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={vidStatus}
-                            onChange={handleCheckboxChange}
-                          />
-                        }
-                        label="add vid"
+                    <Stack
+                      className="create-collection-card"
+                      spacing={1}
+                      flex="1 1"
+                    >
+                      <Field
+                        type="text"
+                        name="collectionName"
+                        label="Title"
+                        onChange={(e) => handleInputChange(e, "CollectionName")}
+                        component={MTextField}
+                        variant="standard"
                       />
-                      <Field label="URL" name="url" component={MTextField} />
-                    </Stack>
 
-                    {/* <MTextField
-                placeholder="External URL"
-                onChange={(e) => handleInputChange(e, "ExternalUrl")}
-              /> */}
-                    <Field
-                      name="aboutAuthor"
-                      multiline
-                      component={MTextField}
-                      label="About the Authors"
-                    />
-                    <MTextField label="About the Authors" multiline />
-                    <Field
-                      name="intro"
-                      multiline
-                      label="Highlight Intro"
-                      component={MTextField}
-                    />
-                    <MSelectBox values={categories} />
-                    <FormControl variant="standard">
-                      <InputLabel htmlFor="input-with-icon-adornment">
-                        Collections items NFTs quantity: min=1 max=25
-                      </InputLabel>
-                      <Input
-                        id="input-with-icon-adornment"
-                        sx={{ borderColor: "#bdbdbd" }}
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <ProductionQuantityLimitsIcon
-                              sx={{ color: "#bdbdbd" }}
+                      <Field
+                        type="text"
+                        placeholder="Description"
+                        onChange={(e) => handleInputChange(e, "Description")}
+                        label="Collection details and information"
+                        name="description"
+                        component={MTextField}
+                        variant="standard"
+                        multiline
+                      />
+                      <Stack direction="row" alignItems="center">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={vidStatus}
+                              onChange={handleCheckboxChange}
                             />
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                    <Paragraph>
-                      All our collections are Free or Lazy minted. This means
-                      the buyer will pay for the minting of the collectable
-                    </Paragraph>
-                    <MColorButtonView onClick={handleCreateCollection}>
-                      Create a collection
-                    </MColorButtonView>
-                  </Stack>
-                  <Stack spacing={1} flex="1 1">
-                    <label className="choose-image-text">Choose Image:</label>
-                    {/* <FileUploader multiple={true} handleChange={handleFileChange} name='file' types={fileTypes} /> */}
-                    <input
-                      ref={hiddenFileInput}
-                      type="file"
-                      id="image-file"
-                      accept=".jpg, .png, .jpeg, .bmp"
-                      onChange={handleFileChange}
-                      className="file-input"
-                    />
-                    <div onClick={handleImageClick} className="img-click-part">
-                      <img
-                        src={
-                          result || metadata.ImageUrl || "/images/img_empty.png"
-                        }
-                        style={{ width: 300, height: "auto" }}
-                        alt="collection"
-                      />
-                      <p>Upload file jpg, jpeg, png 900x400px max: 100MB</p>
-                    </div>
+                          }
+                          label="add vid"
+                        />
+                        <Field
+                          type="text"
+                          label="URL"
+                          name="url"
+                          component={MTextField}
+                        />
+                      </Stack>
 
-                    <h2>{metadata.CollectionName}</h2>
-                    <TextField>{metadata.CollectionTicker}</TextField>
-                    <TextField value={metadata.Description} multiline>
-                      {metadata.Description}
-                    </TextField>
+                      <Field
+                        type="text"
+                        name="aboutAuthor"
+                        multiline
+                        component={MTextField}
+                        label="About the Authors"
+                        variant="standard"
+                      />
+                      <Field
+                        type="text"
+                        name="intro"
+                        multiline
+                        label="Highlight Intro"
+                        component={MTextField}
+                        variant="standard"
+                      />
+                      <MSelectBox values={categories} />
+                      <FormControl variant="standard">
+                        <InputLabel htmlFor="input-with-icon-adornment">
+                          Collections items NFTs quantity: min=1 max=25
+                        </InputLabel>
+                        <Input
+                          id="input-with-icon-adornment"
+                          sx={{ borderColor: "#bdbdbd" }}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <ProductionQuantityLimitsIcon
+                                sx={{ color: "#bdbdbd" }}
+                              />
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
+                      <Paragraph>
+                        All our collections are Free or Lazy minted. This means
+                        the buyer will pay for the minting of the collectable
+                      </Paragraph>
+                      <MColorButtonView onClick={handleCreateCollection}>
+                        Create a collection
+                      </MColorButtonView>
+                    </Stack>
+                    <Stack spacing={1} flex="1 1">
+                      <label className="choose-image-text">Choose Image:</label>
+                      <input
+                        ref={hiddenFileInput}
+                        type="file"
+                        id="image-file"
+                        accept=".jpg, .png, .jpeg, .bmp"
+                        onChange={handleFileChange}
+                        className="file-input"
+                      />
+                      <div
+                        onClick={handleImageClick}
+                        className="img-click-part"
+                      >
+                        <img
+                          src={
+                            result ||
+                            metadata.ImageUrl ||
+                            "/images/img_empty.png"
+                          }
+                          style={{ width: 300, height: "auto" }}
+                          alt="collection"
+                        />
+                        <p>Upload file jpg, jpeg, png 900x400px max: 100MB</p>
+                      </div>
+
+                      <h2>{metadata.CollectionName}</h2>
+                      <TextField>{metadata.CollectionTicker}</TextField>
+                      <TextField value={metadata.Description} multiline>
+                        {metadata.Description}
+                      </TextField>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </form>;
+                </form>
+              );
             }}
           />
         </Box>
