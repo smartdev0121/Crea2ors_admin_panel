@@ -48,7 +48,7 @@ const HeaderContent = () => {
 
   const connectWallet = async () => {
     try {
-      await activate(injected);
+      //await activate(injected);
       setItem("walletStatus", true);
     } catch (err) {
       console.log(err);

@@ -15,6 +15,19 @@ export const types = {
   PROFILE_FOUND: "PROFILE_FOUND",
   PROFILE_BACKGROUND_UPDATE: "PROFILE_BACKGROUND_UPDATE",
   FOLLOW_UPDATED: "FOLLOW_UPDATED",
+  UNFOLLOW_UPDATED: "UNFOLLOW_UPDATED",
+};
+
+export const unFollow = (email) => async (dispatch) => {
+  return api
+    .post("/unfollow", { email: email })
+    .then((res) => {
+      dispatch({ type: types.UNFOLLOW_UPDATED, payload: res });
+    })
+    .catch((err) => {
+      console.log(err);
+      showNotify("You are already unfollowed!", "error");
+    });
 };
 
 export const follow = (email) => async (dispatch) => {
@@ -22,10 +35,9 @@ export const follow = (email) => async (dispatch) => {
     .post("/follow", { email: email })
     .then((res) => {
       dispatch({ type: types.FOLLOW_UPDATED, payload: res });
-      dispatch(updateProfile(res));
     })
     .catch((err) => {
-      console.log(err);
+      showNotify("You are already followed!", "error");
     });
 };
 

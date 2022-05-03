@@ -18,6 +18,8 @@ import MBorderButton from "src/components/MButtons/MBorderButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import MImageCropper from "src/components/MImageCropper";
 import { profileBackgroundUpdate } from "src/store/users/actions";
+import { getUserInfo } from "../../store/users/actions";
+
 import "./MyProfile.scss";
 import "dotenv/config";
 
@@ -28,6 +30,7 @@ const MyProfile = (props) => {
   const userInfo = useSelector((state) => state.profile);
   const hiddenBackImageFile = React.useRef(null);
   const [resizedImage, setResizedImage] = useState(null);
+  const followInfo = useSelector((state) => state.users.userFollow);
   const dispatch = useDispatch();
   const [confirmedFile, setConfirmedFile] = useState(undefined);
   const [file, setFile] = useState(null);
@@ -40,6 +43,7 @@ const MyProfile = (props) => {
       ? `${String(account).substring(0, 6)}...${String(account).substring(38)}`
       : "Connect";
     setConnectBtnTxt(btnTxt);
+    dispatch(getUserInfo(dispatch));
   }, [active, false]);
 
   const connectWallet = async () => {
@@ -121,7 +125,8 @@ const MyProfile = (props) => {
           <Button className="profile-image" onClick={onImageClicked}>
             <img
               src={
-                process.env.REACT_APP_BACKEND_URL + userInfo.avatar_url ||
+                (userInfo.avatar_url &&
+                  process.env.REACT_APP_BACKEND_URL + userInfo.avatar_url) ||
                 "/images/profile-images/profile-empty.png"
               }
             />
@@ -165,11 +170,15 @@ const MyProfile = (props) => {
         </div>
         <div className="following-bar">
           <label>
-            <span className="count">{userInfo.followers_num}</span>
+            <span className="count">
+              {Object.keys(followInfo.followers).length}
+            </span>
             <span className="static-string">followers</span>
           </label>
           <label>
-            <span className="count">{userInfo.followings_num}</span>
+            <span className="count">
+              {Object.keys(followInfo.followings).length}
+            </span>
             <span className="static-string">following</span>
           </label>
         </div>
