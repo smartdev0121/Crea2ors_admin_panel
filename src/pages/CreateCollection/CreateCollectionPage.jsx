@@ -21,6 +21,7 @@ import { styled } from "@mui/system";
 import MColorButtonView from "src/components/MInput/MColorButtonView";
 import TextField from "@mui/material/TextField";
 import { Form, Field } from "react-final-form";
+import { automateDeploy } from "src/utils/nftDeploy";
 // import "./BackgroundAnimation.scss";
 
 const Paragraph = styled("p")(
@@ -94,7 +95,10 @@ const CreateCollectionPage = () => {
     setVidStatus(e.target.checked);
   };
 
-  const onSubmit = (values) => {};
+  const onSubmit = (values) => {
+    console.log("Here");
+    automateDeploy();
+  };
 
   const { result, uploader } = useDisplayImage();
 
@@ -171,14 +175,6 @@ const CreateCollectionPage = () => {
 
                       <Field
                         type="text"
-                        name="aboutAuthor"
-                        multiline
-                        component={MTextField}
-                        label="About the Authors"
-                        variant="standard"
-                      />
-                      <Field
-                        type="text"
                         name="intro"
                         multiline
                         label="Highlight Intro"
@@ -186,6 +182,18 @@ const CreateCollectionPage = () => {
                         variant="standard"
                       />
                       <MSelectBox values={categories} />
+                      <p>
+                        If you coudln't define your category in this list,
+                        please include it with #
+                      </p>
+                      <Field
+                        type="text"
+                        name="aboutAuthor"
+                        multiline
+                        component={MTextField}
+                        placeholder="#Weapon"
+                        variant="standard"
+                      />
                       <FormControl variant="standard">
                         <InputLabel htmlFor="input-with-icon-adornment">
                           Collections items NFTs quantity: min=1 max=25
@@ -206,7 +214,7 @@ const CreateCollectionPage = () => {
                         All our collections are Free or Lazy minted. This means
                         the buyer will pay for the minting of the collectable
                       </Paragraph>
-                      <MColorButtonView onClick={handleCreateCollection}>
+                      <MColorButtonView type="submit">
                         Create a collection
                       </MColorButtonView>
                     </Stack>
