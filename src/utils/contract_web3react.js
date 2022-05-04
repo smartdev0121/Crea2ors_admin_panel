@@ -4,11 +4,11 @@ import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import showNotification from "src/config/notification";
-
+import { useWeb3React } from "@web3-react/core";
 const contract_source_arr = [
-  "/contracts/compiled/A2FCreators",
-  "/contracts/compiled/ERC1155",
-  "/contracts/compiled/ERC20_BASE",
+  "./contract/compiled/ERC721/A2F",
+  "./contract/compiled/ERC1155",
+  "./contract/compiled/ERC20_BASE",
 ];
 
 let provider;
@@ -19,13 +19,17 @@ const readContractABI = async (contract_type) =>
     let contract_source = contract_source_arr[contract_type];
 
     fetch(`${contract_source}.abi`)
-      .then((response) => response.text())
+      .then((response) => {
+        return response.text();
+      })
       .then((data) => {
         contract_data = JSON.parse(data);
+        console.log("AIII", contract_data);
+
         return resolve(contract_data);
       })
       .catch((e) => {
-        return reject();
+        return reject("Could not fetch data");
       });
   });
 
@@ -45,13 +49,18 @@ const readContractByteCode = async (contract_type) =>
       });
   });
 
-export const deployContract = (contract_type, contract_metadata) =>
+export const deployContract = (
+  contract_type,
+  contract_metadata,
+  library,
+  account
+) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { CollectionName, CollectionTicker, RoyaltyAddress, RoyaltyFee } =
+      const { CollectionName, Symbol, BatchSize, TotalLimit, Price } =
         contract_metadata;
 
-      const { contract_uri } = await uploadContractMetadata(contract_metadata);
+      // const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
       showNotification(
         "Waiting",
@@ -59,32 +68,30 @@ export const deployContract = (contract_type, contract_metadata) =>
         "waiting"
       );
 
-      if (web3Modal.cachedProvider) {
-        provider = await web3Modal.connect();
-      } else {
-        return reject("Cannot connect to wallet");
-      }
+      // if (web3Modal.cachedProvider) {
+      //   provider = await web3Modal.connect();
+      // } else {
+      //   return reject("Cannot connect to wallet");
+      // }
+      provider = library;
 
       const web3 = new Web3(provider);
-      const accounts = await web3.eth.getAccounts();
+      console.log(web3);
+      // const accounts = await web3.eth.getAccounts();
 
       const bytecode = await readContractByteCode(contract_type);
+
       const contract_data = await readContractABI(contract_type);
 
-      const contract = new web3.eth.Contract(contract_data);
+      const contract = new library.eth.Contract(contract_data);
+      console.log("hereeee", contract);
 
       contract
         .deploy({
           data: bytecode,
-          arguments: [
-            'CollectionName',
-            'CollectionTicker',
-            5,
-            20,
-            100,
-          ],
+          arguments: ["A", "S", 5, 20, 100],
         })
-        .send({ from: accounts[0] })
+        .send({ from: account })
         .then(async (deployment) => {
           showNotification(
             "Success",
@@ -92,6 +99,7 @@ export const deployContract = (contract_type, contract_metadata) =>
             "success",
             8
           );
+          console.log(deployment.options.address);
 
           return resolve();
         })

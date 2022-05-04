@@ -8,7 +8,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case "SHOW_MODAL":
-      console.log("here is reducer");
       return {
         modalType: action.modalType,
         modalProps: action.modalProps,

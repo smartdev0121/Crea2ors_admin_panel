@@ -233,7 +233,6 @@ export default function CreateNFTPage() {
                           Maximum is 50%
                         </FormHelperText>
                       </FormControl>
-                      {console.log("Here is error")}
 
                       <FormControl
                         variant="standard"

@@ -127,7 +127,6 @@ export const createUser = (values, history) => {
 };
 
 export const emailVerified = (email, history) => (dispatch) => {
-  console.log("email add", { email: email });
   return api
     .post("/email-verified", { email })
     .then((res) => {
@@ -151,12 +150,10 @@ export const getAvatarUrl = () => (dispatch) => {
 };
 
 export const getOtherProfile = (url) => {
-  console.log("UUU", url);
   return (dispatch) => {
     api
       .get(`/custom/${url}`)
       .then((res) => {
-        console.log("success", res);
         dispatch({ type: types.PROFILE_FOUND, payload: res });
       })
       .catch((err) => {

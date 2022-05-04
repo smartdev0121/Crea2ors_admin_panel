@@ -15,7 +15,6 @@ const initialState = {
 };
 
 export default (appState = initialState, { type, payload }) => {
-  console.log("follow reducer", payload);
   switch (type) {
     case types.PROFILE_INFO:
       return { ...appState, userInfo: { ...payload }, status: true };

@@ -12,13 +12,11 @@ const EmailConfirmed = (props) => {
   const { token, email } = props.match.params;
   const history = props.history;
   const [status, setStatus] = useState(false);
-  console.log("token", token, "key::::", process.env.REACT_APP_SECRET);
   useEffect(() => {
     try {
       const { payload } = jwt.verify(token, process.env.REACT_APP_SECRET, {
         complete: true,
       });
-      console.log(payload);
       if (!(payload && payload.email === email)) {
         window.location = "/";
       }

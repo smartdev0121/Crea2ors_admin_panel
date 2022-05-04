@@ -21,13 +21,11 @@ function CropperModel(props) {
 
   React.useEffect(() => {
     if (file !== null) {
-      console.log(props);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImage(reader.result);
         cropper &&
           cropper.zoomTo(props.initialZoom).rotateTo(props.initialRotate);
-        console.log(cropper);
       });
       reader.readAsDataURL(file);
     } else {
@@ -135,7 +133,6 @@ function CropperModel(props) {
                 value={zoom}
                 onChange={(value) => {
                   setZoom(value);
-                  console.log(value);
                   cropper.zoomTo(value);
                 }}
               />

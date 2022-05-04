@@ -14,7 +14,6 @@ export const updateProfile = (newProfile) => ({
 
 export const getProfile = () => (dispatch) => {
   dispatch(appActions.showSpinner("PROFILE_INFO"));
-  console.log("profile actions");
   return api
     .get("/profile/info")
     .then((res) => {

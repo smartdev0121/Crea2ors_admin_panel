@@ -16,7 +16,6 @@ export const login = (values) => (dispatch) => {
   return api
     .post("/auth/login", values)
     .then((res) => {
-      console.log(res);
       setToken(res.token);
       return getProfile()(dispatch);
     })
@@ -38,11 +37,9 @@ export const logout = () => {
 };
 
 export const forgotPassword = (values) => (dispatch) => {
-  console.log(values);
   return api.post("/auth/forgot_password", values);
 };
 
 export const resetPassword = (values) => (dispatch) => {
-  console.log(values);
   return api.post("/auth/reset_password", values);
 };

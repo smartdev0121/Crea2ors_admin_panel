@@ -54,10 +54,7 @@ const SignUp = (props) => {
             if (!values.password) {
               errors.password = "Password is required!";
             }
-            console.log(
-              "password sre",
-              passwordStrength(values.password).value
-            );
+
             if (passwordStrength(values.password).value !== "Strong") {
               errors.password =
                 "Password must be over 10 characters including Uppercase, Lowercase, Number, Symbol!";

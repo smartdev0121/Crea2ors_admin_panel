@@ -6,7 +6,6 @@ const MODAL_COMPONENTS = {
 
 const MRootModal = () => {
   const { modalType, modalProps } = useSelector((state) => state.modal);
-  console.log("modal");
   if (!modalType) {
     return <span />;
   }

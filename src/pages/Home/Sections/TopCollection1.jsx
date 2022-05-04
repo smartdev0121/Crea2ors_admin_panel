@@ -52,7 +52,6 @@ const TopCollection1 = () => {
           modules={[EffectCoverflow, Pagination]}
           className="mySwiper"
         >
-          {console.log("render", smallNFTs)}
           {smallNFTs.map((item, index) => {
             return (
               <SwiperSlide>

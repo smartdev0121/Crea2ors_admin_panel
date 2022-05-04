@@ -67,7 +67,6 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    console.log("env", process.env.REACT_APP_BACKEND_URL);
     const sidebarEl = document
       .querySelector(".sidebar")
       .getBoundingClientRect();

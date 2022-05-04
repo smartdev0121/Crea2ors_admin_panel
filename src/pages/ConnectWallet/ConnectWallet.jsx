@@ -13,10 +13,10 @@ const ConnectWallet = (props) => {
   const dispatch = useDispatch();
   const { active, activate } = useWeb3React();
   const onConnectWallet = async () => {
-    // const provider = showWeb3WalletModal();
-    await activate(injected);
-    setItem("walletStatus", true);
-    active && props.history.push("/");
+    const provider = showWeb3WalletModal();
+    // await activate(injected);
+    // setItem("walletStatus", true);
+    // active && props.history.push("/");
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>

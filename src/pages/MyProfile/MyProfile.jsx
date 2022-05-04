@@ -55,9 +55,7 @@ const MyProfile = (props) => {
     }
   };
 
-  const onImageClicked = () => {
-    console.log("lll");
-  };
+  const onImageClicked = () => {};
 
   const onEditProfile = () => {
     props.history.push("/edit-profile");

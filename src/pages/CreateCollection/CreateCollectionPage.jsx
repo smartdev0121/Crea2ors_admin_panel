@@ -21,7 +21,7 @@ import { styled } from "@mui/system";
 import MColorButtonView from "src/components/MInput/MColorButtonView";
 import TextField from "@mui/material/TextField";
 import { Form, Field } from "react-final-form";
-import { automateDeploy } from "src/utils/nftDeploy";
+import { useWeb3React } from "@web3-react/core";
 // import "./BackgroundAnimation.scss";
 
 const Paragraph = styled("p")(
@@ -50,6 +50,7 @@ const CreateCollectionPage = () => {
   const [metadata, setMetadata] = useState({});
   const [vidStatus, setVidStatus] = useState(false);
   const hiddenFileInput = React.useRef(null);
+  const { library, account } = useWeb3React();
 
   const useDisplayImage = () => {
     const [result, setResult] = React.useState("");
@@ -95,9 +96,16 @@ const CreateCollectionPage = () => {
     setVidStatus(e.target.checked);
   };
 
-  const onSubmit = (values) => {
-    console.log("Here");
-    automateDeploy();
+  const onSubmit = async (values) => {
+    console.log(values);
+    const parameter = {
+      CollectionName: "A2FCreators",
+      Symbol: "A2F",
+      BatchSize: 5,
+      TotalLimit: 20,
+      Price: 100,
+    };
+    // const deployed = await deployContract(0, parameter);
   };
 
   const { result, uploader } = useDisplayImage();
@@ -181,35 +189,40 @@ const CreateCollectionPage = () => {
                         component={MTextField}
                         variant="standard"
                       />
-                      <MSelectBox values={categories} />
+                      <Field
+                        name="type"
+                        values={categories}
+                        component={MSelectBox}
+                      />
                       <p>
                         If you coudln't define your category in this list,
                         please include it with #
                       </p>
                       <Field
                         type="text"
-                        name="aboutAuthor"
+                        name="subCategory"
                         multiline
                         component={MTextField}
                         placeholder="#Weapon"
                         variant="standard"
                       />
-                      <FormControl variant="standard">
-                        <InputLabel htmlFor="input-with-icon-adornment">
-                          Collections items NFTs quantity: min=1 max=25
-                        </InputLabel>
-                        <Input
-                          id="input-with-icon-adornment"
-                          sx={{ borderColor: "#bdbdbd" }}
-                          startAdornment={
+                      <Field
+                        InputProps={{
+                          startAdornment: (
                             <InputAdornment position="start">
                               <ProductionQuantityLimitsIcon
                                 sx={{ color: "#bdbdbd" }}
                               />
                             </InputAdornment>
-                          }
-                        />
-                      </FormControl>
+                          ),
+                        }}
+                        type="number"
+                        name="tokenLimit"
+                        placeholder="#Weapon"
+                        variant="standard"
+                        component={MTextField}
+                      />
+
                       <Paragraph>
                         All our collections are Free or Lazy minted. This means
                         the buyer will pay for the minting of the collectable

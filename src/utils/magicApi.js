@@ -95,18 +95,13 @@ export function get(endpoint, query) {
 }
 
 export function post(endpoint, body, config = {}) {
-  console.log("Instance of this form data is unknown");
-
   config = Object.assign(config, requestConfig);
 
   let requestBody = body;
 
   if (body instanceof FormData) {
-    console.log("Instance of this form data is FormData");
     config = Object.assign(config, requestConfigFormData);
   } else if (typeof body === "object") {
-    console.log("Instance of this form data is OBject");
-
     config = Object.assign(config, requestConfigJSON);
     requestBody = JSON.stringify(body);
   }
