@@ -3,8 +3,7 @@ import Web3 from "web3";
 import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
-import showNotification from "src/config/notification";
-
+import {showNotify} from "./notify";
 const contract_source_arr = [
   "/contracts/compiled/A2FCreators",
   "/contracts/compiled/ERC1155",
@@ -48,12 +47,11 @@ const readContractByteCode = async (contract_type) =>
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { CollectionName, CollectionTicker, RoyaltyAddress, RoyaltyFee } =
-        contract_metadata;
-
+      const { collectionName, symbol, loyaltyAddress, fee } = contract_metadata;
+      
       const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
-      showNotification(
+      showNotify(
         "Waiting",
         "Please wait while deploying smart contract",
         "waiting"
@@ -76,17 +74,11 @@ export const deployContract = (contract_type, contract_metadata) =>
       contract
         .deploy({
           data: bytecode,
-          arguments: [
-            'CollectionName',
-            'CollectionTicker',
-            5,
-            20,
-            100,
-          ],
+          arguments: ["CollectionName", "CollectionTicker", 5, 20, 100],
         })
         .send({ from: accounts[0] })
         .then(async (deployment) => {
-          showNotification(
+          showNotify(
             "Success",
             `Contract was deployed successfully at ${deployment.options.address}`,
             "success",
@@ -100,7 +92,7 @@ export const deployContract = (contract_type, contract_metadata) =>
         });
     } catch (e) {
       console.log(e);
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject("Could not deploy smart contract");
     }
   });
@@ -126,7 +118,7 @@ export const mintAsset = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const { metadata_uri } = await uploadAssetMetaData(metadata);
       const contract_data = await readContractABI(contract_type);
@@ -148,11 +140,11 @@ export const mintAsset = (
           .send(tx);
       }
 
-      showNotification("Success", "Successfully minted", "success", 3);
+      showNotify("Success", "Successfully minted", "success", 3);
 
       return resolve();
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -177,7 +169,7 @@ export const updateAsset = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const { metadata_uri } = await uploadAssetMetaData(metadata);
       const contractData = await readContractABI(contract_type);
@@ -198,11 +190,11 @@ export const updateAsset = (
 
       await web3.eth.sendTransaction(tx);
 
-      showNotification("Success", "Successfully updated", "success", 3);
+      showNotify("Success", "Successfully updated", "success", 3);
 
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -226,7 +218,7 @@ export const updateCollection = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const { RoyaltyFee, RoyaltyAddress } = contract_metadata;
       const { contract_uri } = await uploadContractMetadata(contract_metadata);
@@ -250,11 +242,11 @@ export const updateCollection = (
 
       await web3.eth.sendTransaction(tx);
 
-      showNotification("Success", "Successfully updated", "success", 3);
+      showNotify("Success", "Successfully updated", "success", 3);
 
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -280,7 +272,7 @@ export const batchTransferAssets = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const contract_data = await readContractABI(contract_type);
       const current_address = await getCurrentWalletAddress();
@@ -310,11 +302,11 @@ export const batchTransferAssets = (
       };
 
       await web3.eth.sendTransaction(tx);
-      showNotification("Success", "Successfully sent", "success", 3);
+      showNotify("Success", "Successfully sent", "success", 3);
 
       return resolve();
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -339,7 +331,7 @@ export const burnAsset = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const contract_data = await readContractABI(contract_type);
       const current_address = await getCurrentWalletAddress();
@@ -356,10 +348,10 @@ export const burnAsset = (
       };
 
       await web3.eth.sendTransaction(tx);
-      showNotification("Success", "Successfully burned", "success", 3);
+      showNotify("Success", "Successfully burned", "success", 3);
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -378,7 +370,7 @@ export const mintERC1155 = (address, chain_id, id, amount) =>
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Waiting ...", "waiting");
+      showNotify("Waiting", "Waiting ...", "waiting");
 
       const contract_data = await readContractABI(CONTRACT_TYPE.ERC1155);
       const current_address = await getCurrentWalletAddress();
@@ -392,10 +384,10 @@ export const mintERC1155 = (address, chain_id, id, amount) =>
       };
 
       await web3.eth.sendTransaction(tx);
-      showNotification("Success", "Successfully minted", "success", 3);
+      showNotify("Success", "Successfully minted", "success", 3);
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -419,7 +411,7 @@ export const setApprovalForAll = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Approving ...", "waiting");
+      showNotify("Waiting", "Approving ...", "waiting");
 
       const contract_data = await readContractABI(contract_type);
       const current_address = await getCurrentWalletAddress();
@@ -442,10 +434,10 @@ export const setApprovalForAll = (
         await web3.eth.sendTransaction(tx);
       }
 
-      showNotification("Success", "Approved successfully", "success", 3);
+      showNotify("Success", "Approved successfully", "success", 3);
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });
@@ -470,7 +462,7 @@ export const approve = (
 
       await switchNetwork(chain_id);
 
-      showNotification("Waiting", "Approving ...", "waiting");
+      showNotify("Waiting", "Approving ...", "waiting");
 
       const contract_data = await readContractABI(contract_type);
       const current_address = await getCurrentWalletAddress();
@@ -485,10 +477,10 @@ export const approve = (
 
       await web3.eth.sendTransaction(tx);
 
-      showNotification("Success", "Approved successfully", "success", 3);
+      showNotify("Success", "Approved successfully", "success", 3);
       return resolve({ success: true });
     } catch (e) {
-      showNotification("Failed", "Failed", "failed", 3);
+      showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }
   });

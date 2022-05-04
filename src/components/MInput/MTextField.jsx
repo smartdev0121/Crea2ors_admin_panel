@@ -5,6 +5,7 @@ import "./MTextField.scss";
 
 const CustomInput = styled(TextField)({
   width: "100%",
+  flex: "1 1",
   "& label.Mui-focused": {
     color: "#999",
   },
@@ -24,7 +25,7 @@ const CustomInput = styled(TextField)({
   "& .MuiInput-root": {
     "& .MuiInput-input": {
       fontSize: "0.8rem",
-      padding: "5px",
+      padding: "10px",
     },
     "& .MuiTypography-root": {
       fontSize: "0.8rem",
@@ -59,7 +60,11 @@ const MTextField = (props) => {
     placeholder,
     multiline,
     helperText,
+    sx,
     variant,
+    inputProps,
+    max,
+    min,
   } = props;
   let validClass = "";
   if (touched && error) {
@@ -69,7 +74,7 @@ const MTextField = (props) => {
   }
 
   return (
-    <div>
+    <div className={props.className}>
       <CustomInput
         type={input.type}
         icon={icon}
@@ -81,11 +86,17 @@ const MTextField = (props) => {
         InputProps={{ ...props.InputProps }}
         multiline={multiline}
         helperText={helperText}
+        max={max}
+        min={min}
+        inputProps={{
+          ...inputProps,
+        }}
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}
         onChange={input.onChange}
         variant={variant}
+        sx={{ ...sx }}
       />
       {asyncValidating && (
         <div className="spinner-border spinner-border-sm" role="status">

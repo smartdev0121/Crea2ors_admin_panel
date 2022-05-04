@@ -9,19 +9,17 @@ import "./CreateCollectionPage.scss";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import Checkbox from "@mui/material/Checkbox";
+import { Button } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MTextField from "src/components/MInput/MTextField";
 import MSelectBox from "src/components/MInput/MSelectBox";
-import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
-import FormControl from "@mui/material/FormControl";
 import { styled } from "@mui/system";
 import MColorButtonView from "src/components/MInput/MColorButtonView";
-import TextField from "@mui/material/TextField";
 import { Form, Field } from "react-final-form";
 import { useWeb3React } from "@web3-react/core";
+import {showSpinner, hideSpinner} from "src/store/app/actions";
 // import "./BackgroundAnimation.scss";
 
 const Paragraph = styled("p")(
@@ -36,7 +34,6 @@ const Paragraph = styled("p")(
 );
 
 const CreateCollectionPage = () => {
-  const dispatch = useDispatch();
   const categories = [
     "Art",
     "Music",
@@ -50,7 +47,8 @@ const CreateCollectionPage = () => {
   const [metadata, setMetadata] = useState({});
   const [vidStatus, setVidStatus] = useState(false);
   const hiddenFileInput = React.useRef(null);
-  const { library, account } = useWeb3React();
+  const [type, setType] = useState(categories[0]);
+  const dispatch = useDispatch();
 
   const useDisplayImage = () => {
     const [result, setResult] = React.useState("");
@@ -105,10 +103,30 @@ const CreateCollectionPage = () => {
       TotalLimit: 20,
       Price: 100,
     };
-    // const deployed = await deployContract(0, parameter);
+    const metadata = {
+      collectionName: values.collectionName,
+      symbol: values.symbol,
+      description: values.description,
+      highLight: values.intro,
+      category: values.type,
+      subCategory: values.subCategory,
+      tokenLimit: values.tokenLimit,
+      videoUrl: values.vidUrl,
+      imageFile: file,
+      loyaltyAddress: values.loyaltyAddress,
+      fee: values.fee,
+    };
+    dispatch(showSpinner("DEPLOY_CONTRACT"));
+    await deployContract(0, metadata);
+    dispatch(hideSpinner("DEPLOY_CONTRACT"));
   };
 
   const { result, uploader } = useDisplayImage();
+
+  const valueChanged = (value) => {
+    console.log(value);
+    setType(categories[value]);
+  };
 
   return (
     <div className="whole-container">
@@ -119,7 +137,10 @@ const CreateCollectionPage = () => {
         <Box
           sx={{
             p: 2,
-            backgroundColor: "#00000075",
+            padding: "16px",
+            border: "1px solid #363636",
+            backgroundColor: "#2c2c2c61",
+            borderRadius: "10px",
           }}
         >
           <h4 level={4} className="create-nft-title">
@@ -147,8 +168,17 @@ const CreateCollectionPage = () => {
                       <Field
                         type="text"
                         name="collectionName"
-                        label="Title"
+                        label="Collection name"
                         onChange={(e) => handleInputChange(e, "CollectionName")}
+                        component={MTextField}
+                        variant="standard"
+                      />
+
+                      <Field
+                        type="text"
+                        name="symbol"
+                        label="Symbol"
+                        onChange={(e) => handleInputChange(e, "Symbol")}
                         component={MTextField}
                         variant="standard"
                       />
@@ -171,13 +201,14 @@ const CreateCollectionPage = () => {
                               onChange={handleCheckboxChange}
                             />
                           }
-                          label="add vid"
+                          label="Add video"
                         />
                         <Field
                           type="text"
                           label="URL"
-                          name="url"
+                          name="vidUrl"
                           component={MTextField}
+                          disabled={!vidStatus}
                         />
                       </Stack>
 
@@ -192,8 +223,11 @@ const CreateCollectionPage = () => {
                       <Field
                         name="type"
                         values={categories}
+                        initialValue={type}
+                        label="Category"
                         component={MSelectBox}
-                      />
+                        onChangeValue={valueChanged}
+                      ></Field>
                       <p>
                         If you coudln't define your category in this list,
                         please include it with #
@@ -206,24 +240,63 @@ const CreateCollectionPage = () => {
                         placeholder="#Weapon"
                         variant="standard"
                       />
-                      <Field
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <ProductionQuantityLimitsIcon
-                                sx={{ color: "#bdbdbd" }}
-                              />
-                            </InputAdornment>
-                          ),
-                        }}
-                        type="number"
-                        name="tokenLimit"
-                        placeholder="#Weapon"
-                        variant="standard"
-                        component={MTextField}
-                      />
+                      <Stack
+                        direction="row"
+                        sx={{ alignItems: "center" }}
+                        spacing={2}
+                      >
+                        <label>NFTs quantity (min: 1, max: 25) :</label>
+                        <Field
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <ProductionQuantityLimitsIcon
+                                  sx={{ color: "#bdbdbd" }}
+                                />
+                              </InputAdornment>
+                            ),
+                          }}
+                          name="tokenLimit"
+                          sx={{ maxWidth: "100px" }}
+                          variant="standard"
+                          max="25"
+                          min="1"
+                          label=""
+                          component={MTextField}
+                          inputProps={{
+                            min: 1,
+                            max: 25,
+                            type: "number",
+                          }}
+                        />
+                      </Stack>
+                      <Stack
+                        direction="row"
+                        sx={{ justifyContent: "center", alignItems: "end" }}
+                        spacing={2}
+                      >
+                        <Field
+                          type="text"
+                          name="loyaltyAddress"
+                          label="Loyalty Address"
+                          className="loyalty"
+                          component={MTextField}
+                          variant="standard"
+                        />
+                        <Field
+                          name="fee"
+                          variant="standard"
+                          component={MTextField}
+                          inputProps={{ min: 1, max: 100, type: "number" }}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">%</InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Stack>
 
-                      <Paragraph>
+                      <Paragraph className="grey-txt">
                         All our collections are Free or Lazy minted. This means
                         the buyer will pay for the minting of the collectable
                       </Paragraph>
@@ -254,14 +327,10 @@ const CreateCollectionPage = () => {
                           style={{ width: 300, height: "auto" }}
                           alt="collection"
                         />
-                        <p>Upload file jpg, jpeg, png 900x400px max: 100MB</p>
+                        <p className="grey-txt">
+                          Upload file jpg, jpeg, png 900x400px max: 100MB
+                        </p>
                       </div>
-
-                      <h2>{metadata.CollectionName}</h2>
-                      <TextField>{metadata.CollectionTicker}</TextField>
-                      <TextField value={metadata.Description} multiline>
-                        {metadata.Description}
-                      </TextField>
                     </Stack>
                   </Stack>
                 </form>
