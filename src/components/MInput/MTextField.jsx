@@ -7,6 +7,9 @@ const CustomInput = styled(TextField)({
   width: "100%",
   flex: "1 1",
   marginBottom: "10px",
+  "& p": {
+    color: "#aaa",
+  },
   "& label.Mui-focused": {
     color: "#999",
   },
@@ -101,7 +104,7 @@ const MTextField = (props) => {
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}
-        onChange={onChange}
+        onChange={onChange || input.onChange}
         variant={variant}
         sx={{ ...sx }}
       />

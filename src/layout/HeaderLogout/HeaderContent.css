@@ -1,0 +1,21 @@
+.indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.not-connected {
+  background-color: red;
+}
+
+.connected {
+  background-color: #00ff0d;
+}
+
+.connect-btn {
+  text-transform: none !important;
+  padding: 5px 10px !important;
+}
+/*# sourceMappingURL=HeaderContent.css.map */

@@ -13,6 +13,11 @@
   margin: 10px 0;
 }
 
+.header h2 {
+  font-size: 25px !important;
+  padding: 20px !important;
+}
+
 .link-part {
   margin: 14px 0;
   display: -webkit-box;

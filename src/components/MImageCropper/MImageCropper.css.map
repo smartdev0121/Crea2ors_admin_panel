@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,iBAAiB,CAAC;EAChB,UAAU,EAAE,cAAc;EAC1B,OAAO,EAAE,CAAC;CACX;;AAED,AAAA,iBAAiB,CAAC;EAChB,aAAa,EAAE,IAAI;CACpB;;AACD,AAAA,aAAa,CAAC;EACZ,gBAAgB,EAAE,kBAAkB;CACrC;;AAED,AAAA,eAAe;AACf,cAAc,AAAA,SAAS;AACvB,cAAc,AAAA,SAAS;AACvB,cAAc,AAAA,SAAS;AACvB,cAAc,AAAA,SAAS;AACvB,aAAa,CAAC;EACZ,OAAO,EAAE,eAAe;CACzB",
+    "sources": [
+        "MImageCropper.scss"
+    ],
+    "names": [],
+    "file": "MImageCropper.css"
+}

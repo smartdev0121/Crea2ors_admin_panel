@@ -27,6 +27,9 @@ import {
 import MTextField from "../../components/MInput/MTextField";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
 import { MPanButton } from "../../components/MButtons/MPanButton";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import "./CreateNFTPage.scss";
 
 const cryptoTypes = ["A2F", "BRISE", "BNB"];
@@ -78,6 +81,8 @@ export default function CreateNFTPage() {
   const [saleStatus, setSaleStatus] = React.useState(true);
   const [price, setPrice] = React.useState(0);
   const [settingType, setSettingType] = React.useState(settingTypes[0]);
+  const [value, setValue] = React.useState(new Date());
+  const [show, setShow] = React.useState(false);
   const useDisplayImage = () => {
     const uploader = (e) => {
       const imageFile = e.target.files[0];
@@ -139,7 +144,7 @@ export default function CreateNFTPage() {
           render={({ handleSubmit, submitting, form, values, pristine }) => {
             return (
               <form onSubmit={handleSubmit} noValidate>
-                <Stack direction="row">
+                <Stack direction="row" sx={{ flexWrap: "wrap" }}>
                   <Box
                     sx={{
                       p: 2,
@@ -262,6 +267,41 @@ export default function CreateNFTPage() {
                             </h6>
                           </>
                         )}
+
+                        {settingType == "BID" && ""}
+
+                        {settingType == "AUCTION" && (
+                          <>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <Stack spacing={3} className="date-time-pick">
+                                <DateTimePicker
+                                  renderInput={(params) => (
+                                    <TextField {...params} />
+                                  )}
+                                  label="Ignore date and time"
+                                  value={value}
+                                  onChange={(newValue) => {
+                                    setValue(newValue);
+                                  }}
+                                  minDateTime={new Date()}
+                                />
+                                <DateTimePicker
+                                  renderInput={(params) => (
+                                    <TextField {...params} />
+                                  )}
+                                  label="Ignore time in each day"
+                                  value={value}
+                                  onChange={(newValue) => {
+                                    setValue(newValue);
+                                  }}
+                                  minDate={new Date("2020-02-14")}
+                                  minTime={new Date(0, 0, 0, 8)}
+                                  maxTime={new Date(0, 0, 0, 18, 45)}
+                                />
+                              </Stack>
+                            </LocalizationProvider>
+                          </>
+                        )}
                       </div>
                     )}
 
@@ -305,11 +345,18 @@ export default function CreateNFTPage() {
                         sx={{ m: 1, mt: 3, width: "25ch", flex: "1 1" }}
                       >
                         <Field
-                          type="number"
                           name="royalty"
                           label="Royalties"
+                          inputProps={{
+                            min: 0,
+                            max: 50,
+                            type: "number",
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           InputProps={{
-                            startAdornment: (
+                            endAdornment: (
                               <InputAdornment position="end">%</InputAdornment>
                             ),
                           }}
@@ -334,10 +381,12 @@ export default function CreateNFTPage() {
                           name="copyNumber"
                           label="Number of copies"
                           placeholder="e.g. M"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="end">%</InputAdornment>
-                            ),
+                          inputProps={{
+                            min: 1,
+                            type: "number",
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
                           }}
                           component={MTextField}
                         />
@@ -350,45 +399,57 @@ export default function CreateNFTPage() {
                       </FormControl>
                     </Stack>
                     <div className="hide-btn-part">
-                      <HideButton>Hide advanced settings</HideButton>
+                      <HideButton
+                        onClick={() => {
+                          setShow(!show);
+                        }}
+                      >
+                        {!show ? "Show" : "Hide"} advanced settings
+                      </HideButton>
                     </div>
-                    <div>
-                      <label className="subtitle">
-                        Properties <span>(Optional)</span>
-                      </label>
-                      <Stack direction="row">
-                        <TextField
-                          id="standard-basic"
-                          variant="standard"
-                          placeholder="e.g.Size"
-                        />
-                        <TextField
-                          id="standard-basic"
-                          variant="standard"
-                          placeholder="e.g.M"
-                        />
-                      </Stack>
-                    </div>
-                    <div>
-                      <FormControl variant="standard" sx={{ width: "100%" }}>
-                        <InputLabel>
-                          Alternative text for NFT <span>(Optional)</span>
-                        </InputLabel>
-                        <Input
-                          id="component-helper"
-                          aria-describedby="component-helper-text"
-                          placeholder='Image description in details (do not start with word "image"'
-                          multiline
-                        />
-                        <FormHelperText
-                          id="component-helper-text"
-                          className="grey-txt"
-                        >
-                          Text that will be used in VoiceOver for people with
-                          disabilities
-                        </FormHelperText>
-                      </FormControl>
-                    </div>
+                    {show && (
+                      <>
+                        {" "}
+                        <div>
+                          <label className="subtitle">
+                            Properties <span>(Optional)</span>
+                          </label>
+                          <Stack direction="row" spacing={3}>
+                            <Field
+                              name="propName"
+                              component={MTextField}
+                              placeholder="e.g.Size"
+                              label="Prop name"
+                              InputLabelProps={{ shrink: true }}
+                            />
+                            <Field
+                              name="propValue"
+                              component={MTextField}
+                              placeholder="e.g.M"
+                              label="Prop value"
+                              InputLabelProps={{ shrink: true }}
+                            />
+                          </Stack>
+                        </div>
+                        <div>
+                          <Field
+                            name="alternativeText"
+                            label="Alternative text(Optional)"
+                            component={MTextField}
+                            placeholder='Image description in details (do not start with word "image"'
+                            multiline
+                          />
+                          <FormHelperText
+                            id="component-helper-text"
+                            className="grey-txt"
+                          >
+                            Text that will be used in VoiceOver for people with
+                            disabilities
+                          </FormHelperText>
+                        </div>
+                      </>
+                    )}
+
                     <div className="create-item-part">
                       <MColorButtonView>Create Item</MColorButtonView>
                       <UnsavedButton>
@@ -407,7 +468,9 @@ export default function CreateNFTPage() {
                       {result ? (
                         <img src={result || ""} className="viewport" />
                       ) : (
-                        <h6>Upload file to preview your brand new NFT</h6>
+                        <h6 className="grey-txt">
+                          Upload file to preview your brand new NFT
+                        </h6>
                       )}
                     </div>
                   </Box>
