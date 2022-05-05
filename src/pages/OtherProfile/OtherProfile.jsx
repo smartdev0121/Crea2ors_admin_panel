@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Box } from "@mui/material";
 import MClipboard from "../../components/MClipboard";
-import { useWeb3React } from "@web3-react/core";
 import "./OtherProfile.scss";
 import { setItem, deleteItem } from "../../utils/storage";
-import { injected } from "../../wallet/connector";
 import Tooltip from "@material-ui/core/Tooltip";
 import {
   InsertEmoticon,
@@ -20,16 +18,18 @@ import ProfileTab from "./ProfileTab";
 import "dotenv/config";
 import { getOtherProfile, follow, unFollow } from "../../store/users/actions";
 import { getProfile } from "../../store/profile/actions";
+import { getCurrentWalletAddress } from "src/utils/wallet";
 
 const OtherProfile = (props) => {
-  const { active, account, activate } = useWeb3React();
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
+  const [active, setActive] = useState(false);
   const [value, setValue] = React.useState("1");
   const params = props.match.params;
   const profileStatus = useSelector((state) => state.users.status);
   const otherInfo = useSelector((state) => state.users.otherUserInfo);
   const profile = useSelector((state) => state.profile);
   const followInfo = useSelector((state) => state.users.otherFollow);
+  const [account, setAccount] = useState("");
   const [alreadyFollowed, setAlreadyFollowed] = useState(false);
   const dispatch = useDispatch();
 
@@ -56,7 +56,7 @@ const OtherProfile = (props) => {
 
   const connectWallet = async () => {
     try {
-      await activate(injected);
+      getCurrentWalletAddress();
       setItem("walletStatus", true);
     } catch (err) {
       console.log(err);

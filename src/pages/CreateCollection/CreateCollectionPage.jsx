@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setLoading } from "src/slices/loadingSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { CONTRACT_TYPE } from "src/config/global";
 import { deployContract } from "src/utils/contract";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import "./CreateCollectionPage.scss";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import Checkbox from "@mui/material/Checkbox";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Box,
+  Container,
+  Stack,
+  Divider,
+  Checkbox,
+} from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MTextField from "src/components/MInput/MTextField";
 import MSelectBox from "src/components/MInput/MSelectBox";
@@ -18,9 +18,11 @@ import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantity
 import { styled } from "@mui/system";
 import MColorButtonView from "src/components/MInput/MColorButtonView";
 import { Form, Field } from "react-final-form";
-import { useWeb3React } from "@web3-react/core";
-import {showSpinner, hideSpinner} from "src/store/app/actions";
-// import "./BackgroundAnimation.scss";
+import { showSpinner, hideSpinner } from "src/store/app/actions";
+import MSpinner from "src/components/MSpinner";
+import { getSpinner } from "src/store/app/reducer";
+import { showNotify } from "src/utils/notify";
+import "./CreateCollectionPage.scss";
 
 const Paragraph = styled("p")(
   ({ theme }) =>
@@ -48,6 +50,9 @@ const CreateCollectionPage = () => {
   const [vidStatus, setVidStatus] = useState(false);
   const hiddenFileInput = React.useRef(null);
   const [type, setType] = useState(categories[0]);
+  const isDeploying = useSelector((state) =>
+    getSpinner(state, "DEPLOY_CONTRACT")
+  );
   const dispatch = useDispatch();
 
   const useDisplayImage = () => {
@@ -116,20 +121,25 @@ const CreateCollectionPage = () => {
       loyaltyAddress: values.loyaltyAddress,
       fee: values.fee,
     };
-    dispatch(showSpinner("DEPLOY_CONTRACT"));
-    await deployContract(0, metadata);
-    dispatch(hideSpinner("DEPLOY_CONTRACT"));
+    try {
+      dispatch(showSpinner("DEPLOY_CONTRACT"));
+      const contractAddress = await deployContract(0, metadata);
+      showNotify(`Collection is successfully created: ${contractAddress}`);
+    } catch (err) {
+      console.log(err);
+      dispatch(hideSpinner("DEPLOY_CONTRACT"));
+    }
   };
 
   const { result, uploader } = useDisplayImage();
 
   const valueChanged = (value) => {
-    console.log(value);
     setType(categories[value]);
   };
 
   return (
     <div className="whole-container">
+      {isDeploying && <MSpinner />}
       <Container
         maxWidth="md"
         sx={{ paddingTop: "100px", paddingBottom: "20px" }}

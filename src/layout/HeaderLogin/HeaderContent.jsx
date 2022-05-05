@@ -21,35 +21,37 @@ import web3Modal, {
   getCurrentNetworkId,
   getCachedProvider,
 } from "src/utils/wallet";
-import { getUserRole } from "src/utils/permission";
 import { useSelector } from "react-redux";
 import MSearch from "src/components/MSearch";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/auth/actions";
 import { apiGetAccountInfo } from "src/utils/api";
 import MClipboard from "../../components/MClipboard";
-import { useWeb3React } from "@web3-react/core";
-import { injected } from "../../wallet/connector";
 import { setItem, deleteItem } from "../../utils/storage";
+import { connectedWallet, rejectConnectWallet } from "src/store/wallet/actions";
 import "./HeaderContent.scss";
 
 const HeaderContent = () => {
   const [connectedStatus, setConnectedStatus] = useState(false);
   const [currentNetwork, setCurrentNetwork] = useState(1);
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
-  const [accountInfo, setAccountInfo] = useState(null);
+  const active = useSelector((state) => state.wallet.active);
+
   const [menuOpened, setMenuOpened] = useState(false);
   const [whitelisted, setWhitelisted] = useState(false);
+  const [walletAddress, setWalletAddress] = useState(null);
   const dispatch = useDispatch();
-  const { active, chainId, account, deactivate, activate } = useWeb3React();
   const toggleMenu = () => {
     setMenuOpened(!menuOpened);
   };
 
   const connectWallet = async () => {
     try {
-      //await activate(injected);
-      setItem("walletStatus", true);
+      const curAddress = await getCurrentWalletAddress();
+      if (curAddress) {
+        dispatch(connectedWallet());
+      }
+      setWalletAddress(curAddress);
     } catch (err) {
       console.log(err);
     }
@@ -70,48 +72,27 @@ const HeaderContent = () => {
     if (e.target.localName !== "a") {
       return;
     }
-
     setMenuOpened(true);
   };
 
-  useEffect(() => {
-    // const setUserRole = async () => {
-    //   const role = await getUserRole();
-    //   setWhitelisted(role);
-    // };
-    // setUserRole();
-  }, []);
+  useEffect(async () => {
+    let tempWalAddress = "Addr";
+    if (active) {
+      tempWalAddress = await getCurrentWalletAddress();
+      if (!tempWalAddress) {
+        dispatch(rejectConnectWallet());
+        return;
+      }
+      setWalletAddress(tempWalAddress);
+    }
 
-  useEffect(() => {
-    const btnTxt = `Connected: ${String(account).substring(0, 6)}...${String(
-      account
-    ).substring(38)}`;
+    const btnTxt = active
+      ? `Connected: ${String(tempWalAddress).substring(0, 6)}...${String(
+          tempWalAddress
+        ).substring(38)}`
+      : "Connect";
 
     setConnectBtnTxt(btnTxt);
-    // const doWalletStuff = async () => {
-    //   const acct = await getCurrentWalletAddress();
-    //   if (acct) {
-    //     console.log("connecting");
-    //     const btnTxt = `Connected: ${String(acct).substring(0, 6)}...${String(
-    //       acct
-    //     ).substring(38)}`;
-    //     const res = await apiGetAccountInfo(acct);
-    //     setAccountInfo(res);
-    //     setConnectBtnTxt(btnTxt);
-    //     setConnectedStatus(true);
-    //     setWalletAddress(acct);
-    //   }
-    // };
-    // const getNetwork = async () => {
-    //   const id = await getCurrentNetworkId();
-    //   if (id) {
-    //     setCurrentNetwork(id);
-    //   }
-    // };
-    // if (connectedStatus) {
-    //   // doWalletStuff();
-    //   getNetwork();
-    // }
   }, [connectedStatus, false, active]);
 
   const onLogout = () => {
@@ -120,7 +101,6 @@ const HeaderContent = () => {
 
   const onDisconnect = () => {
     try {
-      deactivate();
       deleteItem("walletStatus");
     } catch (err) {
       console.log(err);
@@ -160,7 +140,7 @@ const HeaderContent = () => {
               active ? (
                 <Button
                   className="btn btn-primary connect-btn"
-                  onClick={() => copy(account)}
+                  onClick={() => copy(walletAddress)}
                 >
                   <span className="indicator connected"></span>
                   {connectBtnTxt}

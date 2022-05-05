@@ -24,7 +24,9 @@ export const login = (values) => (dispatch) => {
       dispatch(replace("/connect-wallet"));
     })
     .catch((err) => {
-      if (err) showNotify("Connection Problem occured!", "error");
+      err.token === "noToken"
+        ? showNotify("Username or password is wrong!", "warning")
+        : showNotify("Connection Problem occured!", "error");
     })
     .finally(() => {
       dispatch(appActions.hideSpinner("login"));

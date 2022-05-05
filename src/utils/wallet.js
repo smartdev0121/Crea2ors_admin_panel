@@ -24,7 +24,6 @@ web3Modal = new Web3Modal({
   cacheProvider: true, // optional
   providerOptions, // required
 });
-
 export const getCachedProvider = () => {
   return web3Modal.cachedProvider;
 };

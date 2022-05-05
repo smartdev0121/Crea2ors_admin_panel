@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Box } from "@mui/material";
 import MClipboard from "../../components/MClipboard";
-import { useWeb3React } from "@web3-react/core";
-import { setItem, deleteItem } from "../../utils/storage";
-import { injected } from "../../wallet/connector";
+import { setItem, deleteItem, getItem } from "../../utils/storage";
 import {
   Settings,
   DownloadForOffline,
@@ -19,18 +17,20 @@ import Tooltip from "@material-ui/core/Tooltip";
 import MImageCropper from "src/components/MImageCropper";
 import { profileBackgroundUpdate } from "src/store/users/actions";
 import { getUserInfo } from "../../store/users/actions";
-
+import { getCurrentWalletAddress } from "src/utils/wallet";
+import { connectedWallet, rejectConnectWallet } from "src/store/wallet/actions";
 import "./MyProfile.scss";
 import "dotenv/config";
 
 const MyProfile = (props) => {
-  const { active, account, activate } = useWeb3React();
   const [connectBtnTxt, setConnectBtnTxt] = useState("Connect");
+  const [account, setAccount] = useState("");
   const [value, setValue] = React.useState("1");
   const userInfo = useSelector((state) => state.profile);
   const hiddenBackImageFile = React.useRef(null);
   const [resizedImage, setResizedImage] = useState(null);
   const followInfo = useSelector((state) => state.users.userFollow);
+  const active = useSelector((state) => state.wallet.active);
   const dispatch = useDispatch();
   const [confirmedFile, setConfirmedFile] = useState(undefined);
   const [file, setFile] = useState(null);
@@ -38,18 +38,31 @@ const MyProfile = (props) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
+    let tempWalAddress = "Addr";
+    if (active) {
+      tempWalAddress = await getCurrentWalletAddress();
+      if (!tempWalAddress) {
+        dispatch(rejectConnectWallet());
+        return;
+      }
+    }
+
     const btnTxt = active
-      ? `${String(account).substring(0, 6)}...${String(account).substring(38)}`
+      ? `Connected: ${String(tempWalAddress).substring(0, 6)}...${String(
+          tempWalAddress
+        ).substring(38)}`
       : "Connect";
+
     setConnectBtnTxt(btnTxt);
-    dispatch(getUserInfo(dispatch));
   }, [active, false]);
 
   const connectWallet = async () => {
     try {
-      await activate(injected);
-      setItem("walletStatus", true);
+      const curAddress = await getCurrentWalletAddress();
+      if (curAddress) {
+        dispatch(connectedWallet());
+      }
     } catch (err) {
       console.log(err);
     }

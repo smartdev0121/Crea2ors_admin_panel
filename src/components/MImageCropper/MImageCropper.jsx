@@ -96,7 +96,7 @@ function CropperModel(props) {
           <ReactCropper
             src={image}
             style={{ height: 500, width: "100%" }}
-            initialAspectRatio={1}
+            initialAspectRatio={props.ratio || 1}
             viewMode={2}
             dragMode="move"
             cropBoxResizable={true}

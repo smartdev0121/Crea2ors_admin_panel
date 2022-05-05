@@ -62,6 +62,7 @@ const SignIn = () => {
                   label="Email"
                   placeholder="Enter your email address"
                   component={MTextField}
+                  required
                 />
                 <Field
                   type="password"
@@ -69,6 +70,7 @@ const SignIn = () => {
                   label="Password"
                   placeholder="Enter your password"
                   component={MTextField}
+                  required
                 />
 
                 <MColorButtonView type="submit" disabled={submitting}>

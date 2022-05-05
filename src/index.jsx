@@ -1,25 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "bootstrap/dist/css/bootstrap.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserHistory } from "history";
 import { ConnectedRouter } from "connected-react-router";
-
 import "./index.css";
 import "antd/dist/antd.css";
 import "react-multi-carousel/lib/styles.css";
 import buildStore from "./store";
-import { getToken } from "./utils/storage";
+import { getItem, getToken } from "./utils/storage";
 import { getProfile } from "./store/profile/actions";
+import { connectedWallet } from "./store/wallet/actions";
 import { ToastContainer } from "react-toastify";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import MetamaskProvider from "./provider";
 import "react-toastify/dist/ReactToastify.css";
-
+import { getCurrentWalletAddress } from "./utils/wallet";
 const history = createBrowserHistory({});
 const store = buildStore(history, {});
 
@@ -27,6 +25,10 @@ if (getToken()) {
   store.dispatch(getProfile());
 }
 
+console.log(typeof getItem("walletStatus"));
+if (getItem("walletStatus") === true) {
+  store.dispatch(connectedWallet());
+}
 const getLibrary = (provider, connector) => {
   const library = new Web3Provider(provider);
   library.pollingInternal = 12000;
@@ -37,9 +39,7 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <MetamaskProvider>
-            <App />
-          </MetamaskProvider>
+          <App />
         </ConnectedRouter>
       </Provider>
       <ToastContainer />

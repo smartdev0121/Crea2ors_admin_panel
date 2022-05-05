@@ -7,7 +7,6 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { NotificationContainer } from "react-notifications";
 import MainLayout from "./layout/MainLayout";
 import reduce from "lodash/reduce";
 import guestRoutes from "./routes/guests";
@@ -15,7 +14,6 @@ import authRoutes from "./routes/auth";
 import MSpinner from "./components/MSpinner";
 import { getProfile as getProfileReducer } from "./store/profile/reducer";
 import { getSpinner } from "./store/app/reducer";
-import { getUserRole } from "src/utils/permission";
 
 import "./App.css";
 import "./styles/styles.css";

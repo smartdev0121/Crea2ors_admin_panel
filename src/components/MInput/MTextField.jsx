@@ -6,6 +6,7 @@ import "./MTextField.scss";
 const CustomInput = styled(TextField)({
   width: "100%",
   flex: "1 1",
+  marginBottom: "10px",
   "& label.Mui-focused": {
     color: "#999",
   },
@@ -43,9 +44,14 @@ const CustomInput = styled(TextField)({
       borderColor: "#444",
     },
   },
-  "& .MuiInputLabel-root": {
+  "& .MuiInputLabel-outlined": {
     zIndex: "unset",
     fontSize: "1.2rem",
+    color: "#bbb !important",
+  },
+  "& .MuiInputLabel-shrink": {
+    zIndex: "unset",
+    fontSize: "1rem",
     color: "#bbb !important",
   },
 });
@@ -62,6 +68,7 @@ const MTextField = (props) => {
     helperText,
     sx,
     variant,
+    onChange,
     inputProps,
     max,
     min,
@@ -94,7 +101,7 @@ const MTextField = (props) => {
         name={input.name}
         required={required}
         value={typeof input.value === "number" ? `${input.value}` : input.value}
-        onChange={input.onChange}
+        onChange={onChange}
         variant={variant}
         sx={{ ...sx }}
       />

@@ -8,6 +8,7 @@ import {
   TextField,
   FormControl,
   Button,
+  IconButton,
   Input,
   InputLabel,
   InputAdornment,
@@ -19,26 +20,27 @@ import MFileInput from "../../components/MInput/MFileInput";
 import {
   LocalOffer,
   AllInclusive,
+  DeleteForever,
   Public,
   HelpOutline,
 } from "@mui/icons-material";
 import MTextField from "../../components/MInput/MTextField";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
+import { MPanButton } from "../../components/MButtons/MPanButton";
 import "./CreateNFTPage.scss";
 
 const cryptoTypes = ["A2F", "BRISE", "BNB"];
-const PanButton = styled(ToggleButton)((theme) => ({
+
+const settingTypes = ["FIXED", "BID", "AUCTION"];
+
+const CustomButton = styled(Button)((theme) => ({
   color: "#e0dfff",
-  background: "transparent",
+  background: "#394dd966",
   borderRadius: "20px",
   textTransform: "none",
-  border: "1px solid #5c5c5c",
-  margin: "5px",
+  padding: "7px 30px",
   "&:hover": {
-    borderColor: "#394dd999",
-  },
-  "&:active": {
-    borderColor: "#394dd999",
+    backgroundColor: "#394dd999",
   },
 }));
 
@@ -70,9 +72,55 @@ const UnsavedButton = styled(Button)((theme) => ({
 }));
 
 export default function CreateNFTPage() {
-  const handleFile = (fileUploaded) => {
-    const file = fileUploaded;
+  const [file, setFile] = React.useState(null);
+  const hiddenFileInput = React.useRef(null);
+  const [result, setResult] = React.useState(null);
+  const [saleStatus, setSaleStatus] = React.useState(true);
+  const [price, setPrice] = React.useState(0);
+  const [settingType, setSettingType] = React.useState(settingTypes[0]);
+  const useDisplayImage = () => {
+    const uploader = (e) => {
+      const imageFile = e.target.files[0];
+
+      const reader = new FileReader();
+
+      reader.addEventListener("load", (e) => {
+        setResult(e.target.result);
+      });
+
+      reader.readAsDataURL(imageFile);
+    };
+    return { uploader };
   };
+
+  const { uploader } = useDisplayImage();
+
+  const onFileChanged = (e) => {
+    uploader(e);
+    setFile(e.target.files[0]);
+  };
+
+  const onUploadClicked = () => {
+    hiddenFileInput.current.click();
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setResult(null);
+  };
+
+  const onPutOn = (e) => {
+    setSaleStatus(e.target.checked);
+  };
+
+  const onPriceChange = (e) => {
+    setPrice(e.target.value);
+  };
+
+  const onPanClicked = (type) => {
+    setSettingType(type);
+  };
+
   const onSubmit = () => {};
   return (
     <div className="whole-container">
@@ -101,78 +149,121 @@ export default function CreateNFTPage() {
                     <label className="subtitle">Upload file</label>
 
                     <div className="file-upload-part">
-                      <h3 className="grey-txt">
-                        PNG, GIF, WEBP, MP4 or MP3. Max: 100MB
-                      </h3>
-                      <MFileInput handleFile={handleFile} />
+                      {result && (
+                        <IconButton className="delete-btn" onClick={removeFile}>
+                          <DeleteForever sx={{ color: "white" }} />
+                        </IconButton>
+                      )}
+
+                      <input
+                        type="file"
+                        hidden
+                        ref={hiddenFileInput}
+                        id="media_file"
+                        onChange={onFileChanged}
+                        accept=".PNG, .GIF, .WEBP, .MP4, .MP3, .jpg, .jpeg"
+                      />
+                      {result ? (
+                        <img src={result || ""} className="viewport" />
+                      ) : (
+                        <>
+                          <h6 className="grey-txt multi-txt">
+                            PNG, GIF, WEBP, MP4 or MP3. Max: 100MB
+                          </h6>
+                          <CustomButton onClick={onUploadClicked}>
+                            Upload a File
+                          </CustomButton>
+                        </>
+                      )}
                     </div>
 
                     <div className="put-market-part">
                       <label>Put on marketplace</label>
-                      <Switch defaultChecked />
+                      <Switch checked={saleStatus} onChange={onPutOn} />
                     </div>
 
-                    <div className="price-part">
-                      <label className="grey-txt">
-                        Enter price to allow users instantly purchase your NFT
-                      </label>
-                      <Stack
-                        direction="row"
-                        sx={{ justifyContent: "space-around" }}
-                      >
-                        <PanButton value="fixed" className="pan-btn">
-                          <div>
-                            <LocalOffer />
-                          </div>
-                          <div>
-                            Fixed<br></br> Price
-                          </div>
-                        </PanButton>
-                        <PanButton value="open" className="pan-btn">
-                          <div>
-                            <AllInclusive />
-                          </div>
-                          <div>
-                            Open for<br></br> bids
-                          </div>
-                        </PanButton>
-                        <PanButton value="timed" className="pan-btn">
-                          <div>
-                            <Public />
-                          </div>
-                          <div>
-                            Timed<br></br> auction
-                          </div>
-                        </PanButton>
-                      </Stack>
-                      <label className="subtitle">Price</label>
-                      <Stack direction="row">
-                        <Field
-                          label="Enter price for one piece"
-                          type="number"
-                          name="price"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="end"
-                                sx={{ color: "#888" }}
+                    {saleStatus && (
+                      <div className="price-part">
+                        <label className="grey-txt">
+                          Enter price to allow users instantly purchase your NFT
+                        </label>
+                        <Stack
+                          direction="row"
+                          sx={{ justifyContent: "space-around" }}
+                        >
+                          {settingTypes.map((item) => {
+                            console.log(item);
+                            return (
+                              <MPanButton
+                                key={item}
+                                className="pan-btn"
+                                onClick={() => onPanClicked(item)}
                               >
-                                A2F:&nbsp;{" "}
-                              </InputAdornment>
-                            ),
-                          }}
-                          component={MTextField}
-                        />
-                        {/* <MSelectBox values={cryptoTypes} sx={{ width: "70px" }} /> */}
-                      </Stack>
+                                <div>
+                                  {item === "FIXED" && <LocalOffer />}
+                                  {item === "BID" && <AllInclusive />}
+                                  {item === "AUCTION" && <Public />}
+                                </div>
+                                <div>
+                                  {item === "FIXED" && `Fixed`}
+                                  {item === "BID" && `Open for`}
+                                  {item === "AUCTION" && `Timed`}
+                                  <br />
+                                  {item === "FIXED" && `price`}
+                                  {item === "BID" && `bids`}
+                                  {item === "AUCTION" && `auction`}
+                                </div>
+                              </MPanButton>
+                            );
+                          })}
+                        </Stack>
+                        {settingType == "FIXED" && (
+                          <>
+                            <label className="subtitle">Price</label>
+                            <Stack direction="row">
+                              <Field
+                                label="Enter price for one piece"
+                                className="loyalty"
+                                name="price"
+                                onChange={onPriceChange}
+                                initialValue={price}
+                                inputProps={{
+                                  min: 0,
+                                  type: "number",
+                                }}
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment
+                                      position="end"
+                                      sx={{ color: "#888" }}
+                                    >
+                                      CR2&nbsp;{" "}
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                component={MTextField}
+                              />
+                              {/* <MSelectBox values={cryptoTypes} sx={{ width: "70px" }} /> */}
+                            </Stack>
 
-                      <h3 className="grey-txt">
-                        Service fee: <span>2.5%</span>
-                      </h3>
-                      <h4 className="grey-txt">
-                        You will receive: <span className="will-receive"></span>
-                      </h4>
-                    </div>
+                            <h6 className="grey-txt">
+                              Service fee: <span>2.5%</span>
+                            </h6>
+                            <h6 className="grey-txt">
+                              You will receive:
+                              <span className="will-receive">
+                                &nbsp;{(price * 2.5) / 100} CR2
+                              </span>{" "}
+                              =
+                              <span>
+                                &nbsp; $
+                                {Number((0.001 * price * 2.5) / 100).toFixed(6)}
+                              </span>
+                            </h6>
+                          </>
+                        )}
+                      </div>
+                    )}
 
                     <Stack
                       direction="row"
@@ -181,10 +272,10 @@ export default function CreateNFTPage() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <label className="unlock subtitle">
+                      {/* <label className="unlock subtitle">
                         Unlock once purchased
                       </label>
-                      <Switch />
+                      <Switch /> */}
                     </Stack>
                     <label className="grey-txt">
                       Content will be unlocked after successful transaction
@@ -313,7 +404,11 @@ export default function CreateNFTPage() {
                     }}
                   >
                     <div className="preview-part">
-                      Upload file to preview your brand new NFT
+                      {result ? (
+                        <img src={result || ""} className="viewport" />
+                      ) : (
+                        <h6>Upload file to preview your brand new NFT</h6>
+                      )}
                     </div>
                   </Box>
                 </Stack>

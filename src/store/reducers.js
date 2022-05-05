@@ -5,6 +5,7 @@ import profile from "./profile/reducer";
 import app from "./app/reducer";
 import modal from "./modal/reducer";
 import users from "./users/reducer";
+import wallet from "./wallet/reducer";
 
 const rootReducer = (history) => {
   return combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = (history) => {
     app,
     modal,
     users,
+    wallet,
   });
 };
 

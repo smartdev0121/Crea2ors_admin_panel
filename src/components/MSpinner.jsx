@@ -13,7 +13,7 @@ const override = css`
 const MSpinner = () => {
   return (
     <div className="spinner-container">
-      <ReactLoading type="spin" color="#F10EA5" height={30} width={30} />
+      <ReactLoading type="spin" color="#F10EA5" height={50} width={50} />
     </div>
   );
 };

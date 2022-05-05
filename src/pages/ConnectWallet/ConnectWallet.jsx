@@ -5,18 +5,16 @@ import { LockOpen } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showWeb3WalletModal } from "../../utils/wallet";
-import { useWeb3React } from "@web3-react/core";
-import { injected } from "../../wallet/connector";
+import { connectedWallet } from "src/store/wallet/actions";
 import { setItem } from "../../utils/storage";
 
 const ConnectWallet = (props) => {
   const dispatch = useDispatch();
-  const { active, activate } = useWeb3React();
+
   const onConnectWallet = async () => {
-    const provider = showWeb3WalletModal();
-    // await activate(injected);
-    // setItem("walletStatus", true);
-    // active && props.history.push("/");
+    const provider = await showWeb3WalletModal();
+    dispatch(connectedWallet());
+    setItem("walletStatus", true);
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>

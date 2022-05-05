@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
-import {showNotify} from "./notify";
+import { showNotify } from "./notify";
 const contract_source_arr = [
   "/contracts/compiled/A2FCreators",
   "/contracts/compiled/ERC1155",
@@ -48,14 +48,8 @@ export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
       const { collectionName, symbol, loyaltyAddress, fee } = contract_metadata;
-      
-      const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
-      showNotify(
-        "Waiting",
-        "Please wait while deploying smart contract",
-        "waiting"
-      );
+      const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
       if (web3Modal.cachedProvider) {
         provider = await web3Modal.connect();
@@ -78,14 +72,7 @@ export const deployContract = (contract_type, contract_metadata) =>
         })
         .send({ from: accounts[0] })
         .then(async (deployment) => {
-          showNotify(
-            "Success",
-            `Contract was deployed successfully at ${deployment.options.address}`,
-            "success",
-            8
-          );
-
-          return resolve();
+          return resolve(deployment.options.address);
         })
         .catch((e) => {
           return reject();

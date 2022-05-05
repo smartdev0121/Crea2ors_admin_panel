@@ -4,7 +4,6 @@ import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import showNotification from "src/config/notification";
-import { useWeb3React } from "@web3-react/core";
 const contract_source_arr = [
   "./contract/compiled/ERC721/A2F",
   "./contract/compiled/ERC1155",
