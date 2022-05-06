@@ -17,18 +17,15 @@ import { ToastContainer } from "react-toastify";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import "react-toastify/dist/ReactToastify.css";
-import { getCurrentWalletAddress } from "./utils/wallet";
+import { getCachedProvider } from "./utils/wallet";
 const history = createBrowserHistory({});
 const store = buildStore(history, {});
 
 if (getToken()) {
   store.dispatch(getProfile());
+  getCachedProvider() && store.dispatch(connectedWallet());
 }
 
-console.log(typeof getItem("walletStatus"));
-if (getItem("walletStatus") === true) {
-  store.dispatch(connectedWallet());
-}
 const getLibrary = (provider, connector) => {
   const library = new Web3Provider(provider);
   library.pollingInternal = 12000;

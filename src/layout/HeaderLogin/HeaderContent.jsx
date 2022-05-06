@@ -47,6 +47,7 @@ const HeaderContent = () => {
 
   const connectWallet = async () => {
     try {
+      console.log("connectsss");
       const curAddress = await getCurrentWalletAddress();
       if (curAddress) {
         dispatch(connectedWallet());

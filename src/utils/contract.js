@@ -4,6 +4,7 @@ import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import { showNotify } from "./notify";
+import "dotenv/config";
 const contract_source_arr = ["/contract/compiled/ERC1155"];
 
 let provider;
@@ -43,8 +44,9 @@ const readContractByteCode = async (contract_type) =>
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { collectionName } = contract_metadata;
-
+      const { collectionName, tokenLimit } = contract_metadata;
+      if (tokenLimit > process.env.REACT_APP_TOKEN_LIMI)
+        return reject("Can't mint more than 10");
       const { contract_uri } = await uploadContractMetadata(contract_metadata);
 
       if (web3Modal.cachedProvider) {
@@ -61,10 +63,23 @@ export const deployContract = (contract_type, contract_metadata) =>
 
       const contract = new web3.eth.Contract(contract_data);
 
+      console.log(
+        collectionName,
+        "CREATOR",
+        contract_uri,
+        process.env.REACT_APP_BATCH_SIZE,
+        tokenLimit
+      );
       contract
         .deploy({
           data: bytecode,
-          arguments: [collectionName, "CollectionTicker", contract_uri],
+          arguments: [
+            collectionName,
+            "CREATOR",
+            contract_uri,
+            process.env.REACT_APP_BATCH_SIZE,
+            tokenLimit,
+          ],
         })
         .send({ from: accounts[0] })
         .then(async (deployment) => {

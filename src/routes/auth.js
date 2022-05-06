@@ -34,7 +34,7 @@ const routes = [
     exact: true,
   },
   {
-    path: "/collection-view",
+    path: "/collection-view/:contractAddress",
     component: CollectionView,
     exact: true,
   },

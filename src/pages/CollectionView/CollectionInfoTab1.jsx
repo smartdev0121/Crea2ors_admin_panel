@@ -5,9 +5,11 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import DetailInfo from "./DetailInfo";
+import { useSelector } from "react-redux";
 
 export default function LabTabs(props) {
   const [value, setValue] = React.useState("1");
+  const userProfile = useSelector((state) => state.profile);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -59,10 +61,14 @@ export default function LabTabs(props) {
           </TabList>
         </Box>
         <TabPanel value="1" sx={{ paddingLeft: "0px" }}>
-          <DetailInfo url={props.metaData?.videoUrl} desc={props?.metaData?.description}/>
+          <DetailInfo
+            url={props.metaData?.videoUrl}
+            desc={props?.metaData?.description}
+            userProfile={userProfile}
+          />
         </TabPanel>
         <TabPanel value="2" sx={{ color: "white" }}>
-          {props.metaData?.description}
+          {userProfile?.bio}
         </TabPanel>
       </TabContext>
     </Box>

@@ -94,16 +94,16 @@ const CreateCollectionPage = (props) => {
     const metadata = {
       collectionName: values.collectionName,
       description: values.description,
+      videoUrl: values.vidUrl,
       highLight: values.intro,
       category: values.type,
       subCategory: values.subCategory,
       tokenLimit: values.tokenLimit,
-      videoUrl: values.vidUrl,
       file: file,
     };
     try {
       dispatch(showSpinner("DEPLOY_CONTRACT"));
-      
+
       const { contractAddress, contractUri } = await deployContract(
         0,
         metadata
@@ -112,9 +112,14 @@ const CreateCollectionPage = (props) => {
       dispatch(saveCollection(contractUri, contractAddress));
       showNotify(`Collection is successfully created: ${contractAddress}`);
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
-      props.history.push('/collection-view');
+      props.history.push(`/collection-view/${contractAddress}`);
     } catch (err) {
       console.log(err);
+      showNotify(
+        `Unfortunately, can't create collection for an network error`,
+        "error"
+      );
+
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
     }
   };

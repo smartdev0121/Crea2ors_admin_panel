@@ -7,7 +7,6 @@ export default (appState = initialState, { type, payload }) => {
     case types.PROFILE_INFO:
       return payload;
     case types.PROFILE_INFO_UPDATE:
-      console.log("update", payload);
       return { ...appState, ...payload };
     default:
       return appState;
