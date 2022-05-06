@@ -85,16 +85,6 @@ const CreateCollectionPage = () => {
     hiddenFileInput.current.click();
   };
 
-  const handleCreateCollection = async () => {
-    dispatch(setLoading(true));
-    try {
-      await deployContract(contractType, { ...metadata, file: file });
-      dispatch(setLoading(false));
-    } catch {
-      dispatch(setLoading(false));
-    }
-  };
-
   const handleCheckboxChange = (e) => {
     setVidStatus(e.target.checked);
   };
@@ -118,13 +108,12 @@ const CreateCollectionPage = () => {
       tokenLimit: values.tokenLimit,
       videoUrl: values.vidUrl,
       imageFile: file,
-      loyaltyAddress: values.loyaltyAddress,
-      fee: values.fee,
     };
     try {
       dispatch(showSpinner("DEPLOY_CONTRACT"));
       const contractAddress = await deployContract(0, metadata);
       showNotify(`Collection is successfully created: ${contractAddress}`);
+      dispatch(hideSpinner("DEPLOY_CONTRACT"));
     } catch (err) {
       console.log(err);
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
@@ -277,31 +266,6 @@ const CreateCollectionPage = () => {
                             min: 1,
                             max: 25,
                             type: "number",
-                          }}
-                        />
-                      </Stack>
-                      <Stack
-                        direction="row"
-                        sx={{ justifyContent: "center", alignItems: "end" }}
-                        spacing={2}
-                      >
-                        <Field
-                          type="text"
-                          name="loyaltyAddress"
-                          label="Loyalty Address"
-                          className="loyalty"
-                          component={MTextField}
-                          variant="standard"
-                        />
-                        <Field
-                          name="fee"
-                          variant="standard"
-                          component={MTextField}
-                          inputProps={{ min: 1, max: 100, type: "number" }}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">%</InputAdornment>
-                            ),
                           }}
                         />
                       </Stack>

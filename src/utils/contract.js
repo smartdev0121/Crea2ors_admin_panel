@@ -5,9 +5,7 @@ import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import { showNotify } from "./notify";
 const contract_source_arr = [
-  "/contracts/compiled/A2FCreators",
-  "/contracts/compiled/ERC1155",
-  "/contracts/compiled/ERC20_BASE",
+  "/contract/compiled/ERC1155",
 ];
 
 let provider;
@@ -47,10 +45,10 @@ const readContractByteCode = async (contract_type) =>
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { collectionName, symbol, loyaltyAddress, fee } = contract_metadata;
+      const { collectionName, symbol } = contract_metadata;
 
       const { contract_uri } = await uploadContractMetadata(contract_metadata);
-
+      console.log(contract_uri);
       if (web3Modal.cachedProvider) {
         provider = await web3Modal.connect();
       } else {
@@ -68,7 +66,7 @@ export const deployContract = (contract_type, contract_metadata) =>
       contract
         .deploy({
           data: bytecode,
-          arguments: ["CollectionName", "CollectionTicker", 5, 20, 100],
+          arguments: ["CollectionName", "CollectionTicker", contract_uri],
         })
         .send({ from: accounts[0] })
         .then(async (deployment) => {
