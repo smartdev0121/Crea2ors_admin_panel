@@ -1,10 +1,26 @@
 import { Container, Box } from "@mui/material";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
-import "./CollectionView.scss";
+import {fetchMetaData} from "src/utils/pinata";
 import CollectionInfoTab from "./CollectionInfoTab1";
+import "./CollectionView.scss";
 
 const CollectionView = () => {
+  const newCollectionInfo = useSelector((state) => state.contract);
+  const dispatch = useDispatch();
+  const [metaData, setMetaData] = useState(undefined);
+
+  useEffect(async () => {
+    let contractMetaData = null;
+    if (newCollectionInfo.contractUri) {
+      contractMetaData = await fetchMetaData(newCollectionInfo.contractUri);
+      console.log(
+        "metadata", contractMetaData
+      )
+      setMetaData(contractMetaData)
+    }
+  }, [newCollectionInfo])
   return (
     <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
       <Box
@@ -17,19 +33,15 @@ const CollectionView = () => {
           <div className="shadow"></div>
           <img src="/images/home/visual.png" />
           <div className="image-info-part">
-            <h2>Romero Britto X DJ White Shadow</h2>
-            <label>COLLECTION OPENS</label>
-            <label>Thursday, Oct 28 06:00 PM</label>
+            <h2>{metaData?.collectionName}</h2>
           </div>
         </section>
         <section className="info-section">
           <div className="description">
-            The "Romero Britto" NFT visual album collection, available
-            exclusively on Yellowheart, includes ten digital music masterpieces
-            produced by the famous DJ White system.
+            {metaData?.highLight}
           </div>
           <div className="info-tab">
-            <CollectionInfoTab />
+            <CollectionInfoTab metaData={metaData} />
           </div>
         </section>
       </Box>

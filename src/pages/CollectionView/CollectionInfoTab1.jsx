@@ -6,7 +6,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import DetailInfo from "./DetailInfo";
 
-export default function LabTabs() {
+export default function LabTabs(props) {
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
@@ -26,7 +26,7 @@ export default function LabTabs() {
             }}
           >
             <Tab
-              label="SHOW DETAILS"
+              label="COLLECTION DETAILS"
               value="1"
               sx={{
                 color: "#c5c5c5",
@@ -41,7 +41,7 @@ export default function LabTabs() {
               }}
             />
             <Tab
-              label="ABOUT"
+              label="ABOUT AUTHOR"
               value="2"
               sx={{
                 color: "#c5c5c5",
@@ -59,12 +59,10 @@ export default function LabTabs() {
           </TabList>
         </Box>
         <TabPanel value="1" sx={{ paddingLeft: "0px" }}>
-          <DetailInfo />
+          <DetailInfo url={props.metaData?.videoUrl} desc={props?.metaData?.description}/>
         </TabPanel>
         <TabPanel value="2" sx={{ color: "white" }}>
-          The "Romero Britto" NFT visual album collection, available exclusively
-          on Yellowheart, includes ten digital music masterpieces produced by
-          the famous DJ White system.
+          {props.metaData?.description}
         </TabPanel>
       </TabContext>
     </Box>

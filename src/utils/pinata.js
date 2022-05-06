@@ -1,7 +1,8 @@
 import axios from "axios";
 import showNotification from "src/config/notification";
 
-const pinata_gateway_url = "https://nftymeta.mypinata.cloud/ipfs/";
+// const pinata_gateway_url = "https://nftymeta.mypinata.cloud/ipfs/";
+const pinata_gateway_url = "https://gateway.pinata.cloud/ipfs/";
 
 export const uploadContractMetadata = async (mt) =>
   new Promise(async (resolve, reject) => {
@@ -22,10 +23,6 @@ export const uploadContractMetadata = async (mt) =>
 
       let metadata = {
         ...mt,
-        name: mt.CollectionName,
-        symbol: mt.CollectionTicker,
-        description: mt.Description,
-        external_url: mt.ExternalUrl,
         image_url: pinata_image_response?.pinataUrl || mt.ImageUrl,
       };
 
@@ -42,6 +39,21 @@ export const uploadContractMetadata = async (mt) =>
       return reject();
     }
   });
+
+export const fetchMetaData = (uri) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("pinata fetch", uri);
+      axios.get(uri)
+        .then(res => {
+          console.log(res); 
+          return resolve(res.data)})
+        .catch(err => reject("Can't fetch metadata"))
+    } catch (err) {
+      return reject("Connection problem is occured!");
+    }
+  })
+}
 
 export const uploadAssetMetaData = async (mt) =>
   new Promise(async (resolve, reject) => {

@@ -4,9 +4,7 @@ import { CONTRACT_TYPE } from "src/config/global";
 import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import { showNotify } from "./notify";
-const contract_source_arr = [
-  "/contract/compiled/ERC1155",
-];
+const contract_source_arr = ["/contract/compiled/ERC1155"];
 
 let provider;
 
@@ -45,10 +43,10 @@ const readContractByteCode = async (contract_type) =>
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { collectionName, symbol } = contract_metadata;
+      const { collectionName } = contract_metadata;
 
       const { contract_uri } = await uploadContractMetadata(contract_metadata);
-      console.log(contract_uri);
+
       if (web3Modal.cachedProvider) {
         provider = await web3Modal.connect();
       } else {
@@ -66,11 +64,14 @@ export const deployContract = (contract_type, contract_metadata) =>
       contract
         .deploy({
           data: bytecode,
-          arguments: ["CollectionName", "CollectionTicker", contract_uri],
+          arguments: [collectionName, "CollectionTicker", contract_uri],
         })
         .send({ from: accounts[0] })
         .then(async (deployment) => {
-          return resolve(deployment.options.address);
+          return resolve({
+            contractAddress: deployment.options.address,
+            contractUri: contract_uri,
+          });
         })
         .catch((e) => {
           return reject();

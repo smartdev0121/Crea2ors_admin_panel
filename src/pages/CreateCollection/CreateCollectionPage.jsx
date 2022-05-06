@@ -22,6 +22,7 @@ import { showSpinner, hideSpinner } from "src/store/app/actions";
 import MSpinner from "src/components/MSpinner";
 import { getSpinner } from "src/store/app/reducer";
 import { showNotify } from "src/utils/notify";
+import { saveCollection } from "../../store/contract/actions";
 import "./CreateCollectionPage.scss";
 
 const Paragraph = styled("p")(
@@ -35,7 +36,7 @@ const Paragraph = styled("p")(
   `
 );
 
-const CreateCollectionPage = () => {
+const CreateCollectionPage = (props) => {
   const categories = [
     "Art",
     "Music",
@@ -90,30 +91,28 @@ const CreateCollectionPage = () => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
-    const parameter = {
-      CollectionName: "A2FCreators",
-      Symbol: "A2F",
-      BatchSize: 5,
-      TotalLimit: 20,
-      Price: 100,
-    };
     const metadata = {
       collectionName: values.collectionName,
-      symbol: values.symbol,
       description: values.description,
       highLight: values.intro,
       category: values.type,
       subCategory: values.subCategory,
       tokenLimit: values.tokenLimit,
       videoUrl: values.vidUrl,
-      imageFile: file,
+      file: file,
     };
     try {
       dispatch(showSpinner("DEPLOY_CONTRACT"));
-      const contractAddress = await deployContract(0, metadata);
+      
+      const { contractAddress, contractUri } = await deployContract(
+        0,
+        metadata
+      );
+
+      dispatch(saveCollection(contractUri, contractAddress));
       showNotify(`Collection is successfully created: ${contractAddress}`);
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
+      props.history.push('/collection-view');
     } catch (err) {
       console.log(err);
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
@@ -168,16 +167,6 @@ const CreateCollectionPage = () => {
                         type="text"
                         name="collectionName"
                         label="Collection name"
-                        onChange={(e) => handleInputChange(e, "CollectionName")}
-                        component={MTextField}
-                        variant="standard"
-                      />
-
-                      <Field
-                        type="text"
-                        name="symbol"
-                        label="Symbol"
-                        onChange={(e) => handleInputChange(e, "Symbol")}
                         component={MTextField}
                         variant="standard"
                       />
@@ -185,7 +174,6 @@ const CreateCollectionPage = () => {
                       <Field
                         type="text"
                         placeholder="Description"
-                        onChange={(e) => handleInputChange(e, "Description")}
                         label="Collection details and information"
                         name="description"
                         component={MTextField}
@@ -244,7 +232,7 @@ const CreateCollectionPage = () => {
                         sx={{ alignItems: "center" }}
                         spacing={2}
                       >
-                        <label>NFTs quantity (min: 1, max: 25) :</label>
+                        <label>NFTs quantity (min: 1, max: 10) :</label>
                         <Field
                           InputProps={{
                             startAdornment: (
@@ -258,13 +246,10 @@ const CreateCollectionPage = () => {
                           name="tokenLimit"
                           sx={{ maxWidth: "100px" }}
                           variant="standard"
-                          max="25"
-                          min="1"
-                          label=""
                           component={MTextField}
                           inputProps={{
                             min: 1,
-                            max: 25,
+                            max: 10,
                             type: "number",
                           }}
                         />
