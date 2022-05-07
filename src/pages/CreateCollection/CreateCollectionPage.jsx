@@ -167,7 +167,7 @@ const CreateCollectionPage = (props) => {
                       className="create-collection-card"
                       spacing={1}
                       flex="1 1"
-                    >
+                     >
                       <Field
                         type="text"
                         name="collectionName"

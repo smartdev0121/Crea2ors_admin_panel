@@ -64,56 +64,35 @@ export const uploadAssetMetaData = async (mt) =>
 
       showNotification("Waiting", "Uploading Attachment Files...", "waiting");
 
-      if (mt.file.image) {
-        pinataImageResponse = await pinFileToIPFS(mt.file.image);
+      if (mt.file) {
+        pinataImageResponse = await pinFileToIPFS(mt.file);
         if (!pinataImageResponse.success) {
           showNotification("Failed", "Uploading Image Failed", "failed", 3);
           return reject();
         }
       }
-      if (mt.file.audio) {
-        pinataAudioResponse = await pinFileToIPFS(mt.file.audio);
-        if (!pinataAudioResponse.success) {
-          showNotification("Failed", "Uploading Audio Failed", "failed", 3);
-          return reject();
-        }
-      }
-      if (mt.file.video) {
-        pinataVideoResponse = await pinFileToIPFS(mt.file.video);
-        if (!pinataVideoResponse.success) {
-          showNotification("Failed", "Uploading Video Failed", "failed", 3);
-          return reject();
-        }
-      }
+     
 
       showNotification("Waiting", "Uploading Metadata...", "waiting");
 
       // make metadata
       let metadata = {
-        name: mt.Name,
-        description: mt.Description,
-        image: pinataImageResponse?.pinataUrl || mt.ImageUrl,
-        animation_url:
-          pinataVideoResponse?.pinataUrl ||
-          pinataAudioResponse?.pinataUrl ||
-          mt.AnimationUrl ||
-          null,
-        external_url: mt.ExternalLink,
-        attributes: mt.Traits,
+        ...mt,
+        fileUrl: pinataImageResponse?.pinataUrl,
       };
 
-      const attributes = mt.Traits?.filter(
-        (item) => item.display_type && item.value
-      ).map((item) => {
-        if (item.display_type === "text") {
-          delete item.display_type;
-        } else if (item.display_type === "number") {
-          item.value = Number(item.value);
-        }
-        return item;
-      });
+      // const attributes = mt.Traits?.filter(
+      //   (item) => item.display_type && item.value
+      // ).map((item) => {
+      //   if (item.display_type === "text") {
+      //     delete item.display_type;
+      //   } else if (item.display_type === "number") {
+      //     item.value = Number(item.value);
+      //   }
+      //   return item;
+      // });
 
-      metadata.attributes = attributes;
+      // metadata.attributes = attributes;
       //make pinata call
       const pinataResponse = await pinJSONToIPFS(metadata);
       if (!pinataResponse.success) {
@@ -123,10 +102,11 @@ export const uploadAssetMetaData = async (mt) =>
       const tokenURI = pinataResponse.pinataUrl;
 
       return resolve({
-        image_uri: pinataImageResponse?.pinataUrl,
+        file_uri: pinataImageResponse?.pinataUrl,
         metadata_uri: tokenURI,
       });
-    } catch {
+    } catch(err) {
+      console.log(err);
       return reject();
     }
   });

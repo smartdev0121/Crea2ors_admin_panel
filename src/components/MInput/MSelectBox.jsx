@@ -21,7 +21,7 @@ export default function UnstyledSelectObjectValues(props) {
   return (
     <MSelect value={category} onChange={onChanged}>
       {categories.map((value, index) => (
-        <MenuItem value={index}>{value}</MenuItem>
+        <MenuItem value={index} key={value + index}>{value}</MenuItem>
       ))}
     </MSelect>
   );

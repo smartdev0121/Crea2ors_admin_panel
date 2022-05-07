@@ -52,6 +52,15 @@
   margin-top: 20px;
 }
 
+.property {
+  position: relative;
+  button {
+    position: absolute;
+    top: 0;
+    right: 10px;
+  }
+}
+
 .price-part {
   p {
     color: #999 !important;

@@ -101,10 +101,7 @@ export const deployContract = (contract_type, contract_metadata) =>
 export const mintAsset = (
   contract_type,
   contract_address,
-  chain_id,
   metadata,
-  initial_supply = 0,
-  max_supply = 0
 ) =>
   new Promise(async (resolve, reject) => {
     try {
@@ -117,11 +114,11 @@ export const mintAsset = (
 
       const web3 = new Web3(provider);
 
-      await switchNetwork(chain_id);
-
       showNotify("Waiting", "Waiting ...", "waiting");
 
-      const { metadata_uri } = await uploadAssetMetaData(metadata);
+      const { metadata_uri, file_uri } = await uploadAssetMetaData(metadata);
+      console.log(contract_type, contract_address, metadata);
+
       const contract_data = await readContractABI(contract_type);
       const wallet_address = await getCurrentWalletAddress();
 
@@ -137,14 +134,15 @@ export const mintAsset = (
         await contract.methods.mint(metadata_uri).send(tx);
       } else {
         await contract.methods
-          .create(max_supply, initial_supply, metadata_uri, [])
+          .create(Number(metadata.batchSize), wallet_address, Number(metadata.royaltyFee), metadata_uri, [])
           .send(tx);
       }
 
       showNotify("Success", "Successfully minted", "success", 3);
 
-      return resolve();
+      return resolve({metaDataUri: metadata_uri, fileUri: file_uri});
     } catch (e) {
+      console.log(e);
       showNotify("Failed", "Failed", "failed", 3);
       return reject();
     }

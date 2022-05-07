@@ -111,12 +111,15 @@ const AccountMenu = (props) => {
           </ListItemIcon>
           My NFTs
         </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <NoteAdd fontSize="small" />
-          </ListItemIcon>
-          Create Collection
-        </MenuItem>
+        <MProfileLink to="/create-collection">
+          <MenuItem>
+            <ListItemIcon>
+              <NoteAdd fontSize="small" />
+            </ListItemIcon>
+            Create Collection
+          </MenuItem>
+        </MProfileLink>
+
         <Divider />
 
         <MenuItem onClick={props.onDisconnect}>

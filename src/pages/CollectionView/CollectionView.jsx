@@ -12,10 +12,13 @@ const CollectionView = (props) => {
   const { contractAddress } = props.match.params;
   const dispatch = useDispatch();
   const [metaData, setMetaData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
     dispatch(getContractUri(contractAddress));
+  }, []);
+
+  useEffect(async () => {
     let contractMetaData = null;
     if (newCollectionInfo.contractUri) {
       setIsLoading(true);
@@ -24,6 +27,10 @@ const CollectionView = (props) => {
       setMetaData({ ...metaData, ...contractMetaData });
     }
   }, [newCollectionInfo]);
+
+  const onCreateNFT = () => {
+    props.history.push(`/create-nft/${contractAddress}/${newCollectionInfo.id}`);
+  };
   return (
     <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
       <Box
@@ -62,7 +69,9 @@ const CollectionView = (props) => {
         </section>
       </Box>
       <section className="create-button-part">
-        <MColorButtonView>Create your NFTs</MColorButtonView>
+        <MColorButtonView onClick={onCreateNFT}>
+          Create your NFTs
+        </MColorButtonView>
       </section>
     </Container>
   );

@@ -44,7 +44,7 @@ const routes = [
     exact: true,
   },
   {
-    path: "/create-nft",
+    path: "/create-nft/:contractAddress/:contractId",
     component: CreateNFTPage,
     exact: true,
   },
