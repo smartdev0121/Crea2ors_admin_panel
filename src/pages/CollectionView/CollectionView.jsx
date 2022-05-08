@@ -2,13 +2,19 @@ import { Container, Box, Skeleton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
+import { MFlexBox } from "src/components/MLayout";
 import { fetchMetaData } from "src/utils/pinata";
 import CollectionInfoTab from "./CollectionInfoTab1";
 import { getContractUri } from "src/store/contract/actions";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
+import { EffectCoverflow, Pagination } from "swiper";
+import MNFTCard from "src/components/MCards/MNFTCard";
 import "./CollectionView.scss";
 
 const CollectionView = (props) => {
-  const newCollectionInfo = useSelector((state) => state.contract);
+  const newCollectionInfo = useSelector(
+    (state) => state.contract.collectionInfo
+  );
   const { contractAddress } = props.match.params;
   const dispatch = useDispatch();
   const [metaData, setMetaData] = useState({});
@@ -29,8 +35,11 @@ const CollectionView = (props) => {
   }, [newCollectionInfo]);
 
   const onCreateNFT = () => {
-    props.history.push(`/create-nft/${contractAddress}/${newCollectionInfo.id}`);
+    props.history.push(
+      `/create-nft/${contractAddress}/${newCollectionInfo.id}`
+    );
   };
+
   return (
     <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
       <Box
@@ -46,7 +55,7 @@ const CollectionView = (props) => {
             <div className="shadow"></div>
             <img src={metaData?.image_url || "/images/home/visual.png"} />
             <div className="image-info-part">
-              <h2>{metaData?.collectionName}</h2>
+              <h2>{metaData?.name}</h2>
               <p>{metaData?.category + "/" + metaData?.subCategory}</p>
               <p>Colleciton Token Limit: {metaData?.tokenLimit}</p>
             </div>
@@ -68,6 +77,43 @@ const CollectionView = (props) => {
           )}
         </section>
       </Box>
+      <MFlexBox>
+        <Swiper
+          slidesPerView={2}
+          grabCursor={true}
+          spaceBetween={30}
+          centeredSlides={false}
+          pagination={{
+            clickable: true,
+          }}
+          coverflowEffect={{
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          }}
+          modules={[EffectCoverflow, Pagination]}
+          className="mySwiper"
+        >
+          {isLoading ? (
+            <Skeleton
+              animation="wave"
+              variant="circular"
+              width="100%"
+              height="300px"
+            ></Skeleton>
+          ) : (
+            newCollectionInfo.nfts.map((item, index) => {
+              return (
+                <SwiperSlide key={item.name + index}>
+                  <MNFTCard data={item}></MNFTCard>
+                </SwiperSlide>
+              );
+            })
+          )}
+        </Swiper>
+      </MFlexBox>
       <section className="create-button-part">
         <MColorButtonView onClick={onCreateNFT}>
           Create your NFTs

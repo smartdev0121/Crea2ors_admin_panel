@@ -34,6 +34,7 @@ export const uploadContractMetadata = async (mt) =>
 
       return resolve({
         contract_uri: pinata_response.pinataUrl,
+        image_uri: pinata_image_response?.pinataUrl,
       });
     } catch (e) {
       return reject();
@@ -44,16 +45,18 @@ export const fetchMetaData = (uri) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("pinata fetch", uri);
-      axios.get(uri)
-        .then(res => {
-          console.log(res); 
-          return resolve(res.data)})
-        .catch(err => reject("Can't fetch metadata"))
+      axios
+        .get(uri)
+        .then((res) => {
+          console.log(res);
+          return resolve(res.data);
+        })
+        .catch((err) => reject("Can't fetch metadata"));
     } catch (err) {
       return reject("Connection problem is occured!");
     }
-  })
-}
+  });
+};
 
 export const uploadAssetMetaData = async (mt) =>
   new Promise(async (resolve, reject) => {
@@ -71,7 +74,6 @@ export const uploadAssetMetaData = async (mt) =>
           return reject();
         }
       }
-     
 
       showNotification("Waiting", "Uploading Metadata...", "waiting");
 
@@ -94,6 +96,7 @@ export const uploadAssetMetaData = async (mt) =>
 
       // metadata.attributes = attributes;
       //make pinata call
+      console.log("Pinata", metadata);
       const pinataResponse = await pinJSONToIPFS(metadata);
       if (!pinataResponse.success) {
         showNotification("Failed", "Uploading Metadata Failed", "failed", 2000);
@@ -105,7 +108,7 @@ export const uploadAssetMetaData = async (mt) =>
         file_uri: pinataImageResponse?.pinataUrl,
         metadata_uri: tokenURI,
       });
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       return reject();
     }

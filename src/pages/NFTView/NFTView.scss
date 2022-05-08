@@ -89,7 +89,9 @@
 .left-side {
   flex: 1 1;
 }
+
 .side-part {
+  position: relative;
   margin: 0 10px;
   flex: 1 1;
   h2 {
@@ -115,6 +117,9 @@
 
 .asset-view {
   img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #333;
   }
 }
 .asset-btn {

@@ -44,10 +44,14 @@ const readContractByteCode = async (contract_type) =>
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
     try {
-      const { collectionName, tokenLimit } = contract_metadata;
+      const { name, tokenLimit } = contract_metadata;
+
       if (tokenLimit > process.env.REACT_APP_TOKEN_LIMI)
         return reject("Can't mint more than 10");
-      const { contract_uri } = await uploadContractMetadata(contract_metadata);
+
+      const { contract_uri, image_uri } = await uploadContractMetadata(
+        contract_metadata
+      );
 
       if (web3Modal.cachedProvider) {
         provider = await web3Modal.connect();
@@ -64,7 +68,7 @@ export const deployContract = (contract_type, contract_metadata) =>
       const contract = new web3.eth.Contract(contract_data);
 
       console.log(
-        collectionName,
+        name,
         "CREATOR",
         contract_uri,
         process.env.REACT_APP_BATCH_SIZE,
@@ -74,7 +78,7 @@ export const deployContract = (contract_type, contract_metadata) =>
         .deploy({
           data: bytecode,
           arguments: [
-            collectionName,
+            name,
             "CREATOR",
             contract_uri,
             process.env.REACT_APP_BATCH_SIZE,
@@ -86,6 +90,7 @@ export const deployContract = (contract_type, contract_metadata) =>
           return resolve({
             contractAddress: deployment.options.address,
             contractUri: contract_uri,
+            imageUri: image_uri,
           });
         })
         .catch((e) => {
@@ -98,11 +103,7 @@ export const deployContract = (contract_type, contract_metadata) =>
     }
   });
 
-export const mintAsset = (
-  contract_type,
-  contract_address,
-  metadata,
-) =>
+export const mintAsset = (contract_type, contract_address, metadata) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
@@ -134,13 +135,19 @@ export const mintAsset = (
         await contract.methods.mint(metadata_uri).send(tx);
       } else {
         await contract.methods
-          .create(Number(metadata.batchSize), wallet_address, Number(metadata.royaltyFee), metadata_uri, [])
+          .create(
+            Number(metadata.batchSize),
+            wallet_address,
+            Number(metadata.royaltyFee),
+            metadata_uri,
+            []
+          )
           .send(tx);
       }
 
       showNotify("Success", "Successfully minted", "success", 3);
 
-      return resolve({metaDataUri: metadata_uri, fileUri: file_uri});
+      return resolve({ metaDataUri: metadata_uri, fileUri: file_uri });
     } catch (e) {
       console.log(e);
       showNotify("Failed", "Failed", "failed", 3);

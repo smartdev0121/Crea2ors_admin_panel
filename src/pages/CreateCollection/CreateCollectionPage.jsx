@@ -92,7 +92,7 @@ const CreateCollectionPage = (props) => {
 
   const onSubmit = async (values) => {
     const metadata = {
-      collectionName: values.collectionName,
+      name: values.collectionName,
       description: values.description,
       videoUrl: values.vidUrl,
       highLight: values.intro,
@@ -104,15 +104,22 @@ const CreateCollectionPage = (props) => {
     try {
       dispatch(showSpinner("DEPLOY_CONTRACT"));
 
-      const { contractAddress, contractUri } = await deployContract(
+      const { contractAddress, contractUri, imageUri } = await deployContract(
         0,
         metadata
       );
 
-      dispatch(saveCollection(contractUri, contractAddress));
+      dispatch(
+        saveCollection(
+          contractUri,
+          contractAddress,
+          metadata,
+          imageUri,
+          props.history
+        )
+      );
       showNotify(`Collection is successfully created: ${contractAddress}`);
       dispatch(hideSpinner("DEPLOY_CONTRACT"));
-      props.history.push(`/collection-view/${contractAddress}`);
     } catch (err) {
       console.log(err);
       showNotify(
@@ -167,7 +174,7 @@ const CreateCollectionPage = (props) => {
                       className="create-collection-card"
                       spacing={1}
                       flex="1 1"
-                     >
+                    >
                       <Field
                         type="text"
                         name="collectionName"

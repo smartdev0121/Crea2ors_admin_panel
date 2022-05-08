@@ -54,7 +54,7 @@ const TopCollection1 = () => {
         >
           {smallNFTs.map((item, index) => {
             return (
-              <SwiperSlide>
+              <SwiperSlide key={"nft_swiper" + index}>
                 <MNFTItem key={`nft1_${index}`} nft={item} />
               </SwiperSlide>
             );

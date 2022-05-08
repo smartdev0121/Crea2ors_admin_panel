@@ -8,6 +8,7 @@ import NFTView from "../pages/NFTView";
 import MyProfile from "../pages/MyProfile";
 import EditProfile from "../pages/EditProfile";
 import OtherProfile from "../pages/OtherProfile";
+import MyCollections from "../pages/MyCollections";
 
 const routes = [
   {
@@ -49,7 +50,7 @@ const routes = [
     exact: true,
   },
   {
-    path: "/nft-view",
+    path: "/nft-view/:nftId",
     component: NFTView,
     exact: true,
   },
@@ -69,6 +70,11 @@ const routes = [
   {
     path: "/custom/:customUrl",
     component: OtherProfile,
+    exact: true,
+  },
+  {
+    path: "/my-collections",
+    component: MyCollections,
     exact: true,
   },
 ];

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IconButton,
   Container,
   Stack,
   Avatar,
   Button,
+  Typography,
   Box,
 } from "@mui/material";
 import {
@@ -12,46 +13,52 @@ import {
   Contrast,
   VolumeOff,
   Fullscreen,
-  Diamond,
+  Sell,
   AudioFile,
-  LockOpen,
-  DensityMedium,
+  Copyright,
+  AllOut,
+  Diamond,
+  Person,
 } from "@mui/icons-material";
 import "./NFTView.scss";
 import { styled } from "@mui/material/styles";
 import { Logout } from "@mui/icons-material";
 import MColorButtonView from "../../components/MInput/MColorButtonView";
 import MSelectBox from "../../components/MInput/MSelectBox";
-const qty = [1, 2, 3, 4, 5];
+import { useDispatch, useSelector } from "react-redux";
+import { getNFTInformation } from "src/store/contract/actions";
+import { MContainer } from "src/components/MLayout";
+import NFTInfoBox from "./NFTInfoBox";
+import MTradeState from "./MTradeState";
+import SaleDialog from "./SaleDialog";
+import { MRoundBox } from "src/components/MLayout";
 
-const ViewButton = styled(Button)((theme) => ({
-  color: "yellow",
-  fontSize: "15px",
-  fontWeight: "600",
-}));
+const NFTView = (props) => {
+  const { nftId } = props.match.params;
+  console.log(nftId);
+  const dispatch = useDispatch();
+  const nftInfo = useSelector((state) => state.contract.nftInfo);
+  const [open, setOpen] = React.useState(false);
 
-const AssetButton = styled(Button)((theme) => ({
-  border: "1px solid #777",
-  color: "#777",
-  "&hover": {
-    color: "#279f00",
-    borderColor: "#279f00",
-  },
-}));
+  useEffect(() => {
+    dispatch(getNFTInformation(nftId));
+  }, []);
 
-const NFTView = () => {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
-      <Box
-        sx={{
-          p: 2,
-          backgroundColor: "#00000075",
-        }}
-      >
+    <MContainer maxWidth="lg">
+      <MRoundBox>
         <Stack direction="row" spacing={5}>
           <div className="left-side">
             <div className="asset-view">
-              <img src="/images/home/visual.png" />
+              <img src={nftInfo.fileUrl || "/images/home/visual.png"} />
               <div className="control-part">
                 <IconButton sx={{ color: "yellow" }}>
                   <Pause />
@@ -66,53 +73,29 @@ const NFTView = () => {
                   <Fullscreen />
                 </IconButton>
               </div>
-            </div>
-            <div className="detail-info">
-              <div className="minted">
-                <span>MINTED</span>
-                <div className="diamond">
-                  <Diamond sx={{ width: "12px", marginRight: "8px" }} />
-                  <label>60</label>
-                </div>
-              </div>
-              <div>
-                <span>CREATED BY</span>
-                <div className="created">
-                  <Avatar src="/images/avatar.png" className="avatar" />
-                  <label>@LesClayPool</label>
-                </div>
-              </div>
-              <div>
-                <span>OWNED BY</span>
-                <div className="owned">
-                  <Avatar src="/images/avatar.png" className="avatar" />
-                  <div>
-                    <h4>@Attractive-Magenta-Night</h4>
-                    <h4>+52 others</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="desc-part">
-              <h3>Description -</h3>
-              <p>
-                We're working on launching the first version (MVP) of a new
-                concept app to test the market with. We've designed a prototype
-                using Figma and Ant Design and are looking for a senior
-                full-stack developer to take us to release and market. You'll
-                work directly with the Founder of the company and the head of
-                product. You'll own the entire feasibility discussion and
-                timeline.{" "}
-              </p>
-              <ViewButton>
-                VIEW ON OPENSEA
-                <Logout />
-              </ViewButton>
+              {nftInfo.traits && (
+                <NFTInfoBox
+                  description={nftInfo?.description}
+                  traits={nftInfo?.traits}
+                />
+              )}
             </div>
           </div>
           <div className="side-part">
-            <h2>Self Within His Self</h2>
-            <Stack direction="row">
+            <h2>{nftInfo.name}</h2>
+            <MTypography>
+              <Person fontSize="small" />1 Owners | <AllOut fontSize="small" />{" "}
+              900 Total |<Diamond fontSize="small" /> You owned 900
+            </MTypography>
+            <AssetButton
+              className="asset-btn"
+              startIcon={<Sell />}
+              onClick={handleClickOpen}
+            >
+              Sell
+            </AssetButton>
+            <SaleDialog open={open} onClose={handleClose} />
+            {/* <Stack direction="row">
               <AssetButton className="asset-btn">
                 <AudioFile />
                 Music
@@ -121,39 +104,37 @@ const NFTView = () => {
                 <LockOpen />
                 Reedeemable
               </AssetButton>
-            </Stack>
-            <div className="price-count">
-              <div>
-                <h4>PRICE</h4>
-                <div className="price-part">
-                  <span className="main-unit">$250</span>
-                  <DensityMedium
-                    sx={{
-                      width: "20px",
-                      height: "12px",
-                      color: "white",
-                      marginBottom: "2px",
-                    }}
-                  />
-                  <span className="equal-price">0.06607</span>
-                </div>
-              </div>
-              <div className="edition-part">
-                <span>EDITION</span>
-                <span>61 of 100</span>
-              </div>
-            </div>
-            <div className="button-part">
-              <MSelectBox values={qty} className="select-box"></MSelectBox>
-              <MColorButtonView sx={{ height: "40px" }}>
-                BUY NOW
-              </MColorButtonView>
-            </div>
+            </Stack> */}
+            <MTradeState />
           </div>
         </Stack>
-      </Box>
-    </Container>
+      </MRoundBox>
+    </MContainer>
   );
 };
 
+const ViewButton = styled(Button)((theme) => ({
+  color: "yellow",
+  fontSize: "15px",
+  fontWeight: "600",
+}));
+
+const AssetButton = styled(Button)((theme) => ({
+  position: "absolute",
+  top: "10px",
+  right: "10px",
+  backgroundColor: "#da4bfd",
+  padding: "5px 13px",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#da4bfd",
+  },
+}));
+
 export default NFTView;
+
+const MTypography = styled(Typography)`
+  width: 100%;
+  flexshrink: 0;
+  color: #ccc !important;
+`;
