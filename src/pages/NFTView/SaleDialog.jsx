@@ -21,6 +21,12 @@ import { Form, Field } from "react-final-form";
 import { InputAdornment } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { createOrder } from "../../utils/order";
+import { holdEvent, getValuefromEvent } from "src/utils/order";
+import { useDispatch } from "react-redux";
+import { showSpinner, hideSpinner } from "src/store/app/actions";
+import { orderCreated } from "src/store/order/actions";
+import { showNotify } from "../../utils/notify";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -37,7 +43,7 @@ const TabPanel = (props) => {
 
 const SaleDialog = (props) => {
   const [value, setValue] = React.useState(0);
-
+  const dispatch = useDispatch();
   const [timeValue, setTimeValue] = React.useState(
     new Date("2018-01-01T00:00:00.000Z")
   );
@@ -46,20 +52,57 @@ const SaleDialog = (props) => {
     setValue(event.target.value);
   };
 
-  const onSubmit = (values) => {};
+  const onSubmit = async (values) => {
+    const curTime = new Date().getTime();
+    console.log("current", curTime);
+    try {
+      dispatch(showSpinner("MAKING_ORDER"));
+      const { result, marketPlaceContractAddress } = await createOrder(
+        0,
+        props.contractAddress,
+        props.tokenId,
+        Number(values.quantity),
+        Number(values.price),
+        curTime,
+        curTime,
+        0
+      );
+      console.log(result, marketPlaceContractAddress);
+      if (result) {
+        showNotify("Your sell is successfully created!");
+        const event = await holdEvent(
+          "OrderCreated",
+          marketPlaceContractAddress
+        );
+        const orderData = await getValuefromEvent(event);
+        console.log(orderData);
+        dispatch(orderCreated(orderData[0]));
+      }
+      dispatch(hideSpinner("MAKING_ORDER"));
+    } catch (err) {
+      if (!err) {
+        showNotify("Confirm internet connection, please", 'warning');
+      }
+      console.log(err);
+
+      dispatch(hideSpinner("MAKING_ORDER"));
+    }
+
+    props.onClose();
+  };
   return (
-    <Form
-      onSubmit={onSubmit}
-      validate={(values) => {
-        const errors = {};
-        if (values.quantity > 100) {
-          errors.quantity = "Quantity is not greater than 100";
-        }
-      }}
-      render={({ handleSubmit, submitting, form, values, pristine }) => {
-        return (
-          <form>
-            <Dialog open={props.open} onClose={props.onClose}>
+    <Dialog open={props.open} onClose={props.onClose}>
+      <Form
+        onSubmit={onSubmit}
+        validate={(values) => {
+          const errors = {};
+          if (values.quantity > 100) {
+            errors.quantity = "Quantity is not greater than 100";
+          }
+        }}
+        render={({ handleSubmit, submitting, form, values, pristine }) => {
+          return (
+            <form onSubmit={handleSubmit} noValidate>
               <DialogTitle sx={{ backgroundColor: "#24253c" }}>
                 Sell
               </DialogTitle>
@@ -84,25 +127,7 @@ const SaleDialog = (props) => {
                     />
                   </RadioGroup>
                 </FormControl>
-                <TabPanel value={value} index={0}>
-                  <MTitle>Quantity</MTitle>
-                  <MDescription>
-                    For quantities listed greater than 1, buyers will need to
-                    purchase the entire quantity. Users are not able to purchase
-                    partial amounts on Bitgert
-                  </MDescription>
-                  <Field
-                    name="quantity"
-                    component={MTextField}
-                    inputProps={{ min: 1, max: 10, type: "number" }}
-                    autoFocus
-                    fullWidth
-                    label="Quantity"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </TabPanel>
+                <TabPanel value={value} index={0}></TabPanel>
                 <TabPanel value={value} index={1}>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Stack spacing={3}>
@@ -124,7 +149,23 @@ const SaleDialog = (props) => {
                     </Stack>
                   </LocalizationProvider>
                 </TabPanel>
-
+                <MTitle>Quantity</MTitle>
+                <MDescription>
+                  For quantities listed greater than 1, buyers will need to
+                  purchase the entire quantity. Users are not able to purchase
+                  partial amounts on Bitgert
+                </MDescription>
+                <Field
+                  name="quantity"
+                  component={MTextField}
+                  inputProps={{ min: 1, max: 10, type: "number" }}
+                  autoFocus
+                  fullWidth
+                  label="Quantity"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
                 <DialogContentText sx={{ marginBottom: "10px" }}>
                   To subscribe to this website, please enter your email address
                   here. We will send updates occasionally.
@@ -148,13 +189,13 @@ const SaleDialog = (props) => {
               </DialogContent>
               <DialogActions sx={{ backgroundColor: "#24253c" }}>
                 <Button onClick={props.onClose}>Cancel</Button>
-                <Button onClick={props.onClose}>Complete Listing</Button>
+                <Button type="submit">Complete Listing</Button>
               </DialogActions>
-            </Dialog>
-          </form>
-        );
-      }}
-    ></Form>
+            </form>
+          );
+        }}
+      />
+    </Dialog>
   );
 };
 

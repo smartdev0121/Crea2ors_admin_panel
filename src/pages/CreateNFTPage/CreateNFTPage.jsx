@@ -38,12 +38,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { showSpinner, hideSpinner } from "src/store/app/actions";
 import { getSpinner } from "src/store/app/reducer";
 import { saveNFT } from "src/store/contract/actions";
-import { mintAsset } from "src/utils/contract";
+import { mintAsset, holdEvent, getValuefromEvent } from "src/utils/contract";
+import { getCurrentWalletAddress } from "../../utils/wallet";
 import "./CreateNFTPage.scss";
-
-const cryptoTypes = ["A2F", "BRISE", "BNB"];
-
-const settingTypes = ["FIXED", "BID", "AUCTION"];
 
 const CustomButton = styled(Button)((theme) => ({
   color: "#e0dfff",
@@ -85,13 +82,10 @@ const UnsavedButton = styled(Button)((theme) => ({
 
 export default function CreateNFTPage(props) {
   const { contractAddress, contractId } = props.match.params;
-  console.log(contractAddress, contractId);
   const [file, setFile] = React.useState(null);
   const [formInitialValues, setFormInitialValues] = React.useState({});
   const [result, setResult] = React.useState(null);
   const [saleStatus, setSaleStatus] = React.useState(true);
-  const [price, setPrice] = React.useState(0);
-  const [settingType, setSettingType] = React.useState(settingTypes[0]);
   const [value, setValue] = React.useState(new Date());
   const [show, setShow] = React.useState(false);
   const [property, setProperty] = React.useState([0]);
@@ -129,18 +123,6 @@ export default function CreateNFTPage(props) {
     setResult(null);
   };
 
-  const onPutOn = (e) => {
-    setSaleStatus(e.target.checked);
-  };
-
-  const onPriceChange = (e) => {
-    setPrice(e.target.value);
-  };
-
-  const onPanClicked = (type) => {
-    setSettingType(type);
-  };
-
   const addProperty = () => {
     let newPropArray = [...property];
     newPropArray.push(Number(property.length));
@@ -161,7 +143,6 @@ export default function CreateNFTPage(props) {
       name: values.name,
       description: values.description,
       batchSize: values.batchSize,
-      price: values.price,
       alterText: values.alternativeText,
       royaltyFee: values.royaltyFee,
       file: file,
@@ -170,21 +151,35 @@ export default function CreateNFTPage(props) {
 
     try {
       dispatch(showSpinner("NFT_MINTING"));
+
       const { metaDataUri, fileUri } = await mintAsset(
         CONTRACT_TYPE.ERC1155,
         contractAddress,
         metaData
       );
-      console.log("Create NFT", metaDataUri, fileUri);
+
+      const event = await holdEvent("TransferSingle", contractAddress);
+      const curWalletAddress = await getCurrentWalletAddress();
+      const returnValues = await getValuefromEvent(event, curWalletAddress);
+      console.log(returnValues.id);
+
       if (metaDataUri) {
         showNotify("NFT is minted successfully!");
         dispatch(
-          saveNFT(contractId, metaData, metaDataUri, fileUri, props.history)
+          saveNFT(
+            contractId,
+            metaData,
+            metaDataUri,
+            fileUri,
+            props.history,
+            returnValues.id
+          )
         );
         setFormInitialValues({});
       } else {
         showNotify("Error is occured on minting!", "error");
       }
+
       dispatch(hideSpinner("NFT_MINTING"));
     } catch (err) {
       showNotify(
@@ -250,146 +245,6 @@ export default function CreateNFTPage(props) {
                         </>
                       )}
                     </div>
-
-                    <div className="put-market-part">
-                      <label>Put on marketplace</label>
-                      <Switch checked={saleStatus} onChange={onPutOn} />
-                    </div>
-
-                    {saleStatus && (
-                      <div className="price-part">
-                        <label className="grey-txt">
-                          Enter price to allow users instantly purchase your NFT
-                        </label>
-                        <Stack
-                          direction="row"
-                          sx={{ justifyContent: "space-around" }}
-                        >
-                          {settingTypes.map((item) => {
-                            return (
-                              <MPanButton
-                                key={item}
-                                className="pan-btn"
-                                onClick={() => onPanClicked(item)}
-                              >
-                                <div>
-                                  {item === "FIXED" && <LocalOffer />}
-                                  {item === "BID" && <AllInclusive />}
-                                  {item === "AUCTION" && <Public />}
-                                </div>
-                                <div>
-                                  {item === "FIXED" && `Fixed`}
-                                  {item === "BID" && `Open for`}
-                                  {item === "AUCTION" && `Timed`}
-                                  <br />
-                                  {item === "FIXED" && `price`}
-                                  {item === "BID" && `bids`}
-                                  {item === "AUCTION" && `auction`}
-                                </div>
-                              </MPanButton>
-                            );
-                          })}
-                        </Stack>
-                        {settingType == "FIXED" && (
-                          <>
-                            <label className="subtitle">Price</label>
-                            <Stack direction="row">
-                              <Field
-                                label="Enter price for one piece"
-                                className="loyalty"
-                                name="price"
-                                onChange={onPriceChange}
-                                initialValue={price}
-                                inputProps={{
-                                  min: 0,
-                                  type: "number",
-                                }}
-                                InputProps={{
-                                  endAdornment: (
-                                    <InputAdornment
-                                      position="end"
-                                      sx={{ color: "#888" }}
-                                    >
-                                      CR2&nbsp;{" "}
-                                    </InputAdornment>
-                                  ),
-                                }}
-                                component={MTextField}
-                              />
-                              {/* <MSelectBox values={cryptoTypes} sx={{ width: "70px" }} /> */}
-                            </Stack>
-
-                            <h6 className="grey-txt">
-                              Service fee: <span>2.5%</span>
-                            </h6>
-                            <h6 className="grey-txt">
-                              You will receive:
-                              <span className="will-receive">
-                                &nbsp;{(price * 97.5) / 100} CR2
-                              </span>{" "}
-                              =
-                              <span>
-                                &nbsp; $
-                                {Number((0.001 * price * 97.5) / 100).toFixed(
-                                  6
-                                )}
-                              </span>
-                            </h6>
-                          </>
-                        )}
-
-                        {settingType == "BID" && ""}
-
-                        {settingType == "AUCTION" && (
-                          <>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <Stack spacing={3} className="date-time-pick">
-                                <DateTimePicker
-                                  renderInput={(params) => (
-                                    <TextField {...params} />
-                                  )}
-                                  label="Ignore date and time"
-                                  value={value}
-                                  onChange={(newValue) => {
-                                    setValue(newValue);
-                                  }}
-                                  minDateTime={new Date()}
-                                />
-                                <DateTimePicker
-                                  renderInput={(params) => (
-                                    <TextField {...params} />
-                                  )}
-                                  label="Ignore time in each day"
-                                  value={value}
-                                  onChange={(newValue) => {
-                                    setValue(newValue);
-                                  }}
-                                  minDate={new Date("2020-02-14")}
-                                  minTime={new Date(0, 0, 0, 8)}
-                                  maxTime={new Date(0, 0, 0, 18, 45)}
-                                />
-                              </Stack>
-                            </LocalizationProvider>
-                          </>
-                        )}
-                      </div>
-                    )}
-
-                    <Stack
-                      direction="row"
-                      sx={{
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      {/* <label className="unlock subtitle">
-                        Unlock once purchased
-                      </label>
-                      <Switch /> */}
-                    </Stack>
-                    <label className="grey-txt">
-                      Content will be unlocked after successful transaction
-                    </label>
                     <div>
                       <Field
                         type="text"

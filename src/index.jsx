@@ -12,6 +12,7 @@ import "react-multi-carousel/lib/styles.css";
 import buildStore from "./store";
 import { getItem, getToken } from "./utils/storage";
 import { getProfile } from "./store/profile/actions";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { connectedWallet } from "./store/wallet/actions";
 import { ToastContainer } from "react-toastify";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -31,12 +32,21 @@ const getLibrary = (provider, connector) => {
   library.pollingInternal = 12000;
   return library;
 };
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <App />
+          <ThemeProvider theme={darkTheme}>
+            <App />
+          </ThemeProvider>
         </ConnectedRouter>
       </Provider>
       <ToastContainer />

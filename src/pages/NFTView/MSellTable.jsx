@@ -1,101 +1,95 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
+import React, {useEffect} from "react";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import {Chip, Avatar, Button} from "@mui/material"
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import {Cancel, ShoppingBasket} from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrderData } from "src/store/order/actions";
+import { purple } from '@mui/material/colors';
+import "dotenv/config";
 
-const columns = [
-  { id: "Price", label: "Price" },
-  { id: "Quantity", label: "Quantity" },
-  {
-    id: "Max Bid Price",
-    label: "Max Bid Price",
-    format: (value) => value.toLocaleString("en-US"),
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#242638fa",
+    color: theme.palette.common.white,
   },
-  {
-    id: "Creator",
-    label: "Creator",
-    format: (value) => value.toLocaleString("en-US"),
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    backgroundColor: "#312b424f",
   },
-  {
-    id: "Time Left",
-    label: "Time Left",
-    format: (value) => value.toFixed(2),
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
   },
-  {
-    id: "Action",
-    label: "Action",
-    format: (value) => value.toFixed(2),
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
   },
-];
+}));
 
-const rows = [];
-
-export default function StickyHeadTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+export default function CustomizedTables() {
+  const dispatch = useDispatch();
+  const ordersData = useSelector((state) => state.orders);
+  console.log(ordersData);
+  useEffect(() => {
+    dispatch(fetchOrderData());
+  }, []);
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+    <TableContainer component={Paper}>
+      <Table aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Price</StyledTableCell>
+            <StyledTableCell >Quantity</StyledTableCell>
+            <StyledTableCell >Max bid Price</StyledTableCell>
+            <StyledTableCell >Creator</StyledTableCell>
+            <StyledTableCell >Timed Limit</StyledTableCell>
+            <StyledTableCell >Action</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {ordersData.map((row, index) => (
+            <StyledTableRow key={"Order_table" + index}>
+              <StyledTableCell>
+                {row.price}CR2
+              </StyledTableCell>
+              <StyledTableCell >{row.amount}</StyledTableCell>
+              <StyledTableCell >{row.maxBidPrice == -1 && "#"}</StyledTableCell>
+              <StyledTableCell >
+                <Chip 
+                  icon={
+                    <Avatar sx={{width: 24, height: 24}} 
+                      src={process.env.REACT_APP_BACKEND_URL + row.User.avatar_url || ""}
+                    />
+                  } label={row.User.nickName}/>
+              </StyledTableCell>
+              <StyledTableCell >{row.startTime == row.endTime && "#"}</StyledTableCell>
+              <StyledTableCell >  
+                <ColorButton variant="contained" endIcon={<Cancel />}>
+                  Cancel
+                </ColorButton>
+              </StyledTableCell>
+
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
+
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(purple[500]),
+  backgroundColor: purple[500],
+  '&:hover': {
+    backgroundColor: purple[700],
+  },
+}));

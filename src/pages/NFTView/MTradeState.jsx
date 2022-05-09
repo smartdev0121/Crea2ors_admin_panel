@@ -1,13 +1,26 @@
 import * as React from "react";
 import Tabs from "@mui/material/Tabs";
-import { Tab, Stack, Box, Typography, Avatar } from "@mui/material";
-import { PeopleAlt, Sell } from "@mui/icons-material";
+import {
+  Tab,
+  Stack,
+  Box,
+  Typography,
+  Avatar,
+  List,
+  ListItem,
+  Chip,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
+} from "@mui/material";
+import { PeopleAlt, Sell, Diamond } from "@mui/icons-material";
 import MSellTable from "./MSellTable";
 import styled from "styled-components";
+import "dotenv/config";
 
-export default function IconLabelTabs() {
+export default function IconLabelTabs(props) {
   const [value, setValue] = React.useState(0);
-
+  const owners = props.owners;
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -31,17 +44,27 @@ export default function IconLabelTabs() {
         ></MTab>
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Stack>
-          <UserRow>
-            <Avatar
-              src={
-                "http://localhost:8080/images/admin-file_attachment-1651427661179.jpeg"
-              }
-              sx={{ width: 24, height: 24 }}
-            />
-            &nbsp;NeedleDev
-          </UserRow>
-        </Stack>
+        <List dense>
+          {owners?.map((item, index) => (
+            <ListItem
+              disablePadding
+              key={"Owner" + index}
+              secondaryAction={<Chip icon={<Diamond />} label={item.amount} />}
+            >
+              <ListItemButton>
+                <ListItemAvatar>
+                  <Avatar
+                    src={
+                      process.env.REACT_APP_BACKEND_URL +
+                        item.User.avatar_url || ""
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText primary={item.User.nickName} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <MSellTable />

@@ -7,12 +7,14 @@ import modal from "./modal/reducer";
 import users from "./users/reducer";
 import wallet from "./wallet/reducer";
 import contract from "./contract/reducer";
+import orders from "./order/reducer";
 
 const rootReducer = (history) => {
   return combineReducers({
     router: connectRouter(history),
     form,
     profile,
+    orders,
     app,
     modal,
     users,

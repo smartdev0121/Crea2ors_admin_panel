@@ -5,7 +5,9 @@ import { uploadContractMetadata, uploadAssetMetaData } from "./pinata";
 import web3Modal, { getCurrentWalletAddress, switchNetwork } from "./wallet";
 import { showNotify } from "./notify";
 import "dotenv/config";
-const contract_source_arr = ["/contract/compiled/ERC1155"];
+const contract_source_arr = [
+  "/Crea2orsContracts/compiled/Crea2orsNFT/Crea2orsNFT",
+];
 
 let provider;
 
@@ -40,6 +42,37 @@ const readContractByteCode = async (contract_type) =>
         return reject();
       });
   });
+
+export const holdEvent = async (eventName, contractAddress) =>
+  new Promise(async (resolve, reject) => {
+    if (web3Modal.cachedProvider) {
+      provider = await web3Modal.connect();
+    } else {
+      return reject(null);
+    }
+    const web3 = new Web3(provider);
+    let latest_block = await web3.eth.getBlockNumber();
+    let historical_block = latest_block - 10000;
+    const contract_data = await readContractABI(0);
+    const contract = new web3.eth.Contract(contract_data, contractAddress);
+    console.log("block", latest_block, historical_block, contract);
+    const events = await contract.getPastEvents(eventName, {
+      fromBlock: historical_block,
+      toBlock: "latest",
+    });
+    return resolve(events);
+  });
+
+export const getValuefromEvent = async (eventData, myAccount) => {
+  let curData;
+  for (let i = 0; i < eventData.length; i++) {
+    let sender = eventData[i]["returnValues"]["to"];
+    if (sender == myAccount) {
+      curData = eventData[i]["returnValues"];
+    }
+  }
+  return curData;
+};
 
 export const deployContract = (contract_type, contract_metadata) =>
   new Promise(async (resolve, reject) => {
@@ -118,7 +151,6 @@ export const mintAsset = (contract_type, contract_address, metadata) =>
       showNotify("Waiting", "Waiting ...", "waiting");
 
       const { metadata_uri, file_uri } = await uploadAssetMetaData(metadata);
-      console.log(contract_type, contract_address, metadata);
 
       const contract_data = await readContractABI(contract_type);
       const wallet_address = await getCurrentWalletAddress();
@@ -401,7 +433,6 @@ export const mintERC1155 = (address, chain_id, id, amount) =>
 export const setApprovalForAll = (
   contract_address,
   asset_address,
-  chain_id,
   contract_type = 0
 ) =>
   new Promise(async (resolve, reject) => {
@@ -413,15 +444,14 @@ export const setApprovalForAll = (
         window.location.reload();
       }
 
+      console.log(contract_address, asset_address, contract_type);
       const web3 = new Web3(provider);
-
-      await switchNetwork(chain_id);
 
       showNotify("Waiting", "Approving ...", "waiting");
 
       const contract_data = await readContractABI(contract_type);
-      const current_address = await getCurrentWalletAddress();
 
+      const current_address = await getCurrentWalletAddress();
       const mContract = new web3.eth.Contract(contract_data, asset_address);
 
       const isApproved = await mContract.methods

@@ -14,9 +14,7 @@ const NFTInfoBox = (props) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  console.log(props?.traits);
   const traitsJson = JSON.parse(props?.traits);
-  console.log(traitsJson);
   return (
     <div>
       <MAccordion

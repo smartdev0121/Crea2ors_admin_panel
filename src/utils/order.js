@@ -14,20 +14,22 @@ import { CONTRACT_TYPE, NULL_ADDRESS } from "src/config/global";
 import { setApprovalForAll, approve } from "./contract";
 
 const order_manager_contract_url =
-  "/contracts/compiled/OrderManagerContract.abi";
+  "/Crea2orsContracts/compiled/Crea2orsManager/Crea2orsManager.abi";
 
 let provider;
 
 const getMarketplaceContractAddress = async () => {
   const networkId = await getCurrentNetworkId();
+  console.log("=========network id", networkId);
   return marketplace_contract_address[networkId];
 };
+
+
 
 const readContractABI = (contract_url = order_manager_contract_url) =>
   new Promise(async (resolve, reject) => {
     let ContractData;
     const contract_source = contract_url;
-
     fetch(contract_source)
       .then((response) => response.text())
       .then((data) => {
@@ -39,16 +41,45 @@ const readContractABI = (contract_url = order_manager_contract_url) =>
       });
   });
 
+  export const holdEvent = async (eventName, contractAddress) =>
+  new Promise(async (resolve, reject) => {
+    if (web3Modal.cachedProvider) {
+      provider = await web3Modal.connect();
+    } else {
+      return reject(null);
+    }
+    const web3 = new Web3(provider);
+    let latest_block = await web3.eth.getBlockNumber();
+    let historical_block = latest_block - 10000;
+    const contract_data = await readContractABI();
+    const contract = new web3.eth.Contract(contract_data, contractAddress);
+    console.log("block", latest_block, historical_block, contract);
+    const events = await contract.getPastEvents(eventName, {
+      fromBlock: historical_block,
+      toBlock: "latest",
+    });
+    return resolve(events);
+  });
+
+export const getValuefromEvent = async (eventData, myAccount) => {
+  let curData;
+  for (let i = 0; i < eventData.length; i++) {
+    let sender = eventData[i]["returnValues"]["to"];
+    if (sender == myAccount) {
+      curData = eventData[i]["returnValues"];
+    }
+  }
+  return curData;
+};
+
 export const createOrder = (
   ContractType,
   AssetAddress,
-  ChainId,
   TokenId,
   Amount,
   Price,
-  CurrencyTokenAddress,
-  CurrencyTokenDecimals,
-  Duration,
+  StartTime,
+  EndTime,
   OrderType
 ) =>
   new Promise(async (resolve, reject) => {
@@ -64,57 +95,42 @@ export const createOrder = (
 
       const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId);
-
       const ContractAddress = await getMarketplaceContractAddress();
+
       const ContractData = await readContractABI();
+
       const WalletAddress = await getCurrentWalletAddress();
-
+      console.log("Addreess", ContractAddress);
       const contract = new web3.eth.Contract(ContractData, ContractAddress);
-
+      console.log("contract", contract);
       const tx = {
         from: WalletAddress,
         to: ContractAddress,
         value: 0,
       };
 
-      await setApprovalForAll(
-        ContractAddress,
-        AssetAddress,
-        ChainId,
-        ContractType
-      );
+      await setApprovalForAll(ContractAddress, AssetAddress, ContractType);
 
       showNotification("Waiting", "Listing ...", "waiting");
-
+      
       await contract.methods
         .createOrder([
-          ContractType,
           WalletAddress,
           AssetAddress,
           TokenId,
           Amount,
-          CurrencyTokenAddress === NULL_ADDRESS
-            ? web3.utils.toWei(Price)
-            : web3.utils
-                .toBN(
-                  BigNumber(Price).times(
-                    BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
-                  )
-                )
-                .toString(),
-          CurrencyTokenAddress,
-          0,
-          Duration * 60,
+          Price,
+          StartTime,
+          EndTime,
           OrderType,
           WalletAddress,
           0,
         ])
         .send(tx);
-
       showNotification("Success", "Successfully", "success", 3);
-      return resolve({ success: true });
+      return resolve({ result: true, marketPlaceContractAddress: ContractAddress });
     } catch (e) {
+      console.log(e);
       showNotification("Failed", "failed", "failed", 3);
       return reject();
     }
@@ -526,12 +542,7 @@ export const acceptOffer = (
 
       const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
-      await setApprovalForAll(
-        ContractAddress,
-        NftAddress,
-        ChainId,
-        ContractType
-      );
+      await setApprovalForAll(ContractAddress, NftAddress, ContractType);
 
       const tx = {
         from: WalletAddress,

@@ -49,9 +49,16 @@ export const getContractUri = (contractAddress) => (dispatch) => {
 };
 
 export const saveNFT =
-  (contractId, metaData, metaDataUri, fileUri, history) => (dispatch) => {
+  (contractId, metaData, metaDataUri, fileUri, history, nftId) =>
+  (dispatch) => {
     return api
-      .post("/create-nft", { contractId, metaData, metaDataUri, fileUri })
+      .post("/create-nft", {
+        contractId,
+        metaData,
+        metaDataUri,
+        fileUri,
+        nftId,
+      })
       .then((res) => {
         if (res.name) {
           showNotify(`${res.name} is stored successfully!`);
