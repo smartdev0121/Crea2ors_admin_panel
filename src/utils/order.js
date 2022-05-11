@@ -18,13 +18,11 @@ const order_manager_contract_url =
 
 let provider;
 
-const getMarketplaceContractAddress = async () => {
+export const getMarketplaceContractAddress = async () => {
   const networkId = await getCurrentNetworkId();
   console.log("=========network id", networkId);
   return marketplace_contract_address[networkId];
 };
-
-
 
 const readContractABI = (contract_url = order_manager_contract_url) =>
   new Promise(async (resolve, reject) => {
@@ -41,7 +39,7 @@ const readContractABI = (contract_url = order_manager_contract_url) =>
       });
   });
 
-  export const holdEvent = async (eventName, contractAddress) =>
+export const holdEvent = async (eventName, contractAddress) =>
   new Promise(async (resolve, reject) => {
     if (web3Modal.cachedProvider) {
       provider = await web3Modal.connect();
@@ -80,12 +78,12 @@ export const createOrder = (
   Price,
   StartTime,
   EndTime,
-  OrderType
+  OrderType,
+  CurrencyTokenDecimals
 ) =>
   new Promise(async (resolve, reject) => {
     try {
       showNotification("Waiting", "Waiting ...", "waiting");
-
       if (web3Modal.cachedProvider) {
         provider = await web3Modal.connect();
       } else {
@@ -100,9 +98,7 @@ export const createOrder = (
       const ContractData = await readContractABI();
 
       const WalletAddress = await getCurrentWalletAddress();
-      console.log("Addreess", ContractAddress);
       const contract = new web3.eth.Contract(ContractData, ContractAddress);
-      console.log("contract", contract);
       const tx = {
         from: WalletAddress,
         to: ContractAddress,
@@ -112,23 +108,65 @@ export const createOrder = (
       await setApprovalForAll(ContractAddress, AssetAddress, ContractType);
 
       showNotification("Waiting", "Listing ...", "waiting");
-      
+
+      console.log("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", [
+        WalletAddress,
+        AssetAddress,
+        TokenId,
+        Amount,
+        web3.utils
+          .toBN(
+            BigNumber(Price).times(
+              BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
+            )
+          )
+          .toString(),
+        StartTime,
+        EndTime,
+        OrderType,
+        WalletAddress,
+        web3.utils
+          .toBN(
+            BigNumber(Price).times(
+              BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
+            )
+          )
+          .toString(),
+      ]);
+
+      console.log(Math.round(StartTime / 1000), Math.round(EndTime / 1000));
+
       await contract.methods
         .createOrder([
           WalletAddress,
           AssetAddress,
           TokenId,
           Amount,
-          Price,
-          StartTime,
-          EndTime,
+          web3.utils
+            .toBN(
+              BigNumber(Price).times(
+                BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
+              )
+            )
+            .toString(),
+          Math.round(StartTime / 1000),
+          Math.round(EndTime / 1000),
           OrderType,
           WalletAddress,
-          0,
+          web3.utils
+            .toBN(
+              BigNumber(Price).times(
+                BigNumber(10).pow(BigNumber(CurrencyTokenDecimals))
+              )
+            )
+            .toString(),
         ])
         .send(tx);
       showNotification("Success", "Successfully", "success", 3);
-      return resolve({ result: true, marketPlaceContractAddress: ContractAddress });
+      return resolve({
+        result: true,
+        marketPlaceContractAddress: ContractAddress,
+      });
     } catch (e) {
       console.log(e);
       showNotification("Failed", "failed", "failed", 3);
@@ -136,7 +174,7 @@ export const createOrder = (
     }
   });
 
-export const buyAsset = (OrderState, ChainId) =>
+export const buyAsset = (OrderState) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
@@ -148,8 +186,6 @@ export const buyAsset = (OrderState, ChainId) =>
 
       const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId);
-
       const ContractAddress = await getMarketplaceContractAddress();
       const ContractData = await readContractABI();
       const WalletAddress = await getCurrentWalletAddress();
@@ -158,26 +194,18 @@ export const buyAsset = (OrderState, ChainId) =>
 
       let value = 0;
 
-      if (OrderState.CurrencyTokenAddress === NULL_ADDRESS) {
-        value =
-          web3.utils.toWei(OrderState.Price.toString()) * OrderState.Amount;
-      } else {
-        await approve(
-          ContractAddress,
-          OrderState.CurrencyTokenAddress,
-          web3.utils
-            .toBN(
-              BigNumber(OrderState.Price)
-                .times(
-                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                )
-                .times(BigNumber(OrderState.Amount))
-            )
-            .toString(),
-          ChainId,
-          CONTRACT_TYPE.ERC20
-        );
-      }
+      await approve(
+        ContractAddress,
+        OrderState.CurrencyTokenAddress,
+        web3.utils
+          .toBN(
+            BigNumber(OrderState.Price)
+              .times(BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals)))
+              .times(BigNumber(OrderState.Amount))
+          )
+          .toString(),
+        1
+      );
 
       const tx = {
         from: WalletAddress,
@@ -185,46 +213,40 @@ export const buyAsset = (OrderState, ChainId) =>
         value: value,
         data: contract.methods
           .buyAsset([
-            OrderState.ContractType,
             OrderState.Creator,
             OrderState.NftAddress,
             OrderState.TokenId,
             OrderState.Amount,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.Price.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(OrderState.Price).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
-            OrderState.CurrencyTokenAddress,
-            Date.parse(OrderState.StartTime) / 1000,
-            OrderState.Duration,
+            web3.utils
+              .toBN(
+                BigNumber(OrderState.Price).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
+              )
+              .toString(),
+            OrderState.StartTime,
+            OrderState.EndTime,
             OrderState.OrderType,
             OrderState.Buyer,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.BuyerPrice.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(OrderState.BuyerPrice).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
+            web3.utils
+              .toBN(
+                BigNumber(OrderState.BuyerPrice).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
+              )
+              .toString(),
           ])
           .encodeABI(),
       };
 
       await web3.eth.sendTransaction(tx);
-      return resolve({});
+      return resolve({ result: true });
     } catch {
-      return reject();
+      return reject({ result: false });
     }
   });
 
-export const placeBid = (OrderState, BidPrice, ChainId) =>
+export const placeBid = (OrderState, BidPrice) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
@@ -235,8 +257,6 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
       }
 
       const web3 = new Web3(provider);
-
-      await switchNetwork(ChainId);
 
       const ContractAddress = await getMarketplaceContractAddress();
       const ContractData = await readContractABI();
@@ -245,26 +265,43 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
       const contract = new web3.eth.Contract(ContractData, ContractAddress);
 
       let value = 0;
+      await approve(
+        ContractAddress,
+        OrderState.CurrencyTokenAddress,
+        web3.utils
+          .toBN(
+            BigNumber(BidPrice)
+              .times(BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals)))
+              .times(BigNumber(OrderState.Amount))
+          )
+          .toString(),
+        1
+      );
 
-      if (OrderState.CurrencyTokenAddress === NULL_ADDRESS) {
-        value = web3.utils.toWei(BidPrice.toString()) * OrderState.Amount;
-      } else {
-        await approve(
-          ContractAddress,
-          OrderState.CurrencyTokenAddress,
-          web3.utils
-            .toBN(
-              BigNumber(BidPrice)
-                .times(
-                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                )
-                .times(BigNumber(OrderState.Amount))
+      console.log("UUUUUUUUUUUUUUUUU", [
+        OrderState.Creator,
+        OrderState.NftAddress,
+        OrderState.TokenId,
+        OrderState.Amount,
+        web3.utils
+          .toBN(
+            BigNumber(OrderState.Price).times(
+              BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
             )
-            .toString(),
-          ChainId,
-          CONTRACT_TYPE.ERC20
-        );
-      }
+          )
+          .toString(),
+        OrderState.StartTime,
+        OrderState.EndTime,
+        OrderState.OrderType,
+        OrderState.Buyer,
+        web3.utils
+          .toBN(
+            BigNumber(BidPrice).times(
+              BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+            )
+          )
+          .toString(),
+      ]);
 
       const tx = {
         from: WalletAddress,
@@ -272,34 +309,28 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
         value: value,
         data: contract.methods
           .placeBid([
-            OrderState.ContractType,
             OrderState.Creator,
             OrderState.NftAddress,
             OrderState.TokenId,
             OrderState.Amount,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.Price.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(OrderState.Price).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
-            OrderState.CurrencyTokenAddress,
-            Date.parse(OrderState.StartTime) / 1000,
-            OrderState.Duration,
+            web3.utils
+              .toBN(
+                BigNumber(OrderState.Price).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
+              )
+              .toString(),
+            OrderState.StartTime,
+            OrderState.EndTime,
             OrderState.OrderType,
             OrderState.Buyer,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.BuyerPrice.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(BidPrice).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
+            web3.utils
+              .toBN(
+                BigNumber(BidPrice).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
+                )
+              )
+              .toString(),
           ])
           .encodeABI(),
       };
@@ -311,7 +342,7 @@ export const placeBid = (OrderState, BidPrice, ChainId) =>
     }
   });
 
-export const cancelListing = (OrderState, ChainId) =>
+export const cancelListing = (OrderState) =>
   new Promise(async (resolve, reject) => {
     try {
       if (web3Modal.cachedProvider) {
@@ -323,56 +354,60 @@ export const cancelListing = (OrderState, ChainId) =>
 
       const web3 = new Web3(provider);
 
-      await switchNetwork(ChainId);
-
       const ContractAddress = await getMarketplaceContractAddress();
       const ContractData = await readContractABI();
       const WalletAddress = await getCurrentWalletAddress();
 
       const contract = new web3.eth.Contract(ContractData, ContractAddress);
-
+      console.log(BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals)));
+      console.log(
+        "here",
+        web3.utils
+          .toBN(
+            BigNumber(OrderState.Price).times(
+              BigNumber(10).pow(BigNumber(OrderState.CurrencyTokenDecimals))
+            )
+          )
+          .toString()
+      );
       const tx = {
         from: WalletAddress,
         to: ContractAddress,
         value: 0,
         data: contract.methods
           .cancelOrder([
-            OrderState.ContractType,
             OrderState.Creator,
             OrderState.NftAddress,
             OrderState.TokenId,
             OrderState.Amount,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.Price.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(OrderState.Price).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
-            OrderState.CurrencyTokenAddress,
-            Date.parse(OrderState.StartTime) / 1000,
-            OrderState.Duration,
+            web3.utils
+              .toBN(
+                BigNumber(OrderState.Price).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyTokenDecimals))
+                )
+              )
+              .toString(),
+            OrderState.StartTime,
+            OrderState.EndTime,
             OrderState.OrderType,
             OrderState.Buyer,
-            OrderState.CurrencyTokenAddress === NULL_ADDRESS
-              ? web3.utils.toWei(OrderState.BuyerPrice.toString())
-              : web3.utils
-                  .toBN(
-                    BigNumber(OrderState.BuyerPrice).times(
-                      BigNumber(10).pow(BigNumber(OrderState.CurrencyDecimals))
-                    )
-                  )
-                  .toString(),
+            web3.utils
+              .toBN(
+                BigNumber(OrderState.Price).times(
+                  BigNumber(10).pow(BigNumber(OrderState.CurrencyTokenDecimals))
+                )
+              )
+              .toString(),
           ])
           .encodeABI(),
       };
 
       await web3.eth.sendTransaction(tx);
-      return resolve({});
+      return resolve({ result: true });
     } catch (e) {
-      return reject();
+      console.log(e);
+
+      return reject({ result: false });
     }
   });
 

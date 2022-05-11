@@ -161,7 +161,6 @@ export default function CreateNFTPage(props) {
       const event = await holdEvent("TransferSingle", contractAddress);
       const curWalletAddress = await getCurrentWalletAddress();
       const returnValues = await getValuefromEvent(event, curWalletAddress);
-      console.log(returnValues.id);
 
       if (metaDataUri) {
         showNotify("NFT is minted successfully!");
@@ -172,7 +171,8 @@ export default function CreateNFTPage(props) {
             metaDataUri,
             fileUri,
             props.history,
-            returnValues.id
+            returnValues.id,
+            curWalletAddress
           )
         );
         setFormInitialValues({});

@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 
 const MNFTCard = (props) => {
   const { data } = props;
-  console.log(data);
   return (
     <CardContainer>
       <FlexBetween>

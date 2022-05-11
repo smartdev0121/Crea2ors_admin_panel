@@ -47,9 +47,10 @@ const HeaderContent = () => {
 
   const connectWallet = async () => {
     try {
+      await showWeb3WalletModal();
       const curAddress = await getCurrentWalletAddress();
       if (curAddress) {
-        dispatch(connectedWallet());
+        dispatch(connectedWallet(curAddress));
       }
       setWalletAddress(curAddress);
     } catch (err) {

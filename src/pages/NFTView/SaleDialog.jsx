@@ -44,9 +44,8 @@ const TabPanel = (props) => {
 const SaleDialog = (props) => {
   const [value, setValue] = React.useState(0);
   const dispatch = useDispatch();
-  const [timeValue, setTimeValue] = React.useState(
-    new Date("2018-01-01T00:00:00.000Z")
-  );
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -57,31 +56,54 @@ const SaleDialog = (props) => {
     console.log("current", curTime);
     try {
       dispatch(showSpinner("MAKING_ORDER"));
-      const { result, marketPlaceContractAddress } = await createOrder(
-        0,
-        props.contractAddress,
-        props.tokenId,
-        Number(values.quantity),
-        Number(values.price),
-        curTime,
-        curTime,
-        0
-      );
-      console.log(result, marketPlaceContractAddress);
-      if (result) {
-        showNotify("Your sell is successfully created!");
-        const event = await holdEvent(
-          "OrderCreated",
-          marketPlaceContractAddress
+      if (value == 0) {
+        const { result, marketPlaceContractAddress } = await createOrder(
+          0,
+          props.contractAddress,
+          props.tokenId,
+          Number(values.quantity),
+          Number(values.price),
+          curTime,
+          curTime,
+          0,
+          9
         );
-        const orderData = await getValuefromEvent(event);
-        console.log(orderData);
-        dispatch(orderCreated(orderData[0]));
+        if (result) {
+          showNotify("Your sell is successfully created!");
+          const event = await holdEvent(
+            "OrderCreated",
+            marketPlaceContractAddress
+          );
+          const orderData = await getValuefromEvent(event);
+          dispatch(orderCreated(orderData[0], props.nftId));
+        }
+      } else if (value == 1) {
+        const { result, marketPlaceContractAddress } = await createOrder(
+          0,
+          props.contractAddress,
+          props.tokenId,
+          Number(values.quantity),
+          Number(values.price),
+          startTime.getTime(),
+          endTime.getTime(),
+          1,
+          9
+        );
+        if (result) {
+          showNotify("Your sell is successfully created!");
+          const event = await holdEvent(
+            "OrderCreated",
+            marketPlaceContractAddress
+          );
+          const orderData = await getValuefromEvent(event);
+          dispatch(orderCreated(orderData[0], props.nftId));
+        }
       }
+
       dispatch(hideSpinner("MAKING_ORDER"));
     } catch (err) {
       if (!err) {
-        showNotify("Confirm internet connection, please", 'warning');
+        showNotify("Confirm internet connection, please", "warning");
       }
       console.log(err);
 
@@ -133,17 +155,17 @@ const SaleDialog = (props) => {
                     <Stack spacing={3}>
                       <DateTimePicker
                         renderInput={(params) => <TextField {...params} />}
-                        value={timeValue}
+                        value={startTime}
                         onChange={(newValue) => {
-                          setTimeValue(newValue);
+                          setStartTime(newValue);
                         }}
                         className="date-time"
                       />
                       <DateTimePicker
                         renderInput={(params) => <TextField {...params} />}
-                        value={timeValue}
+                        value={endTime}
                         onChange={(newValue) => {
-                          setTimeValue(newValue);
+                          setEndTime(newValue);
                         }}
                       />
                     </Stack>

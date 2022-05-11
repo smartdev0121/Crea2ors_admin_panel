@@ -46,15 +46,13 @@ const NFTInfoBox = (props) => {
           </MTypography>
         </AccordionSummary>
         <AccordionDetails>
-          <MTypography>
-            {traitsJson.map((item, index) => {
-              return (
-                <MTypography key={"traits" + index}>
-                  {item["propName_" + index]}: {item["propValue_" + index]}
-                </MTypography>
-              );
-            })}
-          </MTypography>
+          {traitsJson.map((item, index) => {
+            return (
+              <MTypography key={"traits" + index}>
+                {item["propName_" + index]}: {item["propValue_" + index]}
+              </MTypography>
+            );
+          })}
         </AccordionDetails>
       </MAccordion>
     </div>

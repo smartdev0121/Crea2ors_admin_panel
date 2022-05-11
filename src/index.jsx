@@ -18,14 +18,22 @@ import { ToastContainer } from "react-toastify";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import "react-toastify/dist/ReactToastify.css";
-import { getCachedProvider } from "./utils/wallet";
+import { getCachedProvider, getCurrentWalletAddress } from "./utils/wallet";
 const history = createBrowserHistory({});
 const store = buildStore(history, {});
 
-if (getToken()) {
-  store.dispatch(getProfile());
-  getCachedProvider() && store.dispatch(connectedWallet());
-}
+(async () => {
+  if (getToken()) {
+    store.dispatch(getProfile());
+    if (getCachedProvider()) {
+      let curAddress = "";
+      curAddress = await getCurrentWalletAddress();
+      console.log("CACHED", curAddress);
+
+      store.dispatch(connectedWallet(curAddress));
+    }
+  }
+})();
 
 const getLibrary = (provider, connector) => {
   const library = new Web3Provider(provider);

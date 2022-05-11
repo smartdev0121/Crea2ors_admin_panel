@@ -99,6 +99,15 @@ const AccountMenu = (props) => {
           </MenuItem>
         </MProfileLink>
 
+        <MProfileLink to="/all-collections">
+          <MenuItem>
+            <ListItemIcon>
+              <Collections fontSize="small" />
+            </ListItemIcon>
+            All Collections
+          </MenuItem>
+        </MProfileLink>
+
         <MProfileLink to="/my-collections">
           <MenuItem>
             <ListItemIcon>

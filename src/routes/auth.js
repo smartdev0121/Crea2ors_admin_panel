@@ -9,6 +9,7 @@ import MyProfile from "../pages/MyProfile";
 import EditProfile from "../pages/EditProfile";
 import OtherProfile from "../pages/OtherProfile";
 import MyCollections from "../pages/MyCollections";
+import AllCollections from "../pages/AllCollections";
 
 const routes = [
   {
@@ -22,8 +23,9 @@ const routes = [
     exact: true,
   },
   {
-    path: "/explore-collections",
+    path: "/all-collections",
     exact: true,
+    component: AllCollections,
   },
   {
     path: "/my-profile",

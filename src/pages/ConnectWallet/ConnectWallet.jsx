@@ -4,7 +4,10 @@ import MColorButtonView from "../../components/MInput/MColorButtonView";
 import { LockOpen } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { showWeb3WalletModal } from "../../utils/wallet";
+import {
+  showWeb3WalletModal,
+  getCurrentWalletAddress,
+} from "../../utils/wallet";
 import { connectedWallet } from "src/store/wallet/actions";
 import { setItem } from "../../utils/storage";
 
@@ -13,7 +16,8 @@ const ConnectWallet = (props) => {
 
   const onConnectWallet = async () => {
     const provider = await showWeb3WalletModal();
-    dispatch(connectedWallet());
+    const walletAddress = await getCurrentWalletAddress();
+    dispatch(connectedWallet(walletAddress));
     setItem("walletStatus", true);
   };
   return (

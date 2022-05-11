@@ -5,6 +5,7 @@ export const types = {
   CONTRACT_DEPLOYED: "CONTRACT_DEPLOYED",
   NFT_FETCHED: "NFT_FETCHED",
   COLLECTIONS_FETCHED: "COLLECTIONS_FETCHED",
+  COLLECTIONS_ALL_FETCHED: "COLLECTIONS_ALL_FETCHED",
 };
 
 export const saveCollection =
@@ -49,8 +50,17 @@ export const getContractUri = (contractAddress) => (dispatch) => {
 };
 
 export const saveNFT =
-  (contractId, metaData, metaDataUri, fileUri, history, nftId) =>
+  (
+    contractId,
+    metaData,
+    metaDataUri,
+    fileUri,
+    history,
+    nftId,
+    curWalletAddress
+  ) =>
   (dispatch) => {
+    console.log("//////////////", curWalletAddress);
     return api
       .post("/create-nft", {
         contractId,
@@ -58,6 +68,7 @@ export const saveNFT =
         metaDataUri,
         fileUri,
         nftId,
+        curWalletAddress,
       })
       .then((res) => {
         if (res.name) {
@@ -90,6 +101,18 @@ export const getUserCollections = () => (dispatch) => {
     .then((res) => {
       dispatch({
         type: types.COLLECTIONS_FETCHED,
+        payload: [...res.collections],
+      });
+    })
+    .catch((err) => {});
+};
+
+export const getAllCollections = () => (dispatch) => {
+  return api
+    .get("/get-all-collections")
+    .then((res) => {
+      dispatch({
+        type: types.COLLECTIONS_ALL_FETCHED,
         payload: [...res.collections],
       });
     })

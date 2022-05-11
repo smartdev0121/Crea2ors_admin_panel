@@ -45,7 +45,7 @@ const SignUp = (props) => {
           onSubmit={onSubmit}
           validate={(values) => {
             const errors = {};
-            if (!values.nickName) {
+            if (!values.nick_name) {
               errors.firstName = "Nickname is required";
             }
             if (!values.email) {
@@ -67,7 +67,7 @@ const SignUp = (props) => {
                 <Field
                   type="text"
                   label="Nickname"
-                  name="nickName"
+                  name="nick_name"
                   component={MTextField}
                 />
                 <Field

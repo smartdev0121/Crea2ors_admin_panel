@@ -33,17 +33,17 @@ export default function IconLabelTabs(props) {
         aria-label="icon label tabs example"
       >
         <MTab
-          icon={<PeopleAlt fontSize="small" />}
-          label="Owners"
-          sx={{ fontSize: "12px !important" }}
-        ></MTab>
-        <MTab
           icon={<Sell fontSize="small" />}
           label="Onsale"
           sx={{ fontSize: "12px !important" }}
         ></MTab>
+        <MTab
+          icon={<PeopleAlt fontSize="small" />}
+          label="Owners"
+          sx={{ fontSize: "12px !important" }}
+        ></MTab>
       </Tabs>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={1}>
         <List dense>
           {owners?.map((item, index) => (
             <ListItem
@@ -60,14 +60,17 @@ export default function IconLabelTabs(props) {
                     }
                   />
                 </ListItemAvatar>
-                <ListItemText primary={item.User.nickName} />
+                <ListItemText primary={item.User.nick_name} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </TabPanel>
-      <TabPanel value={value} index={1}>
-        <MSellTable />
+      <TabPanel value={value} index={0}>
+        <MSellTable
+          contractAddress={props.contractAddress}
+          nftId={props.nftId}
+        />
       </TabPanel>
     </>
   );
@@ -84,11 +87,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }

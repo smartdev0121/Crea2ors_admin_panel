@@ -8,7 +8,7 @@ import {
   Typography,
   Box,
   Grid,
-  GridItem
+  GridItem,
 } from "@mui/material";
 import {
   Pause,
@@ -34,7 +34,7 @@ import NFTInfoBox from "./NFTInfoBox";
 import MTradeState from "./MTradeState";
 import SaleDialog from "./SaleDialog";
 import { MRoundBox } from "src/components/MLayout";
-import {getSpinner} from "src/store/app/reducer";
+import { getSpinner } from "src/store/app/reducer";
 import MSpinner from "src/components/MSpinner";
 const NFTView = (props) => {
   const { nftId } = props.match.params;
@@ -42,16 +42,14 @@ const NFTView = (props) => {
   const nftInfo = useSelector((state) => state.contract.nftInfo);
   const userInfo = useSelector((state) => state.profile);
   const [curUserAmount, setCurUserAmount] = useState(0);
-  const isMaking = useSelector(state => getSpinner(state, "MAKING_ORDER"));
+  const isMaking = useSelector((state) => getSpinner(state, "MAKING_ORDER"));
   const [open, setOpen] = React.useState(false);
-
+  console.log("NFT VIew", nftInfo);
   useEffect(() => {
     dispatch(getNFTInformation(nftId));
   }, []);
 
   useEffect(() => {
-    let amount = 0;
-
     nftInfo.owners?.forEach((item) => {
       item.user_id == userInfo.id && setCurUserAmount(item.amount);
     });
@@ -70,55 +68,57 @@ const NFTView = (props) => {
       <MRoundBox>
         <Grid container spacing={2}>
           <Grid item xs={5}>
-          <div className="left-side">
-            <div className="asset-view">
-              <img src={nftInfo.fileUrl || "/images/home/visual.png"} />
-              <div className="control-part">
-                <IconButton sx={{ color: "yellow" }}>
-                  <Pause />
-                </IconButton>
-                <IconButton sx={{ color: "yellow" }}>
-                  <Contrast />
-                </IconButton>
-                <IconButton sx={{ color: "yellow" }}>
-                  <VolumeOff />
-                </IconButton>
-                <IconButton sx={{ color: "yellow" }}>
-                  <Fullscreen />
-                </IconButton>
+            <div className="left-side">
+              <div className="asset-view">
+                <img src={nftInfo.fileUrl || "/images/home/visual.png"} />
+                <div className="control-part">
+                  <IconButton sx={{ color: "yellow" }}>
+                    <Pause />
+                  </IconButton>
+                  <IconButton sx={{ color: "yellow" }}>
+                    <Contrast />
+                  </IconButton>
+                  <IconButton sx={{ color: "yellow" }}>
+                    <VolumeOff />
+                  </IconButton>
+                  <IconButton sx={{ color: "yellow" }}>
+                    <Fullscreen />
+                  </IconButton>
+                </div>
+                {nftInfo.traits && (
+                  <NFTInfoBox
+                    description={nftInfo?.description}
+                    traits={nftInfo?.traits}
+                  />
+                )}
               </div>
-              {nftInfo.traits && (
-                <NFTInfoBox
-                  description={nftInfo?.description}
-                  traits={nftInfo?.traits}
-                />
-              )}
             </div>
-          </div>
           </Grid>
           <Grid item xs={7}>
-          <div className="side-part">
-            <h2>{nftInfo.name}</h2>
-            <MTypography>
-              <Person fontSize="small" />1 Owners | <AllOut fontSize="small" />{" "}
-              {nftInfo.batchSize} Total |<Diamond fontSize="small" /> You
-              owned&nbsp;
-              {curUserAmount}
-            </MTypography>
-            <AssetButton
-              className="asset-btn"
-              startIcon={<Sell />}
-              onClick={handleClickOpen}
-            >
-              Sell
-            </AssetButton>
-            <SaleDialog
-              open={open}
-              onClose={handleClose}
-              contractAddress={nftInfo?.Contract?.contract_address}
-              tokenId={nftInfo?.nftId}
-            />
-            {/* <Stack direction="row">
+            <div className="side-part">
+              <h2>{nftInfo.name}</h2>
+              <MTypography>
+                <Person fontSize="small" />
+                {nftInfo.owners?.length} Owners | <AllOut fontSize="small" />{" "}
+                {nftInfo.batchSize} Total |
+                <Diamond fontSize="small" /> You owned&nbsp;
+                {curUserAmount}
+              </MTypography>
+              <AssetButton
+                className="asset-btn"
+                startIcon={<Sell />}
+                onClick={handleClickOpen}
+              >
+                Sell
+              </AssetButton>
+              <SaleDialog
+                open={open}
+                onClose={handleClose}
+                contractAddress={nftInfo?.Contract?.contract_address}
+                tokenId={nftInfo?.nftId}
+                nftId={nftInfo?.id}
+              />
+              {/* <Stack direction="row">
               <AssetButton className="asset-btn">
                 <AudioFile />
                 Music
@@ -128,8 +128,12 @@ const NFTView = (props) => {
                 Reedeemable
               </AssetButton>
             </Stack> */}
-            <MTradeState owners={nftInfo.owners} />
-          </div>
+              <MTradeState
+                owners={nftInfo.owners}
+                contractAddress={nftInfo.Contract?.contract_address}
+                nftId={nftId}
+              />
+            </div>
           </Grid>
         </Grid>
       </MRoundBox>

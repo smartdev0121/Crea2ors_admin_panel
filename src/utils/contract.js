@@ -7,6 +7,7 @@ import { showNotify } from "./notify";
 import "dotenv/config";
 const contract_source_arr = [
   "/Crea2orsContracts/compiled/Crea2orsNFT/Crea2orsNFT",
+  "/Crea2orsContracts/compiled/CR2/CR2",
 ];
 
 let provider;
@@ -444,7 +445,6 @@ export const setApprovalForAll = (
         window.location.reload();
       }
 
-      console.log(contract_address, asset_address, contract_type);
       const web3 = new Web3(provider);
 
       showNotify("Waiting", "Approving ...", "waiting");
@@ -482,7 +482,6 @@ export const approve = (
   contract_address,
   asset_address,
   amount,
-  chain_id,
   contract_type = 0
 ) =>
   new Promise(async (resolve, reject) => {
@@ -495,8 +494,6 @@ export const approve = (
       }
 
       const web3 = new Web3(provider);
-
-      await switchNetwork(chain_id);
 
       showNotify("Waiting", "Approving ...", "waiting");
 
