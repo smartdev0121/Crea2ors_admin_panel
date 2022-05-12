@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CONTRACT_TYPE } from "src/config/global";
-import { deployContract, holdEvent } from "src/utils/contract";
+import { deployContract, holdEvent, getValuefromEvent } from "src/utils/contract";
 import {
   Button,
   Box,
@@ -110,6 +110,7 @@ const CreateCollectionPage = (props) => {
       );
 
       const events = await holdEvent("ContractDeployed", contractAddress);
+      console.log("Collection Event", events);
       dispatch(
         saveCollection(
           contractUri,

@@ -6,6 +6,11 @@ html,
 body {
   background: var(--primary-background-color);
   color: white;
+  font-family: sans-serif !important;
+}
+
+* {
+  font-family: sans-serif !important;
 }
 
 h1,

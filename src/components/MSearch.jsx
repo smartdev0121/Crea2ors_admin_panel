@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-
+import { useSelector } from "react-redux";
+import { getProfile } from "src/store/profile/reducer";
 import { apiGetSearchResult } from "src/utils/api";
-
+import { getSearchAsset } from "src/utils/magicFuncApi";
 import styles from "./MSearch.module.scss";
 
 const CollectionSearchResults = (props) => {
@@ -19,12 +20,16 @@ const CollectionSearchResults = (props) => {
               key={`search-collection-${index}`}
               className="search-result"
               id="search-result"
-              to={`/collection/${collection.ChainId}/${collection.ContractAddress}`}
+              to={
+                props.isLogged
+                  ? `/collection-view/${collection.contract_address}`
+                  : "sign-in"
+              }
             >
               <span>
-                <img src={collection.ImageUrl} alt="collection-img" />
+                <img src={collection.image_url} alt="collection-img" />
               </span>
-              <span>{collection.CollectionName}</span>
+              <span>{collection.name}</span>
             </Link>
           );
         })}
@@ -45,12 +50,12 @@ const AssetSearchResults = (props) => {
               key={`search-asset-${index}`}
               className="search-result"
               id="search-result"
-              to={`/asset/${asset.Collection?.ChainId}/${asset.Collection?.ContractAddress}/${asset.TokenId}`}
+              to={props.isLogged ? `/nft-view/${asset.id}` : "/sign-in"}
             >
               <span>
-                <img src={asset.ImageUrl} alt="collection-img" />
+                <img src={asset.fileUrl} alt="collection-img" />
               </span>
-              <span>{asset.Name}</span>
+              <span>{asset.name}</span>
             </Link>
           );
         })}
@@ -62,9 +67,10 @@ const MSearch = () => {
   const [res, setRes] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [visible, setVisible] = useState(false);
-
+  const isLogged = useSelector((state) => getProfile(state));
   const handleSearch = async (term) => {
-    const result = await apiGetSearchResult(term);
+    const result = await getSearchAsset(term);
+    console.log(term, result);
     setSearchTerm(term);
     setRes(result || {});
   };
@@ -104,8 +110,11 @@ const MSearch = () => {
 
       {visible === true && searchTerm.length > 0 && (
         <div className="search-result-wrapper">
-          <CollectionSearchResults Collections={res.Collections} />
-          <AssetSearchResults Assets={res.Assets} />
+          <CollectionSearchResults
+            Collections={res.collections}
+            isLogged={isLogged}
+          />
+          <AssetSearchResults Assets={res.nfts} isLogged={isLogged} />
         </div>
       )}
     </div>
