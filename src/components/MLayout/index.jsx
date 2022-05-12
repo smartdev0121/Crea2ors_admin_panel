@@ -14,6 +14,9 @@ export const MBox = styled(Box)`
 export const MFlexBox = styled.div`
   display: flex;
   flex-wrap: wrap;
+  background: #262626;
+  border-radius: 10px;
+  border: 1px solid #333;
 `;
 
 export const MRoundBox = styled(Box)`

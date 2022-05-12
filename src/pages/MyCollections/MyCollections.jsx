@@ -21,7 +21,7 @@ const MyCollections = (props) => {
   return (
     <MContainer maxWidth="xl">
       <MBox>
-        <MTitle>My Collections</MTitle>
+        <MTitle className="text">My Collections</MTitle>
         <MDescription>You can create, view and mint asset here</MDescription>
         <MColorButtonView onClick={onNewCollection}>
           <Add />

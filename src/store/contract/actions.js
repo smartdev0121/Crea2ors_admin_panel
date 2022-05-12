@@ -1,11 +1,28 @@
 import * as api from "../../utils/magicApi";
 import { showNotify } from "../../utils/notify";
+import { showSpinner, hideSpinner } from "../app/actions";
 
 export const types = {
   CONTRACT_DEPLOYED: "CONTRACT_DEPLOYED",
   NFT_FETCHED: "NFT_FETCHED",
   COLLECTIONS_FETCHED: "COLLECTIONS_FETCHED",
   COLLECTIONS_ALL_FETCHED: "COLLECTIONS_ALL_FETCHED",
+  USER_NFTS_FETCHED: "USER_NFTS_FETCHED",
+};
+
+export const getUserNFTs = () => (dispatch) => {
+  showSpinner("USER_NFTS_LOADING");
+  return api
+    .get("/get-user-nfts")
+    .then((res) => {
+      if (res.userNfts)
+        dispatch({ type: types.USER_NFTS_FETCHED, payload: res.userNfts });
+        hideSpinner("USER_NFTS_LOADING");
+    })
+    .catch((err) => {
+      console.log(err);
+      hideSpinner("USER_NFTS_LOADING");
+    });
 };
 
 export const saveCollection =
@@ -108,6 +125,7 @@ export const getUserCollections = () => (dispatch) => {
 };
 
 export const getAllCollections = () => (dispatch) => {
+  dispatch(showSpinner("ALL_COLLECTIONS"));
   return api
     .get("/get-all-collections")
     .then((res) => {
@@ -115,6 +133,9 @@ export const getAllCollections = () => (dispatch) => {
         type: types.COLLECTIONS_ALL_FETCHED,
         payload: [...res.collections],
       });
+      dispatch(hideSpinner("ALL_COLLECTIONS"));
     })
-    .catch((err) => {});
+    .catch((err) => {
+      dispatch(hideSpinner("ALL_COLLECTIONS"));
+    });
 };

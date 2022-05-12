@@ -5,6 +5,7 @@ const initialState = {
   nftInfo: {},
   myCollections: [],
   allCollections: [],
+  userNfts: [],
 };
 
 export default (appState = initialState, { type, payload }) => {
@@ -17,6 +18,8 @@ export default (appState = initialState, { type, payload }) => {
       return { ...appState, myCollections: [...payload] };
     case types.COLLECTIONS_ALL_FETCHED:
       return { ...appState, allCollections: [...payload] };
+    case types.USER_NFTS_FETCHED:
+      return { ...appState, userNfts: [...payload] };
     default:
       return appState;
   }

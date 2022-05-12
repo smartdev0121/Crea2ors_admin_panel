@@ -51,7 +51,6 @@ export const holdEvent = async (eventName, contractAddress) =>
     let historical_block = latest_block - 10000;
     const contract_data = await readContractABI();
     const contract = new web3.eth.Contract(contract_data, contractAddress);
-    console.log("block", latest_block, historical_block, contract);
     const events = await contract.getPastEvents(eventName, {
       fromBlock: historical_block,
       toBlock: "latest",

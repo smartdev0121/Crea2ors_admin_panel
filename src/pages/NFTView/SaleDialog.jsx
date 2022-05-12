@@ -11,6 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import Radio from "@mui/material/Radio";
+import styled from "styled-components";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
@@ -46,6 +47,8 @@ const SaleDialog = (props) => {
   const dispatch = useDispatch();
   const [startTime, setStartTime] = React.useState(new Date());
   const [endTime, setEndTime] = React.useState(new Date());
+  const [price, setPrice] = React.useState(0);
+  const [quantity, setQuantity] = React.useState(0);
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -56,6 +59,7 @@ const SaleDialog = (props) => {
     console.log("current", curTime);
     try {
       dispatch(showSpinner("MAKING_ORDER"));
+
       if (value == 0) {
         const { result, marketPlaceContractAddress } = await createOrder(
           0,
@@ -112,6 +116,18 @@ const SaleDialog = (props) => {
 
     props.onClose();
   };
+  const required = (value) => {
+    return value ? undefined : "This field is required!";
+  };
+
+  const onQuantityChange = (eve) => {
+    setQuantity(eve.target.value);
+  };
+
+  const onPriceChange = (eve) => {
+    setPrice(eve.target.value);
+  };
+
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <Form
@@ -121,6 +137,7 @@ const SaleDialog = (props) => {
           if (values.quantity > 100) {
             errors.quantity = "Quantity is not greater than 100";
           }
+          if (!values.quantity) errors.quantity = "this field is required!";
         }}
         render={({ handleSubmit, submitting, form, values, pristine }) => {
           return (
@@ -179,10 +196,13 @@ const SaleDialog = (props) => {
                 </MDescription>
                 <Field
                   name="quantity"
+                  validate={required}
                   component={MTextField}
                   inputProps={{ min: 1, max: 10, type: "number" }}
+                  initialValue={quantity}
                   autoFocus
                   fullWidth
+                  onChange={onQuantityChange}
                   label="Quantity"
                   InputLabelProps={{
                     shrink: true,
@@ -195,9 +215,11 @@ const SaleDialog = (props) => {
                 <Field
                   name="price"
                   component={MTextField}
+                  onChange={onPriceChange}
+                  validate={required}
                   inputProps={{ min: 1, type: "number" }}
-                  autoFocus
                   fullWidth
+                  initialValue={price}
                   label="Price"
                   InputLabelProps={{
                     shrink: true,
@@ -208,6 +230,13 @@ const SaleDialog = (props) => {
                     ),
                   }}
                 />
+                {/* <FeeContent>
+                  <ServieFee>Service Fee: 2.5% (1CR2 = $0.001)</ServieFee>
+                  <WillReceive>
+                    You will receive: {price * quantity}CR2 = $
+                    {Number(price * quantity * 0.001).toFixed(5)}{" "}
+                  </WillReceive>
+                </FeeContent> */}
               </DialogContent>
               <DialogActions sx={{ backgroundColor: "#24253c" }}>
                 <Button onClick={props.onClose}>Cancel</Button>
@@ -222,3 +251,7 @@ const SaleDialog = (props) => {
 };
 
 export default SaleDialog;
+
+const FeeContent = styled.div``;
+const WillReceive = styled.h6``;
+const ServieFee = styled.h6``;

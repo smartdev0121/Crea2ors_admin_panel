@@ -46,7 +46,7 @@ const SignUp = (props) => {
           validate={(values) => {
             const errors = {};
             if (!values.nick_name) {
-              errors.firstName = "Nickname is required";
+              errors.nick_name = "Nickname is required";
             }
             if (!values.email) {
               errors.email = "Email address is required";

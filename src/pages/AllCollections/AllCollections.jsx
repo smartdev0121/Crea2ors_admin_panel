@@ -1,15 +1,19 @@
 import React, { useEffect } from "react";
 import { MContainer, MBox, MFlexBox } from "src/components/MLayout";
 import { MTitle, MDescription } from "src/components/MTextLabels";
-import { Add } from "@mui/icons-material";
-import MColorButtonView from "src/components/MInput/MColorButtonView";
 import MCollectionCard from "src/components/MCards/MCollectionCard";
+import { Divider } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCollections } from "src/store/contract/actions";
+import MAnimatedText from "src/components/MTextLabels/MAnimatedText";
+import { getSpinner } from "src/store/app/reducer";
 
 const AllCollections = (props) => {
   const dispatch = useDispatch();
   const allCollections = useSelector((state) => state.contract.allCollections);
+  const isLoading = useSelector((state) =>
+    getSpinner(state, "ALL_COLLECTIONS")
+  );
   useEffect(() => {
     dispatch(getAllCollections());
   }, []);
@@ -21,19 +25,26 @@ const AllCollections = (props) => {
   return (
     <MContainer maxWidth="xl">
       <MBox>
-        <MTitle>Explore Collections</MTitle>
-        <MDescription>You can create, view and mint asset here</MDescription>
-        <MColorButtonView onClick={onNewCollection}>
-          <Add />
-          New collection
-        </MColorButtonView>
+        {/* <MAnimatedText
+          bottomText="You can explore collections and go into some collection and create
+          your own NFT"
+        >
+          Explore Collections
+        </MAnimatedText> */}
+        <MTitle className="text">Explore Collections</MTitle>
+        <MDescription>
+          You can explore collections and go into some collection and create
+          your own NFT
+        </MDescription>
       </MBox>
+      <Divider />
       <MFlexBox>
         {allCollections.map((item, index) => {
           return (
             <MCollectionCard
               data={item}
               key={item.id + index}
+              isLoading={isLoading}
             ></MCollectionCard>
           );
         })}

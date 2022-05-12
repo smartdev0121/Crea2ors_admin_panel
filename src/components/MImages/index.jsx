@@ -8,4 +8,11 @@ export const MImg = styled.img`
   height: 100%;
   object-fit: cover;
   border-radius: 5px;
+  border: 1px solid #444;
+`;
+
+export const MTopRadiusImg = styled.img`
+  border: 1px solid #333;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 `;

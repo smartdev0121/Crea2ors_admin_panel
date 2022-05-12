@@ -39,7 +39,7 @@ export default function CustomizedTables(props) {
     const OrderState = {
       Creator: ordersData[id].creatorAddress,
       NftAddress: contractAddress,
-      TokenId: ordersData[id].nftId,
+      TokenId: ordersData[id].contractNftId,
       Amount: ordersData[id].amount,
       Price: ordersData[id].price,
       StartTime: ordersData[id].startTime,
@@ -63,7 +63,7 @@ export default function CustomizedTables(props) {
     const OrderState = {
       Creator: ordersData[id].creatorAddress,
       NftAddress: contractAddress,
-      TokenId: ordersData[id].nftId,
+      TokenId: ordersData[id].contractNftId,
       Amount: ordersData[id].amount,
       Price: ordersData[id].price,
       StartTime: ordersData[id].startTime,
@@ -94,7 +94,7 @@ export default function CustomizedTables(props) {
     const OrderState = {
       Creator: ordersData[id].creatorAddress,
       NftAddress: contractAddress,
-      TokenId: ordersData[id].nftId,
+      TokenId: ordersData[id].contractNftId,
       Amount: ordersData[id].amount,
       Price: ordersData[id].price,
       StartTime: ordersData[id].startTime,
@@ -161,7 +161,7 @@ export default function CustomizedTables(props) {
                   />
                 </StyledTableCell>
                 <StyledTableCell>
-                  {diff == 0
+                  {diff <= 0
                     ? "#"
                     : `${parseInt(diff / 86400)}d ${parseInt(
                         (diff % 86400) / 3600
@@ -189,8 +189,9 @@ export default function CustomizedTables(props) {
                       variant="contained"
                       startIcon={<ShoppingBasket />}
                       onClick={(eve) => placeBidClicked(eve, index)}
+                      disabled={diff <= 0}
                     >
-                      Place Bid
+                      {diff <= 0 ? "Sold out" : "Place Bid"}
                     </BuyButton>
                   )}
                 </StyledTableCell>

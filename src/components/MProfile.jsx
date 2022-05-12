@@ -18,6 +18,7 @@ import {
   PersonAdd,
   ManageAccounts,
   Collections,
+  Inventory2,
   Extension,
   NoteAdd,
 } from "@mui/icons-material";
@@ -102,7 +103,7 @@ const AccountMenu = (props) => {
         <MProfileLink to="/all-collections">
           <MenuItem>
             <ListItemIcon>
-              <Collections fontSize="small" />
+              <Inventory2 fontSize="small" />
             </ListItemIcon>
             All Collections
           </MenuItem>
@@ -117,12 +118,15 @@ const AccountMenu = (props) => {
           </MenuItem>
         </MProfileLink>
 
-        <MenuItem>
-          <ListItemIcon>
-            <Extension fontSize="small" />
-          </ListItemIcon>
-          My NFTs
-        </MenuItem>
+        <MProfileLink to="/my-nfts">
+          <MenuItem>
+            <ListItemIcon>
+              <Extension fontSize="small" />
+            </ListItemIcon>
+            My NFTs
+          </MenuItem>
+        </MProfileLink>
+
         <MProfileLink to="/create-collection">
           <MenuItem>
             <ListItemIcon>

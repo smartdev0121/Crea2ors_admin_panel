@@ -1,17 +1,9 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import MConnectButton from "src/components/MConnectButton";
+import { Box, Skeleton } from "@mui/material";
 import MViewCollection from "../../../components/MViewCollection";
 
 const WelcomeSection = () => {
   return (
     <Box className="section-welcome container">
-      {/* <div className="welcome-content">
-          <div className="btn-group">
-            <Button className="btn btn-secondary">Discover</Button>
-            <MConnectButton />
-          </div>
-        </div> */}
       <div className="welcome-image">
         <div className="top-collection pulse">
           <img src="/images/home/visual.png" alt="Visual" />

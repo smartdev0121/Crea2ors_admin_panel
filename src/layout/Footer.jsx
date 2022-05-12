@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import styled from "styled-components";
 const communityLinks = ["telegram", "discord", "twitter", "instagram"];
 
 const itemLinks = {
@@ -81,7 +81,7 @@ const itemLinks = {
 
 const Footer = () => {
   return (
-    <footer>
+    <MFooter>
       <div className="container">
         <section className="contact-section">
           <div className="join-malling">
@@ -111,32 +111,6 @@ const Footer = () => {
           </div>
         </section>
 
-        <section className="item-section">
-          <img src="/images/footer-logo.svg" alt="Footer logo" />
-
-          <div className="item-links">
-            <div className="about-us">
-              <p>
-                The largest great market place for crypto collectibles and
-                non-fungible tokens (NFTs)
-              </p>
-            </div>
-
-            {Object.keys(itemLinks).map((key) => {
-              return (
-                <div key={key} className="site-links">
-                  <span>{key}</span>
-                  {itemLinks[key].map((link) => (
-                    <div key={link.text}>
-                      <Link to={link.link}>{link.text}</Link>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
         <section className="copyright-section">
           <p>© Copyright xxxNifty Global Inc. 2022. All Rights Reserved</p>
           <div className="copyright-links">
@@ -145,8 +119,13 @@ const Footer = () => {
           </div>
         </section>
       </div>
-    </footer>
+    </MFooter>
   );
 };
 
 export default Footer;
+
+const MFooter = styled.footer`
+  margin-top: auto;
+  border-top: 1px solid #333;
+`;

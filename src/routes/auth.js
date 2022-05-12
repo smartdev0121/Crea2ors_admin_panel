@@ -10,6 +10,7 @@ import EditProfile from "../pages/EditProfile";
 import OtherProfile from "../pages/OtherProfile";
 import MyCollections from "../pages/MyCollections";
 import AllCollections from "../pages/AllCollections";
+import MyNFTs from "../pages/MyNFTs";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
   {
     path: "/edit-profile",
     component: EditProfile,
+    exact: true,
+  },
+  {
+    path: "/my-nfts",
+    component: MyNFTs,
     exact: true,
   },
   {

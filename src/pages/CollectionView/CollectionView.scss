@@ -104,3 +104,18 @@
     color: white;
   }
 }
+
+.pretty-text {
+  text-align: center;
+  width: 100%;
+  margin: 0px auto !important;
+  color: white !important;
+  letter-spacing: 5px !important;
+  font-size: 31px !important;
+  text-shadow: -1px -1px 0px #ffffff, 2px 2px 0px #3d3787, 5px 3px 3px #000636 !important;
+}
+
+.category {
+  font-family: impact;
+  font-size: 17px;
+}

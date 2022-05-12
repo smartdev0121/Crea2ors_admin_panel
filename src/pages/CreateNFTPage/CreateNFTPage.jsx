@@ -15,7 +15,6 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { Form, Field } from "react-final-form";
-import { styled } from "@mui/material/styles";
 import { CONTRACT_TYPE } from "src/config/global";
 import MFileInput from "../../components/MInput/MFileInput";
 import {
@@ -40,45 +39,8 @@ import { getSpinner } from "src/store/app/reducer";
 import { saveNFT } from "src/store/contract/actions";
 import { mintAsset, holdEvent, getValuefromEvent } from "src/utils/contract";
 import { getCurrentWalletAddress } from "../../utils/wallet";
+import styled from "styled-components";
 import "./CreateNFTPage.scss";
-
-const CustomButton = styled(Button)((theme) => ({
-  color: "#e0dfff",
-  background: "#394dd966",
-  borderRadius: "20px",
-  textTransform: "none",
-  padding: "7px 30px",
-  "&:hover": {
-    backgroundColor: "#394dd999",
-  },
-}));
-
-const HideButton = styled(Button)((theme) => ({
-  color: "#e0dfff",
-  background: "transparent",
-  borderRadius: "20px",
-  textTransform: "none",
-  border: "1px solid #5c5c5c",
-  "&:hover": {
-    backgroundColor: "#394dd999",
-  },
-  "&:active": {
-    borderColor: "#394dd999",
-  },
-}));
-
-const UnsavedButton = styled(Button)((theme) => ({
-  color: "#e0dfff",
-  background: "transparent",
-  textTransform: "none",
-  border: "none",
-  "&:hover": {
-    backgroundColor: "#394dd999",
-  },
-  "&:active": {
-    borderColor: "#394dd999",
-  },
-}));
 
 export default function CreateNFTPage(props) {
   const { contractAddress, contractId } = props.match.params;
@@ -196,230 +158,282 @@ export default function CreateNFTPage(props) {
         maxWidth="md"
         sx={{ paddingTop: "100px", paddingBottom: "20px" }}
       >
-        <div className="title">
-          <h1>Create NFT-Collectible 1</h1>
-        </div>
-        <Form
-          onSubmit={onSubmit}
-          initialValues={formInitialValues}
-          validate={(values) => {
-            const errors = {};
-          }}
-          render={({ handleSubmit, submitting, form, values, pristine }) => {
-            return (
-              <form onSubmit={handleSubmit} noValidate>
-                <Stack direction="row" sx={{ flexWrap: "wrap" }}>
-                  <Box
-                    sx={{
-                      p: 2,
-                      backgroundColor: "#00000075",
-                    }}
+        <MBox>
+          <div className="title">
+            <h1 className="text">Create NFT-Collectible 1</h1>
+          </div>
+          <Form
+            onSubmit={onSubmit}
+            initialValues={formInitialValues}
+            validate={(values) => {
+              const errors = {};
+            }}
+            render={({ handleSubmit, submitting, form, values, pristine }) => {
+              return (
+                <form onSubmit={handleSubmit} noValidate>
+                  <MFlexBox
+                    direction="row"
+                    sx={{ flexWrap: "wrap" }}
+                    spacing={2}
                   >
-                    <label className="subtitle">Upload file</label>
+                    <Box>
+                      <label className="subtitle">Upload file</label>
 
-                    <div className="file-upload-part">
-                      {result && (
-                        <IconButton className="delete-btn" onClick={removeFile}>
-                          <DeleteForever sx={{ color: "white" }} />
-                        </IconButton>
-                      )}
-
-                      <input
-                        type="file"
-                        hidden
-                        ref={hiddenFileInput}
-                        id="media_file"
-                        onChange={onFileChanged}
-                        accept=".PNG, .GIF, .WEBP, .MP4, .MP3, .jpg, .jpeg"
-                      />
-                      {result ? (
-                        <img src={result || ""} className="viewport" />
-                      ) : (
-                        <>
-                          <h6 className="grey-txt multi-txt">
-                            PNG, GIF, WEBP, MP4 or MP3. Max: 100MB
-                          </h6>
-                          <CustomButton onClick={onUploadClicked}>
-                            Upload a File
-                          </CustomButton>
-                        </>
-                      )}
-                    </div>
-                    <div>
-                      <Field
-                        type="text"
-                        label="Name"
-                        name="name"
-                        placeholder='e.g. "Redeemable T-Shirt with logo"'
-                        component={MTextField}
-                      />
-
-                      <Field
-                        name="description"
-                        type="text"
-                        label="Description"
-                        placeholder='e.g. "After purchasing you will be able to get the real T-shirt"'
-                        component={MTextField}
-                        multiline
-                      />
-                    </div>
-
-                    <Stack direction="row">
-                      <FormControl
-                        variant="standard"
-                        sx={{ m: 1, mt: 3, width: "25ch", flex: "1 1" }}
-                      >
-                        <Field
-                          name="royaltyFee"
-                          label="Royalties"
-                          inputProps={{
-                            min: 0,
-                            max: 50,
-                            type: "number",
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">%</InputAdornment>
-                            ),
-                          }}
-                          component={MTextField}
-                        />
-
-                        <FormHelperText
-                          id="standard-weight-helper-text"
-                          className="grey-txt"
-                        >
-                          Suggested: 0%, 10%, 20%, 30%<br></br>
-                          Maximum is 50%
-                        </FormHelperText>
-                      </FormControl>
-
-                      <FormControl
-                        variant="standard"
-                        sx={{ m: 1, mt: 3, width: "25ch", flex: "1 1" }}
-                      >
-                        <Field
-                          type="number"
-                          name="batchSize"
-                          label="Number of copies"
-                          placeholder="e.g. M"
-                          inputProps={{
-                            min: 1,
-                            type: "number",
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          component={MTextField}
-                        />
-                        <FormHelperText
-                          className="grey-txt"
-                          id="standard-weight-helper-text"
-                        >
-                          Amount of tokens
-                        </FormHelperText>
-                      </FormControl>
-                    </Stack>
-                    <div className="hide-btn-part">
-                      <HideButton
-                        onClick={() => {
-                          setShow(!show);
-                        }}
-                      >
-                        {!show ? "Show" : "Hide"} advanced settings
-                      </HideButton>
-                    </div>
-                    {show && (
-                      <>
-                        <div className="property">
-                          <label className="subtitle">
-                            Properties <span>(Optional)</span>
-                          </label>
+                      <div className="file-upload-part">
+                        {result && (
                           <IconButton
-                            sx={{ border: "1px solid #999", padding: "5px" }}
-                            onClick={addProperty}
+                            className="delete-btn"
+                            onClick={removeFile}
                           >
-                            <Add sx={{ color: "white" }} />
+                            <DeleteForever sx={{ color: "white" }} />
                           </IconButton>
-                          {property.map((item) => {
-                            return (
-                              <Stack
-                                direction="row"
-                                spacing={3}
-                                key={"property" + item}
-                              >
-                                <Field
-                                  name={`propName_${item}`}
-                                  component={MTextField}
-                                  placeholder="e.g.Size"
-                                  label="Prop name"
-                                  InputLabelProps={{ shrink: true }}
-                                />
-                                <Field
-                                  name={`propValue_${item}`}
-                                  component={MTextField}
-                                  placeholder="e.g.M"
-                                  label="Prop value"
-                                  InputLabelProps={{ shrink: true }}
-                                />
-                              </Stack>
-                            );
-                          })}
-                        </div>
-                        <div>
+                        )}
+
+                        <input
+                          type="file"
+                          hidden
+                          ref={hiddenFileInput}
+                          id="media_file"
+                          onChange={onFileChanged}
+                          accept=".PNG, .GIF, .WEBP, .MP4, .MP3, .jpg, .jpeg"
+                        />
+                        {result ? (
+                          <img src={result || ""} className="viewport" />
+                        ) : (
+                          <>
+                            <h6 className="grey-txt multi-txt">
+                              PNG, GIF, WEBP, MP4 or MP3. Max: 100MB
+                            </h6>
+                            <CustomButton onClick={onUploadClicked}>
+                              Upload a File
+                            </CustomButton>
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        <Field
+                          type="text"
+                          label="Name"
+                          name="name"
+                          placeholder='e.g. "Redeemable T-Shirt with logo"'
+                          component={MTextField}
+                        />
+
+                        <Field
+                          name="description"
+                          type="text"
+                          label="Description"
+                          placeholder='e.g. "After purchasing you will be able to get the real T-shirt"'
+                          component={MTextField}
+                          multiline
+                        />
+                      </div>
+
+                      <Stack direction="row">
+                        <FormControl
+                          variant="standard"
+                          sx={{ m: 1, mt: 3, width: "25ch", flex: "1 1" }}
+                        >
                           <Field
-                            name="alternativeText"
-                            label="Alternative text(Optional)"
+                            name="royaltyFee"
+                            label="Royalties"
+                            inputProps={{
+                              min: 0,
+                              max: 50,
+                              type: "number",
+                            }}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  %
+                                </InputAdornment>
+                              ),
+                            }}
                             component={MTextField}
-                            placeholder='Image description in details (do not start with word "image"'
-                            multiline
                           />
+
                           <FormHelperText
-                            id="component-helper-text"
+                            id="standard-weight-helper-text"
                             className="grey-txt"
                           >
-                            Text that will be used in VoiceOver for people with
-                            disabilities
+                            Suggested: 0%, 10%, 20%, 30%<br></br>
+                            Maximum is 50%
                           </FormHelperText>
-                        </div>
-                      </>
-                    )}
+                        </FormControl>
 
-                    <div className="create-item-part">
-                      <MColorButtonView type="submit">
-                        Create Item
-                      </MColorButtonView>
-                      <UnsavedButton>
-                        Unsaved changes
-                        <HelpOutline />
-                      </UnsavedButton>
-                    </div>
-                  </Box>
-                  <Box
-                    sx={{
-                      p: 2,
-                      backgroundColor: "#00000075",
-                    }}
-                  >
-                    <div className="preview-part">
-                      {result ? (
-                        <img src={result || ""} className="viewport" />
-                      ) : (
-                        <h6 className="grey-txt">
-                          Upload file to preview your brand new NFT
-                        </h6>
+                        <FormControl
+                          variant="standard"
+                          sx={{ m: 1, mt: 3, width: "25ch", flex: "1 1" }}
+                        >
+                          <Field
+                            type="number"
+                            name="batchSize"
+                            label="Number of copies"
+                            placeholder="e.g. M"
+                            inputProps={{
+                              min: 1,
+                              type: "number",
+                            }}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            component={MTextField}
+                          />
+                          <FormHelperText
+                            className="grey-txt"
+                            id="standard-weight-helper-text"
+                          >
+                            Amount of tokens
+                          </FormHelperText>
+                        </FormControl>
+                      </Stack>
+                      <div className="hide-btn-part">
+                        <HideButton
+                          onClick={() => {
+                            setShow(!show);
+                          }}
+                        >
+                          {!show ? "Show" : "Hide"} advanced settings
+                        </HideButton>
+                      </div>
+                      {show && (
+                        <>
+                          <div className="property">
+                            <label className="subtitle">
+                              Properties <span>(Optional)</span>
+                            </label>
+                            <IconButton
+                              sx={{ border: "1px solid #999", padding: "5px" }}
+                              onClick={addProperty}
+                            >
+                              <Add sx={{ color: "white" }} />
+                            </IconButton>
+                            {property.map((item) => {
+                              return (
+                                <Stack
+                                  direction="row"
+                                  spacing={3}
+                                  key={"property" + item}
+                                >
+                                  <Field
+                                    name={`propName_${item}`}
+                                    component={MTextField}
+                                    placeholder="e.g.Size"
+                                    label="Prop name"
+                                    InputLabelProps={{ shrink: true }}
+                                  />
+                                  <Field
+                                    name={`propValue_${item}`}
+                                    component={MTextField}
+                                    placeholder="e.g.M"
+                                    label="Prop value"
+                                    InputLabelProps={{ shrink: true }}
+                                  />
+                                </Stack>
+                              );
+                            })}
+                          </div>
+                          <div>
+                            <Field
+                              name="alternativeText"
+                              label="Alternative text(Optional)"
+                              component={MTextField}
+                              placeholder='Image description in details (do not start with word "image"'
+                              multiline
+                            />
+                            <FormHelperText
+                              id="component-helper-text"
+                              className="grey-txt"
+                            >
+                              Text that will be used in VoiceOver for people
+                              with disabilities
+                            </FormHelperText>
+                          </div>
+                        </>
                       )}
-                    </div>
-                  </Box>
-                </Stack>
-              </form>
-            );
-          }}
-        />
+
+                      <div className="create-item-part">
+                        <MColorButtonView type="submit">
+                          Create Item
+                        </MColorButtonView>
+                        <UnsavedButton>
+                          Unsaved changes
+                          <HelpOutline />
+                        </UnsavedButton>
+                      </div>
+                    </Box>
+                    <Box>
+                      <div className="preview-part">
+                        {result ? (
+                          <img src={result || ""} className="viewport" />
+                        ) : (
+                          <h6 className="grey-txt">
+                            Upload file to preview your brand new NFT
+                          </h6>
+                        )}
+                      </div>
+                    </Box>
+                  </MFlexBox>
+                </form>
+              );
+            }}
+          />
+        </MBox>
       </Container>
     </div>
   );
 }
+
+const CustomButton = styled(Button)`
+  color: #e0dfff !important;
+  background: #394dd966 !important;
+  border-radius: 20px !important;
+  text-transform: none !important;
+  padding: 7px 30px !important;
+  &:hover: {
+    background-color: #394dd999 !important;
+  }
+`;
+
+const HideButton = styled(Button)`
+  color: #e0dfff !important;
+  background: transparent !important;
+  border-radius: 20px !important;
+  text-transform: none !important;
+  border: 1px solid #5c5c5c !important;
+  &:hover: {
+    background-color: #394dd999 !important;
+  }
+  &:active: {
+    border-color: #394dd999 !important;
+  }
+`;
+
+const UnsavedButton = styled(Button)`
+  color: #e0dfff !important;
+  background: transparent !important;
+  text-transform: none !important;
+  border: none !important;
+  &:hover: {
+    background-color: #394dd999 !important;
+  }
+  &:active: {
+    border-color: #394dd999;
+  }
+`;
+
+const MBox = styled(Box)`
+  border-radius: 10px;
+  border: 1px solid #333;
+  background-color: #23263066;
+  padding: 15px;
+`;
+
+const MFlexBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+`;

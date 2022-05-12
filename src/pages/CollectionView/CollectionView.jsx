@@ -9,6 +9,8 @@ import { getContractUri } from "src/store/contract/actions";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
 import { EffectCoverflow, Pagination } from "swiper";
 import MNFTCard from "src/components/MCards/MNFTCard";
+import { MTopRadiusImg } from "src/components/MImages";
+import styled from "styled-components";
 import "./CollectionView.scss";
 
 const CollectionView = (props) => {
@@ -42,21 +44,20 @@ const CollectionView = (props) => {
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "100px" }}>
-      <Box
-        sx={{
-          p: 2,
-          backgroundColor: "#36363666",
-        }}
-      >
+      <MBox>
         {isLoading ? (
           <Skeleton animation="wave" width="100%" height="300px" />
         ) : (
           <section className="image-section">
             <div className="shadow"></div>
-            <img src={metaData?.image_url || "/images/home/visual.png"} />
+            <MTopRadiusImg
+              src={metaData?.image_url || "/images/home/visual.png"}
+            />
             <div className="image-info-part">
-              <h2>{metaData?.name}</h2>
-              <p>{metaData?.category + "/" + metaData?.subCategory}</p>
+              <h2 className="pretty-text">{metaData?.name}</h2>
+              <p className="category">
+                {metaData?.category + "/" + metaData?.subCategory}
+              </p>
               <p>Colleciton Token Limit: {metaData?.tokenLimit}</p>
             </div>
           </section>
@@ -64,19 +65,19 @@ const CollectionView = (props) => {
 
         <section className="info-section">
           {isLoading ? (
-            <Skeleton animation="wave" width="100%" height="200px" />
+            <Skeleton animation="wave" width="280px" height="100px" />
           ) : (
             <div className="description">{metaData?.highLight}</div>
           )}
           {isLoading ? (
-            <Skeleton animation="wave" width="100%" height="200px" />
+            <Skeleton animation="wave" width="547px" height="450px" />
           ) : (
             <div className="info-tab">
               <CollectionInfoTab metaData={metaData} />
             </div>
           )}
         </section>
-      </Box>
+      </MBox>
       <MFlexBox>
         <Swiper
           slidesPerView={2}
@@ -97,12 +98,7 @@ const CollectionView = (props) => {
           className="mySwiper"
         >
           {isLoading ? (
-            <Skeleton
-              animation="wave"
-              variant="circular"
-              width="100%"
-              height="300px"
-            ></Skeleton>
+            <Skeleton animation="wave" width="100%" height="200px"></Skeleton>
           ) : (
             newCollectionInfo.nfts.map((item, index) => {
               return (
@@ -123,3 +119,10 @@ const CollectionView = (props) => {
   );
 };
 export default CollectionView;
+
+const MBox = styled(Box)`
+  border-radius: 10px;
+  border: 1px solid #333;
+  background-color: #23263066;
+  padding: 15px;
+`;
