@@ -106,14 +106,16 @@ export const getUserInfo = (dispatch) => {
 };
 
 export const createUser = (values, history) => {
+  console.log(values);
   return (dispatch) =>
     api
-      .post("/users", values)
+      .post("/users", { values })
       .then((res) => {
         dispatch({ type: types.CREATE_USER, payload: res });
-        showNotify("User has been created successfully!");
+        showNotify(
+          "Register request is successfully suggested!. Please wait until allowing"
+        );
         history.push("/sign-in");
-        dispatch(showModal());
       })
       .catch((res) => {
         console.log(res);

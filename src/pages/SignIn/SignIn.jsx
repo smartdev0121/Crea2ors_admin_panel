@@ -15,13 +15,11 @@ import "./SignIn.scss";
 const SignIn = () => {
   const dispatch = useDispatch();
   const isSubmitting = useSelector((state) => getSpinner(state, "login"));
-  const modal = useSelector((state) => state.modal);
   const onSubmit = (values) => {
     dispatch(login(values));
   };
   return (
     <Container maxWidth="xs" sx={{ marginTop: "100px", marginBottom: "20px" }}>
-      <MRootModal />
       {isSubmitting && <MSpinner />}
       <Box
         sx={{
@@ -46,8 +44,8 @@ const SignIn = () => {
           onSubmit={onSubmit}
           validate={(values) => {
             const errors = {};
-            if (!values.email) {
-              errors.email = "Email address is required!";
+            if (!values.username) {
+              errors.username = "Email address is required!";
             }
             if (!values.password) {
               errors.password = "Password is required!";
@@ -57,10 +55,10 @@ const SignIn = () => {
             <form onSubmit={handleSubmit} noValidate>
               <Stack className="input-part" spacing={2}>
                 <Field
-                  type="email"
-                  name="email"
-                  label="Email"
-                  placeholder="Enter your email address"
+                  type="text"
+                  name="username"
+                  label="Username"
+                  placeholder="Enter your username"
                   component={MTextField}
                   required
                 />
@@ -81,7 +79,6 @@ const SignIn = () => {
           )}
         ></Form>
         <section className="link-part">
-          <Link to="/password-reset">Forgot password?</Link>
           <Link to="/sign-up">Don't have your account? Sign Up</Link>
         </section>
       </Box>

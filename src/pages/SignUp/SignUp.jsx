@@ -13,9 +13,7 @@ import "./SignUp.scss";
 
 const SignUp = (props) => {
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   // dispatch(initializeForm("CreateUserForm", {}));
-  // }, []);
+
   const onSubmit = (values) => {
     dispatch(createUser(values, props.history));
   };
@@ -45,11 +43,8 @@ const SignUp = (props) => {
           onSubmit={onSubmit}
           validate={(values) => {
             const errors = {};
-            if (!values.nick_name) {
-              errors.nick_name = "Nickname is required";
-            }
-            if (!values.email) {
-              errors.email = "Email address is required";
+            if (!values.username) {
+              errors.username = "Nickname is required";
             }
             if (!values.password) {
               errors.password = "Password is required!";
@@ -66,26 +61,15 @@ const SignUp = (props) => {
               <Stack className="input-part" spacing={2}>
                 <Field
                   type="text"
-                  label="Nickname"
-                  name="nick_name"
+                  label="Username"
+                  name="username"
                   component={MTextField}
-                />
-                <Field
-                  type="email"
-                  label="Email"
-                  component={MTextField}
-                  name="email"
                 />
                 <Field
                   type="password"
                   label="Password"
                   component={MTextField}
                   name="password"
-                />
-                {/* <Field type="password" /> */}
-                <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label="I accept the terms of services"
                 />
                 <MColorButtonView type="submit" disabled={submitting}>
                   SIGN UP

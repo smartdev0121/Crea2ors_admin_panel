@@ -16,15 +16,17 @@ export const login = (values) => (dispatch) => {
   return api
     .post("/auth/login", values)
     .then((res) => {
+      if (res.result == "not_verified") {
+        showNotify("Please wait until you are verified!", "info");
+        return;
+      }
+      console.log(res);
       setToken(res.token);
-      return getProfile()(dispatch);
-    })
-    .then((firstName) => {
-      showNotify(`Hi, ${firstName}. You are logged successfully`);
-      dispatch(replace("/connect-wallet"));
+      dispatch(getProfile());
+      showNotify("You are logged successfully");
     })
     .catch((err) => {
-      err.token === "noToken"
+      err.result === "wrong_info"
         ? showNotify("Username or password is wrong!", "warning")
         : showNotify("Connection Problem occured!", "error");
     })

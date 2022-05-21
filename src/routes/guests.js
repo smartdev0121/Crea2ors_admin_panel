@@ -1,10 +1,5 @@
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
-import PasswordReset from "../pages/PasswordReset";
-import HomePage from "../pages/Home";
-import ResetComponent from "../pages/PasswordReset/ResetComponent";
-import EmailConfirmed from "../pages/EmailConfirmed";
-import OtherProfile from "../pages/OtherProfile";
 
 const routes = [
   {
@@ -15,31 +10,6 @@ const routes = [
   {
     path: "/sign-up",
     component: SignUp,
-    exact: true,
-  },
-  {
-    path: "/password-reset",
-    component: PasswordReset,
-    exact: true,
-  },
-  {
-    path: "/reset-password/:token/:email",
-    component: ResetComponent,
-    exact: true,
-  },
-  {
-    path: "/email-confirm/:token/:email",
-    component: EmailConfirmed,
-    exact: true,
-  },
-  {
-    path: "/",
-    component: HomePage,
-    exact: true,
-  },
-  {
-    path: "/custom/:customUrl",
-    component: OtherProfile,
     exact: true,
   },
 ];

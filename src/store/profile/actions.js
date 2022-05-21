@@ -12,23 +12,21 @@ export const updateProfile = (newProfile) => ({
   payload: newProfile,
 });
 
-export const getProfile = () => (dispatch) => {
+export const getProfile = () => async (dispatch) => {
   dispatch(appActions.showSpinner("PROFILE_INFO"));
-  return api
-    .get("/profile/info")
-    .then((res) => {
+  try {
+    try {
+      const res = await api.get("/profile/info");
       dispatch({
         type: types.PROFILE_INFO,
         payload: { ...res },
       });
       dispatch(appActions.hideSpinner("PROFILE_INFO"));
-      return res.nickName;
-    })
-    .catch((err) => {
+    } catch (err) {
       console.log(err);
       dispatch(appActions.hideSpinner("PROFILE_INFO"));
-    })
-    .finally(() => {
-      dispatch(appActions.hideSpinner("PROFILE_INFO"));
-    });
+    }
+  } finally {
+    dispatch(appActions.hideSpinner("PROFILE_INFO"));
+  }
 };

@@ -1,33 +1,79 @@
-import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+// material
+import { Grid, Button, Container, Stack, Typography, Box } from "@mui/material";
+// components
+import Page from "../../components/Page";
+import Iconify from "../../components/Iconify";
+import {
+  BlogPostCard,
+  BlogPostsSort,
+  BlogPostsSearch,
+} from "../../sections/@dashboard/blog";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchCategoryData, fetchCollectionData } from "src/store/data/actions";
 
-import HelpSection from "./Sections/HelpSection";
-import LiveAuctionSection from "./Sections/LiveAuctionSection";
-import MarketplaceStatusSection from "./Sections/MarketplaceStatusSection";
-import NotableDropSection from "./Sections/NotableDropSection";
-import TrendingCollectionSection from "./Sections/TrendingCollectionSection";
-import WelcomeSection from "./Sections/WelcomeSection";
-import ButtonBar from "./Sections/ButtonBar";
-import styles from "./Home.module.scss";
-import FeaturedArtist from "./Sections/FeaturedArtist";
-import TopCollection1 from "./Sections/TopCollection1";
-import TopCollection2 from "./Sections/TopCollection2";
+export default function HomePage() {
+  const [categories, setCategories] = useState();
+  const [collections, setCollections] = useState();
 
-const HomePage = () => {
+  const dispatch = useDispatch();
+  const tempCategories = useSelector((state) => state.data.categories);
+  const tempCollections = useSelector((state) => state.data.collections);
+  const homepageDatas = useSelector((state) => state.data.homepageDatas);
+  const [curType, setCurType] = useState("All");
+  console.log("haha", tempCollections);
+  useEffect(async () => {
+    dispatch(fetchCategoryData());
+    dispatch(fetchCollectionData("All"));
+  }, []);
+
+  useEffect(() => {
+    setCategories(tempCategories);
+    setCollections(tempCollections);
+  }, [tempCategories, tempCollections]);
+
+  const onSort = (value) => {
+    setCurType(value);
+    dispatch(fetchCollectionData(value));
+  };
   return (
-    <main className={styles.homepage}>
-      <WelcomeSection />
-      <ButtonBar />
+    <Container>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={5}
+      >
+        <Typography variant="h4" gutterBottom>
+          Homepage
+        </Typography>
+      </Stack>
 
-      <FeaturedArtist />
-      {/* <MarketplaceStatusSection /> */}
-      <TopCollection1 key={111} />
-      <TopCollection2 key={112} />
-      {/* <NotableDropSection /> */}
-      {/* <LiveAuctionSection /> */}
-      {/* <TrendingCollectionSection /> */}
-      {/* <HelpSection /> */}
-    </main>
+      <Stack
+        mb={5}
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <BlogPostsSort options={categories} onSort={onSort} />
+      </Stack>
+
+      <Grid container spacing={3}>
+        {collections?.map((post, index) => {
+          console.log("oidssdfsd", homepageDatas);
+          return (
+            <BlogPostCard
+              key={post.id}
+              post={post}
+              index={index}
+              category={curType}
+              collectionId={post.id}
+              homepageDatas={homepageDatas}
+            />
+          );
+        })}
+      </Grid>
+    </Container>
   );
-};
-
-export default HomePage;
+}
