@@ -10,6 +10,8 @@ export default (appState = initialState, { type, payload }) => {
       return { ...appState, collections: [...payload] };
     case types.HOMEPAGE_DATA_FETCHED:
       return { ...appState, homepageDatas: [...payload] };
+    case types.USER_DATA_FETCHED:
+      return { ...appState, users: [...payload] };
     default:
       return appState;
   }

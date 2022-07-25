@@ -49,6 +49,7 @@ export default function BlogPostCard({
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
   const [anchorEl, setAnchorEl] = useState(null);
+  const [displayWalletAddr, setDisplayWalletAddr] = useState("");
 
   const newA = homepageDatas.filter((item, index) => {
     return item.collection_id == collectionId && category == item.category;
@@ -57,9 +58,19 @@ export default function BlogPostCard({
   const [curMode, setCurMode] = useState(newA[0]?.mode);
   const dispatch = useDispatch();
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    const walletAddress =
+      String(post?.User?.wallet_address).substring(0, 6) +
+      "..." +
+      String(post?.User?.wallet_address).substring(38);
+    setDisplayWalletAddr(walletAddress);
+  }, []);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -71,9 +82,9 @@ export default function BlogPostCard({
   };
 
   const POST_INFO = [
-    { number: comment, icon: "eva:message-circle-fill" },
-    { number: view, icon: "eva:eye-fill" },
-    { number: share, icon: "eva:share-fill" },
+    { number: post?.owners?.length, icon: "eva:people-fill" },
+    { number: post?.nfts?.length, icon: "eva:eye-fill" },
+    { number: post?.token_limit, icon: "eva:share-fill" },
   ];
 
   return (
@@ -153,7 +164,7 @@ export default function BlogPostCard({
               top: 24,
               left: 24,
             }}
-            label={post?.User?.nick_name}
+            label={post?.User?.nick_name || displayWalletAddr}
             avatar={
               <Avatar
                 alt={post?.User?.nick_name}

@@ -5,8 +5,10 @@ import qs from "qs";
 
 import { getToken, clearInfo } from "./storage";
 
-export const SITE_URL = "http://localhost:8080/admin";
-export const API_URL = "http://localhost:8080/cr2_apis/admin";
+// export const SITE_URL = "http://localhost:8080/admin";
+// export const API_URL = "http://localhost:8080/cr2_apis/admin";
+export const SITE_URL = "https://crea2ors.io/admin";
+export const API_URL = "http://crea2ors.io/cr2_apis/admin";
 
 const requestConfig = {
   headers: {
@@ -45,6 +47,8 @@ const withPromise = (axiosInstance) =>
       },
       (err) => {
         // service is unavailable
+        alert("Server error occurred");
+        console.log(err);
         if (!err.response) {
           reject(new Error({ status: 503, error: "Service is unavailable" }));
           return;
@@ -59,6 +63,7 @@ const withPromise = (axiosInstance) =>
           window.location.pathname.indexOf("/sign-in") === -1
         ) {
           // clear user from storage
+          alert();
           clearInfo();
           // redirect
           document.location = "/sign-in";
@@ -85,7 +90,6 @@ export function create(config) {
 
 export function get(endpoint, query) {
   const config = requestConfig;
-
   setAuthHeaders(config.headers);
 
   let url = transformURL(endpoint);

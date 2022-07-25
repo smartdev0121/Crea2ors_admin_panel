@@ -25,7 +25,7 @@ export default function HomePage() {
   console.log("haha", tempCollections);
   useEffect(async () => {
     dispatch(fetchCategoryData());
-    dispatch(fetchCollectionData("All"));
+    dispatch(fetchCollectionData(1));
   }, []);
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function HomePage() {
   }, [tempCategories, tempCollections]);
 
   const onSort = (value) => {
+    console.log("SOrt value", value);
     setCurType(value);
     dispatch(fetchCollectionData(value));
   };

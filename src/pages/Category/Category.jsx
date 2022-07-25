@@ -20,6 +20,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import { Delete } from "@mui/icons-material";
 import styled from "styled-components";
+import MTreeView from "src/components/MTreeView";
 
 import {
   fetchCategoryData,
@@ -68,30 +69,7 @@ const Category = () => {
   return (
     <Container maxWidth="md">
       <NewButton onClick={handleClickOpen}>New Category</NewButton>
-      <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-        {cateDatas?.map((item, index) => {
-          return (
-            <ListItem
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={(eve) => onDeleted(eve, item.id)}
-                >
-                  <Delete />
-                </IconButton>
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={item.name} />
-            </ListItem>
-          );
-        })}
-      </List>
+      <MTreeView array={categories} />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Subscribe</DialogTitle>
         <DialogContent>

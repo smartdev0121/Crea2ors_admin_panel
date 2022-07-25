@@ -17,7 +17,7 @@ export const getUserNFTs = () => (dispatch) => {
     .then((res) => {
       if (res.userNfts)
         dispatch({ type: types.USER_NFTS_FETCHED, payload: res.userNfts });
-        hideSpinner("USER_NFTS_LOADING");
+      hideSpinner("USER_NFTS_LOADING");
     })
     .catch((err) => {
       console.log(err);
@@ -77,7 +77,6 @@ export const saveNFT =
     curWalletAddress
   ) =>
   (dispatch) => {
-    console.log("//////////////", curWalletAddress);
     return api
       .post("/create-nft", {
         contractId,
@@ -125,7 +124,7 @@ export const getUserCollections = () => (dispatch) => {
 };
 
 export const getAllCollections = () => (dispatch) => {
-  dispatch(showSpinner("ALL_COLLECTIONS"));
+  showSpinner("ALL_COLLECTIONS");
   return api
     .get("/get-all-collections")
     .then((res) => {

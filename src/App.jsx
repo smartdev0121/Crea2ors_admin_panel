@@ -22,7 +22,6 @@ const App = () => {
   const user = useSelector((state) => getProfileReducer(state));
   const isLoading = useSelector((state) => getSpinner(state, "PROFILE_INFO"));
   let routes;
-
   if (!user) {
     routes = guestRoutes;
   } else {

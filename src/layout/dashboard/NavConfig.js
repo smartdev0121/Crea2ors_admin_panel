@@ -7,13 +7,18 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 const navConfig = [
   {
-    title: "HomepageConstruct",
+    title: "Homepage",
     path: "/admin/homepage_construct",
     icon: getIcon("eva:pie-chart-2-fill"),
   },
   {
     title: "Categories",
     path: "/admin/categories",
+    icon: getIcon("eva:color-palette-fill"),
+  },
+  {
+    title: "Users",
+    path: "/admin/users",
     icon: getIcon("eva:people-fill"),
   },
   // {

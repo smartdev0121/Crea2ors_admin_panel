@@ -20,7 +20,6 @@ export const login = (values) => (dispatch) => {
         showNotify("Please wait until you are verified!", "info");
         return;
       }
-      console.log(res);
       setToken(res.token);
       dispatch(getProfile());
       showNotify("You are logged successfully");
