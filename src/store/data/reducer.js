@@ -12,6 +12,8 @@ export default (appState = initialState, { type, payload }) => {
       return { ...appState, homepageDatas: [...payload] };
     case types.USER_DATA_FETCHED:
       return { ...appState, users: [...payload] };
+    case types.REPORT_DATA_FETCHED:
+      return { ...appState, reports: [...payload] };
     default:
       return appState;
   }

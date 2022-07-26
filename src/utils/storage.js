@@ -19,11 +19,11 @@ export const deleteItem = (key) => {
 };
 
 export const getToken = () => {
-  return localStorage.getItem("TOKEN", false);
+  return localStorage.getItem("ADMIN_TOKEN", false);
 };
 
 export const setToken = (data) => {
-  return localStorage.setItem("TOKEN", data);
+  return localStorage.setItem("ADMIN_TOKEN", data);
 };
 
 export const deleteToken = () => localStorage.removeItem("TOKEN");

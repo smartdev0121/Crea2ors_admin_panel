@@ -1,11 +1,24 @@
 import * as api from "../../utils/magicApi";
 import * as appActions from "../app/actions";
-
+import { showNotify } from "../../utils/notify";
 export const types = {
   COLLECTIONS_FETCHED: "COLLECTIONS_FETCHED",
   CATEGORIES_FETCHED: "CATEGORIES_FETCHED",
   HOMEPAGE_DATA_FETCHED: "HOMEPAGE_DATA_FETCHED",
   USER_DATA_FETCHED: "USER_DATA_FETCHED",
+  REPORT_DATA_FETCHED: "REPORT_DATA_FETCHED",
+};
+
+export const blockUser = (id, type) => async (dispatch) => {
+  return api
+    .post("/block_user", { id, type })
+    .then((res) => {
+      dispatch({ type: types.USER_DATA_FETCHED, payload: res.users });
+    })
+    .catch((err) => {
+      console.log(err);
+      showNotify("Server connection error");
+    });
 };
 
 export const fetchUserDatas = () => async (dispatch) => {
@@ -73,5 +86,17 @@ export const modeChanged = (option, type, collectionId) => (dispatch) => {
     .then((res) => {})
     .catch((err) => {
       console.log(err);
+    });
+};
+
+export const fetchReportData = () => async (dispatch) => {
+  return api
+    .get("/fetch_reports")
+    .then((res) => {
+      dispatch({ type: types.REPORT_DATA_FETCHED, payload: res.reports });
+    })
+    .catch((err) => {
+      console.log(err);
+      return;
     });
 };

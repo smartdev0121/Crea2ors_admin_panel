@@ -1,6 +1,7 @@
 import HomePage from "../pages/Home";
 import Category from "../pages/Category";
 import Users from "../pages/Users";
+import Reports from "../pages/Reports";
 
 const routes = [
   {
@@ -16,6 +17,11 @@ const routes = [
   {
     path: "/admin/users",
     component: Users,
+    exact: true,
+  },
+  {
+    path: "/admin/reports",
+    component: Reports,
     exact: true,
   },
 ];
