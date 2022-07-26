@@ -47,7 +47,6 @@ const withPromise = (axiosInstance) =>
       },
       (err) => {
         // service is unavailable
-        alert("Server error occurred");
         console.log(err);
         if (!err.response) {
           reject(new Error({ status: 503, error: "Service is unavailable" }));
