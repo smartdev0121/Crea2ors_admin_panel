@@ -9,11 +9,21 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  IconButton,
 } from "@mui/material";
 
-import ImageIcon from "@mui/icons-material/Image";
+import {
+  Image as ImageIcon,
+  Delete as DeleteIcon,
+  NewReleases,
+  Visibility,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchReportData } from "src/store/data/actions";
+import {
+  fetchReportData,
+  markRead,
+  onReportDelete,
+} from "src/store/data/actions";
 import { walletAddressAbbr } from "src/utils/helper";
 
 const Reports = () => {
@@ -22,12 +32,46 @@ const Reports = () => {
   console.log("repots", reportsData);
   useEffect(() => {
     dispatch(fetchReportData());
+    return () => {
+      dispatch(markRead());
+    };
   }, []);
+
+  const onDeleteClicked = (eve, id) => {
+    dispatch(onReportDelete(id));
+  };
+
   return (
-    <List sx={{ width: "100%", margin: "0 auto", bgcolor: "background.paper" }}>
+    <List
+      sx={{ width: "100%", margin: "0 auto", bgcolor: "background.paper" }}
+      dense={true}
+    >
       {reportsData?.map((item, index) => {
         return (
-          <ListItem key={"Reports" + index}>
+          <ListItem
+            key={"Reports" + index}
+            secondaryAction={
+              <>
+                {item.status == 0 && (
+                  <Chip
+                    label="NEW"
+                    color="error"
+                    variant="contained"
+                    icon={<NewReleases />}
+                  />
+                )}
+
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  sx={{ marginLeft: "10px" }}
+                  onClick={(eve) => onDeleteClicked(eve, item.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            }
+          >
             <ListItemAvatar>
               <Avatar>
                 <ImageIcon />
@@ -35,27 +79,32 @@ const Reports = () => {
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Chip
-                  label={
-                    item?.user?.nickName ||
-                    walletAddressAbbr(item?.user?.wallet_address)
-                  }
-                />
-              }
-              secondary={
-                <React.Fragment>
+                <>
                   <Chip
-                    sx={{ display: "inline" }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
+                    label={
+                      item?.user?.nickName ||
+                      walletAddressAbbr(item?.user?.wallet_address)
+                    }
+                    avatar={
+                      <Avatar alt="Natacha" src={item?.user.avatar_url} />
+                    }
+                  />
+                  {" — "}
+                  <Chip
+                    avatar={
+                      <Avatar alt="Natacha" src={item?.reportUser.avatar_url} />
+                    }
                     label={
                       item?.reportUser?.nickName ||
                       walletAddressAbbr(item?.reportUser?.wallet_address)
                     }
                   />
-                  {" — " + item?.content}
-                </React.Fragment>
+                </>
+              }
+              secondary={
+                <Typography mt={1} sx={{ color: "#bdbdbd !important" }}>
+                  {item?.content}
+                </Typography>
               }
             />
           </ListItem>

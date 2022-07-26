@@ -1,6 +1,7 @@
 import * as api from "../../utils/magicApi";
 import * as appActions from "../app/actions";
 import { showNotify } from "../../utils/notify";
+import { async } from "rxjs";
 export const types = {
   COLLECTIONS_FETCHED: "COLLECTIONS_FETCHED",
   CATEGORIES_FETCHED: "CATEGORIES_FETCHED",
@@ -92,6 +93,28 @@ export const modeChanged = (option, type, collectionId) => (dispatch) => {
 export const fetchReportData = () => async (dispatch) => {
   return api
     .get("/fetch_reports")
+    .then((res) => {
+      dispatch({ type: types.REPORT_DATA_FETCHED, payload: res.reports });
+    })
+    .catch((err) => {
+      console.log(err);
+      return;
+    });
+};
+
+export const markRead = () => async (dispatch) => {
+  return api
+    .post("/mark_report_read")
+    .then((res) => {})
+    .catch((err) => {
+      console.log(err);
+      return;
+    });
+};
+
+export const onReportDelete = (id) => async (dispatch) => {
+  return api
+    .post("/delete_report", { id })
     .then((res) => {
       dispatch({ type: types.REPORT_DATA_FETCHED, payload: res.reports });
     })
