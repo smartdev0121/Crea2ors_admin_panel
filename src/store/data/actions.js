@@ -47,7 +47,7 @@ export const fetchCollectionData = (keyword) => async (dispatch) => {
     });
 };
 
-export const fetchCategoryData = () => (dispatch) => {
+export const fetchCategoryData = () => async (dispatch) => {
   return api
     .get("/categories")
     .then((res) => {
@@ -59,7 +59,7 @@ export const fetchCategoryData = () => (dispatch) => {
     });
 };
 
-export const newCategoryAdded = (newName) => (dispatch) => {
+export const newCategoryAdded = (newName) => async (dispatch) => {
   return api
     .post("/new_category", { newName })
     .then((res) => {
@@ -70,7 +70,7 @@ export const newCategoryAdded = (newName) => (dispatch) => {
     });
 };
 
-export const CategoryDelete = (id) => (dispatch) => {
+export const CategoryDelete = (id) => async (dispatch) => {
   return api
     .get(`/delete_category/${id}`)
     .then((res) => {
@@ -84,7 +84,12 @@ export const CategoryDelete = (id) => (dispatch) => {
 export const modeChanged = (option, type, collectionId) => (dispatch) => {
   return api
     .post("/mode_change", { option, type, collectionId })
-    .then((res) => {})
+    .then((res) => {
+      dispatch({
+        type: types.HOMEPAGE_DATA_FETCHED,
+        payload: res.homepageDatas,
+      });
+    })
     .catch((err) => {
       console.log(err);
     });

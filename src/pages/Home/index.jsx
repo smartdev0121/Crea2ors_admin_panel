@@ -21,8 +21,10 @@ export default function HomePage() {
   const tempCategories = useSelector((state) => state.data.categories);
   const tempCollections = useSelector((state) => state.data.collections);
   const homepageDatas = useSelector((state) => state.data.homepageDatas);
-  const [curType, setCurType] = useState("All");
+  const [curType, setCurType] = useState(1);
   console.log("haha", tempCollections);
+  console.log("Categories", tempCategories);
+
   useEffect(async () => {
     dispatch(fetchCategoryData());
     dispatch(fetchCollectionData(1));
@@ -36,8 +38,14 @@ export default function HomePage() {
   const onSort = (value) => {
     console.log("SOrt value", value);
     setCurType(value);
-    dispatch(fetchCollectionData(value));
+    if (value == 1) {
+      setCollections(tempCollections);
+    } else {
+      setCollections(tempCollections.filter((item) => item.category == value));
+    }
+    // dispatch(fetchCollectionData(value));
   };
+
   return (
     <Container>
       <Stack

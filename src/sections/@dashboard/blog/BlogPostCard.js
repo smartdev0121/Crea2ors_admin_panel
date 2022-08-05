@@ -51,11 +51,7 @@ export default function BlogPostCard({
   const [anchorEl, setAnchorEl] = useState(null);
   const [displayWalletAddr, setDisplayWalletAddr] = useState("");
 
-  const newA = homepageDatas.filter((item, index) => {
-    return item.collection_id == collectionId && category == item.category;
-  });
-
-  const [curMode, setCurMode] = useState(newA[0]?.mode);
+  const [curMode, setCurMode] = useState("");
   const dispatch = useDispatch();
   const open = Boolean(anchorEl);
 
@@ -64,12 +60,26 @@ export default function BlogPostCard({
   };
 
   useEffect(() => {
+    const newA = homepageDatas.filter((item, index) => {
+      console.log(
+        Number(item.collection_id) == Number(collectionId) &&
+          Number(category) == Number(item.category)
+      );
+      return (
+        Number(item.collection_id) == Number(collectionId) &&
+        Number(category) == Number(item.category)
+      );
+    });
+
+    console.log("Called");
+
+    setCurMode(newA[0]?.mode);
     const walletAddress =
       String(post?.User?.wallet_address).substring(0, 6) +
       "..." +
       String(post?.User?.wallet_address).substring(38);
     setDisplayWalletAddr(walletAddress);
-  }, []);
+  }, [category]);
 
   const handleClose = () => {
     setAnchorEl(null);
